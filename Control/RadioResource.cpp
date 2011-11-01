@@ -70,6 +70,7 @@ ChannelType decodeChannelNeeded(unsigned RA)
 {
 	// This code is based on GSM 04.08 Table 9.9.
 
+	unsigned RA3 = RA>>3;
 	unsigned RA4 = RA>>4;
 	unsigned RA5 = RA>>5;
 
@@ -81,6 +82,11 @@ ChannelType decodeChannelNeeded(unsigned RA)
 	if (RA4 == 0x01) return SDCCHType;		// SDCCH
 	if (RA4 == 0x02) return TCHFType;		// TCH/F
 	if (RA4 == 0x03) return TCHFType;		// TCH/F
+
+	if (gConfig.getNum("GSM.GPRS")) {
+		// One phase packet access with request for single timeslot uplink transmission; one PDCH is needed.
+		if ((RA3 == 0x0f)&&(RA != 0x7f)) return PDTCHType;
+	}
 
 	int NECI = gConfig.getNum("GSM.CellSelection.NECI");
 	if (NECI==0) {
@@ -183,12 +189,17 @@ void AccessGrantResponder(
 		}
 	}
 
+	bool gprsRACH = false;
 	// Allocate the channel according to the needed type indicated by RA.
 	// The returned channel is already open and ready for the transaction.
 	LogicalChannel *LCH = NULL;
 	switch (decodeChannelNeeded(RA)) {
 		case TCHFType: LCH = gBTS.getTCH(); break;
 		case SDCCHType: LCH = gBTS.getSDCCH(); break;
+		case PDTCHType:
+			LCH = gBTS.getPDTCH();
+			gprsRACH = true;
+			break;
 		// If we don't support the service, assign to an SDCCH and we can reject it in L3.
 		case UndefinedCHType:
 			LOG(NOTICE) << "RACH burst for unsupported service RA=" << RA;
@@ -212,7 +223,7 @@ void AccessGrantResponder(
 	}
 
 	// Set the channel physical parameters from the RACH burst.
-	LCH->setPhy(RSSI,timingError);
+	if (!gprsRACH) LCH->setPhy(RSSI,timingError); // TODO: Set L1 physical parameters for PDTCH channel.
 
 	// Assignment, GSM 04.08 3.3.1.1.3.1.
 	// Create the ImmediateAssignment message.
@@ -221,9 +232,11 @@ void AccessGrantResponder(
 	if (initialTA<0) initialTA=0;
 	if (initialTA>62) initialTA=62;
 	const L3ImmediateAssignment assign(
+		gprsRACH,
 		L3RequestReference(RA,when),
 		LCH->channelDescription(),
-		L3TimingAdvance(initialTA)
+		gBTS.time(),                //We use it for TBF starting time.
+		L3TimingAdvance(initialTA)	
 	);
 	LOG(INFO) << "sending " << assign;
 	AGCH->send(assign);

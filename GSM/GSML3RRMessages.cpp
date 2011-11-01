@@ -55,7 +55,17 @@ void L3Message::parseBody(const L3Frame&, size_t&)
 	assert(0);
 }
 
+void RLCMACBlock::writeBody(RLCMACFrame&,size_t&) const
+{
+	LOG(ERR) << "not implemented ";
+	assert(0);
+}
 
+void RLCMACBlock::parseBody(const RLCMACFrame&, size_t&)
+{
+	LOG(ERR) << "not implemented ";
+	assert(0);
+}
 
 
 
@@ -333,7 +343,10 @@ void L3SystemInformationType3::writeBody(L3Frame& dest, size_t &wp) const
 	LOG(DEBUG) << dest;
 	mRACHControlParameters.writeV(dest,wp);
 	LOG(DEBUG) << dest;
-	if (mHaveRestOctets) mRestOctets.writeV(dest,wp);
+	//if (mHaveRestOctets) mRestOctets.writeV(dest,wp);
+	if (gConfig.getNum("GSM.GPRS")) {
+		mSI3RestOctets.writeV(dest,wp);
+	}
 	LOG(DEBUG) << dest;
 }
 
@@ -347,7 +360,10 @@ void L3SystemInformationType3::text(ostream& os) const
 	os << " cellOptions=(" << mCellOptions << ")";
 	os << " cellSelectionParameters=(" << mCellSelectionParameters << ")";
 	os << " RACHControlParameters=(" << mRACHControlParameters << ")";
-	if (mHaveRestOctets) os << " SI3RO=(" << mRestOctets << ")";
+	//if (mHaveRestOctets) os << " SI3RO=(" << mRestOctets << ")";
+	if (gConfig.getNum("GSM.GPRS")) {
+		os << " SI3RestOctets=(" << mSI3RestOctets << ")";
+	}
 }
 
 
@@ -436,6 +452,21 @@ void L3SystemInformationType6::text(ostream& os) const
 	os << " NCCPermitted=(" << mNCCPermitted << ")";
 }
 
+void L3SystemInformationType13::writeBody(L3Frame& dest, size_t &wp) const
+{
+/**
+	System Information Type 13, GSM 04.08 9.1.43a
+	- SI 13 Rest Octets 10.5.2.37b M V 20
+*/
+	mSI13RestOctets.writeV(dest,wp);
+}
+
+
+void L3SystemInformationType13::text(ostream& os) const
+{
+	L3RRMessage::text(os);
+	os << " SI13RestOctets=(" << mSI13RestOctets << ")";
+}
 
 void L3ImmediateAssignment::writeBody( L3Frame &dest, size_t &wp ) const
 {
@@ -443,8 +474,10 @@ void L3ImmediateAssignment::writeBody( L3Frame &dest, size_t &wp ) const
 - Page Mode 10.5.2.26 M V 1/2 
 - Dedicated mode or TBF 10.5.2.25b M V 1/2 
 - Channel Description 10.5.2.5 C V 3 
+- Packet Channel Description 10.5.2.25a C V 3 
 - Request Reference 10.5.2.30 M V 3 
-- Timing Advance 10.5.2.40 M V 1 
+- Timing Advance 10.5.2.40 M V 1
+- IA Rest Octets 10.5.2.16 M V 0-11 
 (ignoring optional elements)
 */
 	// reverse order of 1/2-octet fields
@@ -456,6 +489,9 @@ void L3ImmediateAssignment::writeBody( L3Frame &dest, size_t &wp ) const
 	// No mobile allocation in non-hopping systems.
 	// A zero-length LV.  Just write L=0.
 	dest.writeField(wp,0,8);
+	if (mGPRS) {
+		mIARestOctets.writeV(dest, wp);
+	}
 }
 
 
@@ -463,9 +499,17 @@ void L3ImmediateAssignment::text(ostream& os) const
 {
 	os << "PageMode=("<<mPageMode<<")";
 	os << " DedicatedModeOrTBF=("<<mDedicatedModeOrTBF<<")";
-	os << " ChannelDescription=("<<mChannelDescription<<")";
+	if (mGPRS) {
+		os << " ChannelDescription=(";
+	} else {
+		os << " PacketChannelDescription=(";
+	}
+	os << mChannelDescription<<")";
 	os << " RequestReference=("<<mRequestReference<<")";
 	os << " TimingAdvance="<<mTimingAdvance;
+	if (mGPRS) {
+		os << " IARestOctets=("<<mIARestOctets<<")";
+	}
 }
 
 
@@ -712,5 +756,88 @@ void L3ClassmarkChange::text(ostream& os) const
 	if (mHaveAdditionalClassmark)
 		os << " +classmark=(" << mAdditionalClassmark << ")";
 }
+
+
+void RLCMACDataBlock::text(ostream& os) const
+{
+	os << "RLCMACDataBlock : ";
+	os << "CountdownValue=("<<mCountdownValue<<") ";
+	os << "SI=("<<mSI<<") ";
+	os << "R=("<<mR<<") ";
+	os << "PI=("<<mPI<<")  ";
+	os << "TFI=("<<mTFI<<") ";
+	os << "TI=("<<mTI<<") ";
+	os << "BSN=("<<mBSN<<") ";
+	os << "E=("<<mE<<") ";
+	os << "PFI=("<<mPFI<<") ";
+	os << "TLLI=("<<hex<<"0x"<<mTLLI<<dec<<" )";
+}
+
+void RLCMACDataBlock::parseBody(const RLCMACFrame& source, size_t& rp)
+{
+	mCountdownValue = source.readField(rp,4);
+	mSI = source.readField(rp,1);
+	mR = source.readField(rp,1);
+	mSpare = source.readField(rp,1);
+	mPI = source.readField(rp,1);
+	mTFI = source.readField(rp,5);
+	mTI = source.readField(rp,1);
+	mBSN = source.readField(rp,7); 
+	mE = source.readField(rp,1);
+	rp+=8;
+	mTLLI = source.readField(rp,8*4);
+	mPFI = source.readField(rp,7);
+}
+
+size_t RLCMACDataBlock::bodyLength() const
+{
+	return 23;
+}
+
+RLCMACDataBlock* GSM::parseRLCMACDataBlock(const RLCMACFrame& source)
+{
+	RLCMACDataBlock *retVal = new RLCMACDataBlock();
+	if (retVal==NULL) return NULL;
+	retVal->parse(source);
+	return retVal;
+}
+
+void RLCMACControlBlock::text(ostream& os) const
+{
+	os << "RLCMACControlBlock : ";
+	os << "TFI=("<<mTFI<<") ";
+	os << "TLLI=("<<hex<<"0x"<<mTLLI<<dec<<" )";
+}
+
+void RLCMACControlBlock::writeBody(RLCMACFrame& dest, size_t& wp) const
+{
+	dest.writeField(wp,0x0,2);  // Uplink block with TDMA framenumber
+	dest.writeField(wp,0x1,1);  // Suppl/Polling Bit
+	dest.writeField(wp,0x1,3);  // Uplink state flag
+	dest.writeField(wp,0x09,6); // MESSAGE TYPE 
+	dest.writeField(wp,0x0,2);  // Page Mode
+	dest.writeField(wp,0x0,2);  
+	dest.writeField(wp,mTFI,5); // Uplink TFI
+	dest.writeField(wp,0x0,1);
+	dest.writeField(wp,0x0,2);  // CS1
+	dest.writeField(wp,0x1,1);  // FINAL_ACK_INDICATION
+	dest.writeField(wp,0x01,7); // STARTING_SEQUENCE_NUMBER
+	// RECEIVE_BLOCK_BITMAP
+	for (unsigned i=0; i<8; i++) {
+		dest.writeField(wp,0xFF,8);
+	}
+	dest.writeField(wp,0x1,1);  // CONTENTION_RESOLUTION_TLLI = present
+	dest.writeField(wp,mTLLI,8*4);
+	dest.writeField(wp,0x00,5); //spare
+	for (unsigned i=0; i<6; i++) {
+		dest.writeField(wp,0x2b,8);
+	}
+}
+
+size_t RLCMACControlBlock::bodyLength() const
+{
+	return 23;
+}
+
 
 // vim: ts=4 sw=4
