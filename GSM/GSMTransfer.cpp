@@ -30,7 +30,6 @@
 #include "GSMTransfer.h"
 #include "GSML3Message.h"
 
-
 using namespace std;
 using namespace GSM;
 
@@ -54,6 +53,14 @@ ostream& GSM::operator<<(ostream& os, const L3Frame& frame)
 	return os;
 }
 
+ostream& GSM::operator<<(ostream& os, const RLCMACFrame& frame)
+{
+	os << " Payload Type = " << frame.payloadType();
+	os << " raw=(";
+	frame.hex(os);
+	os << ")";
+	return os;
+}
 
 ostream& GSM::operator<<(ostream& os, const L2Header::FrameFormat val)
 {
@@ -501,6 +508,37 @@ void L3Frame::writeL(size_t &wp)
 {
 	unsigned fillBit = fillPattern[wp%8];
 	writeField(wp,fillBit,1);
+}
+
+RLCMACFrame::RLCMACFrame(const RLCMACBlock& block)
+	:BitVector(block.bitsNeeded())
+{
+	block.write(*this);
+}
+
+
+
+RLCMACFrame::RLCMACFrame(const char* hexString)
+{
+	size_t len = strlen(hexString);
+	resize(len*4);
+	size_t wp=0;
+	for (size_t i=0; i<len; i++) {
+		char c = hexString[i];
+		int v = c - '0';
+		if (v>9) v = c - 'a' + 10;
+		writeField(wp,v,4);
+	}
+}
+
+
+RLCMACFrame::RLCMACFrame(const char* binary, size_t len)
+{
+	resize(len*8);
+	size_t wp=0;
+	for (size_t i=0; i<len; i++) {
+		writeField(wp,binary[i],8);
+	}
 }
 
 

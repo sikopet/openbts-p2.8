@@ -324,7 +324,7 @@ class L3SystemInformationType2 : public L3RRMessageNRO {
 	- Cell Selection Parameters 10.5.2.4 M V 2 
 	- RACH Control Parameters 10.5.2.29 M V 3 
 */
-class L3SystemInformationType3 : public L3RRMessageRO {
+class L3SystemInformationType3 : public L3RRMessageNRO {
 
 	private:
 
@@ -335,14 +335,15 @@ class L3SystemInformationType3 : public L3RRMessageRO {
 	L3CellSelectionParameters mCellSelectionParameters;
 	L3RACHControlParameters mRACHControlParameters;
 
-	bool mHaveRestOctets;
-	L3SI3RestOctets mRestOctets;
+	//bool mHaveRestOctets;
+	//L3SI3RestOctets mRestOctets;
+	L3SI3RestOctets mSI3RestOctets;
 
 	public:
 
 	L3SystemInformationType3()
-		:L3RRMessageRO(),
-		mHaveRestOctets(gConfig.defines("GSM.SI3RO"))
+		:L3RRMessageNRO()//,
+		//mHaveRestOctets(gConfig.defines("GSM.SI3RO"))
 	{ }
 
 	void CI(const L3CellIdentity& wCI) { mCI = wCI; }
@@ -361,10 +362,22 @@ class L3SystemInformationType3 : public L3RRMessageRO {
 	void RACHControlParameters(const L3RACHControlParameters& wRACHControlParameters)
 		{ mRACHControlParameters = wRACHControlParameters; }
 
+	void SI3RestOctets(const L3SI3RestOctets& wSI3RestOctets)
+		{ mSI3RestOctets = wSI3RestOctets; }
+
 	int MTI() const { return (int)SystemInformationType3; }
 
-	size_t l2BodyLength() const { return 16; }
-	size_t restOctetsLength() const { return mRestOctets.lengthV(); }
+	size_t l2BodyLength() const { 
+		if (gConfig.getNum("GSM.GPRS")){
+			return 20;
+		}
+		else {
+			return 16;
+		}
+	}
+	//size_t l2BodyLength() const { return 16; }
+	//size_t restOctetsLength() const { return mRestOctets.lengthV(); }
+	//size_t restOctetsLength() const { return 4; }
 	void writeBody(L3Frame &dest, size_t &wp) const;
 	void text(std::ostream&) const;
 };
@@ -476,7 +489,29 @@ class L3SystemInformationType6 : public L3RRMessageNRO {
 	void text(std::ostream&) const;
 };
 
+/**
+	System Information Type 13, GSM 04.08 9.1.43a
+	- SI 13 Rest Octets 10.5.2.37b M V 20
+*/
+class L3SystemInformationType13 : public L3RRMessageNRO {
 
+	private:
+
+	L3SI13RestOctets mSI13RestOctets;
+
+	public:
+
+	L3SystemInformationType13():L3RRMessageNRO() {}
+ 
+	void SI13RestOctets(const L3SI13RestOctets& wSI13RestOctets)
+		{ mSI13RestOctets = wSI13RestOctets; }
+
+	int MTI() const { return (int)SystemInformationType13; }
+
+	size_t l2BodyLength() const { return 20; }
+	void writeBody(L3Frame &dest, size_t &wp) const;
+	void text(std::ostream&) const;
+};
 
 
 /** Immediate Assignment, GSM 04.08 9.1.18 */
@@ -484,27 +519,40 @@ class L3ImmediateAssignment : public L3RRMessageNRO {
 
 private:
 
+	bool mGPRS;
 	L3PageMode mPageMode;
 	L3DedicatedModeOrTBF mDedicatedModeOrTBF;
 	L3RequestReference mRequestReference;
 	L3ChannelDescription mChannelDescription;  
 	L3TimingAdvance mTimingAdvance;
+	L3IARestOctets mIARestOctets;
 
 public:
 
 
 	L3ImmediateAssignment(
+				bool wGPRS,
 				const L3RequestReference& wRequestReference,
 				const L3ChannelDescription& wChannelDescription,
+				Time wTBF_starting_time,
 				const L3TimingAdvance& wTimingAdvance = L3TimingAdvance(0))
 		:L3RRMessageNRO(),
+		mGPRS(wGPRS),
+		mDedicatedModeOrTBF(0,0,wGPRS?1:0),
 		mRequestReference(wRequestReference),
 		mChannelDescription(wChannelDescription),
-		mTimingAdvance(wTimingAdvance)
+		mTimingAdvance(wTimingAdvance),
+		mIARestOctets(wTBF_starting_time)
 	{}
 
 	int MTI() const { return (int)ImmediateAssignment; }
-	size_t l2BodyLength() const { return 9; }
+	size_t l2BodyLength() const {
+		if (mGPRS) { 
+			return 20;
+		} else {
+			return 9;
+		}
+	}
 
 	void writeBody(L3Frame &dest, size_t &wp) const;
 	void text(std::ostream&) const;
@@ -863,6 +911,73 @@ class L3ClassmarkChange : public L3RRMessageNRO {
 
 	const L3MobileStationClassmark2& classmark() const { return mClassmark; }
 };
+
+class RLCMACDataBlock : public RLCMACBlock {
+
+	protected:
+
+	unsigned mCountdownValue;
+	unsigned mSI;
+	unsigned mR;
+	unsigned mSpare;
+	unsigned mPI;
+	unsigned mTFI;
+	unsigned mTI;
+	unsigned mBSN; 
+	unsigned mE;
+	unsigned mPFI;	
+	uint64_t mTLLI;
+
+	public:
+
+
+	RLCMACDataBlock():RLCMACBlock() { } 
+	
+	size_t bodyLength() const;
+	unsigned CV() const { return mCountdownValue; }
+	unsigned TFI() const { return mTFI; }
+	uint64_t TLLI() { return mTLLI; }
+	protected:
+	void writeBody(RLCMACFrame&, unsigned int&) const {}
+	void parseBody(const RLCMACFrame&, unsigned int&);
+	RLCMACPayloadType payloadType() const { return RLCMACDataBlockType;}
+	void text(std::ostream&) const;
+
+};
+
+RLCMACDataBlock* parseRLCMACDataBlock(const RLCMACFrame& source);
+
+
+
+
+class RLCMACControlBlock : public RLCMACBlock {
+
+	protected:
+
+	unsigned mTFI;
+	uint64_t mTLLI;
+
+	public:
+
+
+	RLCMACControlBlock(unsigned wTFI, uint64_t wTLLI)
+		:RLCMACBlock(),
+		mTFI(wTFI),
+		mTLLI(wTLLI)
+	{} 
+	
+	size_t bodyLength() const;
+	protected:
+	void writeBody(RLCMACFrame&, unsigned int&) const;
+	void parseBody(const RLCMACFrame&, unsigned int&) {}
+	RLCMACPayloadType payloadType() const { return RLCMACControlBlockType1;}
+	void text(std::ostream&) const;
+
+};
+
+//std::ostream& operator<<(std::ostream& os, L3RRMessage::MessageType);
+
+
 
 
 } // GSM

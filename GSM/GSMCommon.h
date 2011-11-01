@@ -228,6 +228,10 @@ enum ChannelType {
 	TCHHType,		///< half-rate traffic
 	AnyTCHType,		///< any TCH type
 	//@}
+	///@name GPRS channels
+	//@{
+	PDTCHType,		///< Packet data traffic channel
+	//@}
 	///@name Special internal channel types.
 	//@{
 	LoopbackFullType,		///< loopback testing
@@ -306,7 +310,19 @@ enum L3PD {
 
 std::ostream& operator<<(std::ostream& os, L3PD val);
 
+/**
+	Payload Type, GSM 44.060 10.4.7.
+*/
+enum RLCMACPayloadType {
+	RLCMACDataBlockType=0x00,     // RLC/MAC block contains an RLC data block
+	RLCMACControlBlockType1=0x01, // RLC/MAC block contains an RLC/MAC control block that does not include the optional octets of the RLC/MAC control header 
+	RLCMACControlBlockType2=0x02, // RLC/MAC block contains an RLC/MAC control block that includes the optional first octet of the RLC/MAC control header 
+	RLCMACReserved=0x03           // Reserved
+};
 
+
+ 
+std::ostream& operator<<(std::ostream& os, RLCMACPayloadType val);
 
 
 /**@name Tables related to Tx-integer; GSM 04.08 3.3.1.1.2 and 10.5.2.29. */

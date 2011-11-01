@@ -52,6 +52,7 @@
 
 namespace GSM {
 class L3Message;
+class RLCMACBlock;
 class LogicalChannel;
 class SDCCHLogicalChannel;
 class SACCHLogicalChannel;
@@ -117,6 +118,7 @@ GSM::L3Message* getMessage(GSM::LogicalChannel* LCH, unsigned SAPI=0);
 void FACCHDispatcher(GSM::TCHFACCHLogicalChannel *TCHFACCH);
 void SDCCHDispatcher(GSM::SDCCHLogicalChannel *SDCCH);
 void DCCHDispatcher(GSM::LogicalChannel *DCCH);
+void PDCHDispatcher(GSM::LogicalChannel *PDCH);
 //@}
 
 

@@ -117,6 +117,22 @@ void GSMConfig::regenerateBeacon()
 	mSI4Frame = L2Frame(SI4Header,SI4L3);
 	LOG(DEBUG) << "mSI4Frame " << mSI4Frame;
 
+	// SI13
+	L3SystemInformationType13 SI13;
+	LOG(INFO) << SI13;
+	L3Frame SI13L3(UNIT_DATA);
+	SI13.write(SI13L3);
+	L2Header SI13Header(L2Length(SI13L3.L2Length()));
+	mSI13Frame = L2Frame(SI13Header,SI13L3);
+	LOG(DEBUG) << "mSI13Frame " << mSI13Frame;
+/*
+	L3SystemInformationType13 SI13;
+	LOG(INFO) << SI13;
+	SI13.write(l3);
+	L2Header SI13Header(L2Length(l3.length()));
+	mSI13Frame = L2Frame(SI13Header,l3);
+	LOG(DEBUG) << "mSI13Frame " << mSI13Frame;
+*/
 	// SI5
 	L3SystemInformationType5 SI5;
 	LOG(INFO) << SI5;
@@ -198,7 +214,14 @@ TCHFACCHLogicalChannel *GSMConfig::getTCH()
 	return chan;
 }
 
-
+PDTCHLogicalChannel *GSMConfig::getPDTCH()
+{
+	mLock.lock();
+	PDTCHLogicalChannel *chan = getChan<PDTCHLogicalChannel>(mPDTCHPool);
+	if (chan) chan->open();
+	mLock.unlock();
+	return chan;
+}
 
 template <class ChanType> size_t chanAvailable(const vector<ChanType*>& chanList)
 {
@@ -223,6 +246,13 @@ size_t GSMConfig::TCHAvailable() const
 	return chanAvailable<TCHFACCHLogicalChannel>(mTCHPool);
 }
 
+size_t GSMConfig::PDTCHAvailable() const
+{
+	mLock.lock();
+	size_t retVal = chanAvailable<PDTCHLogicalChannel>(mPDTCHPool);
+	mLock.unlock();
+	return retVal;
+}
 
 size_t GSMConfig::totalLoad(const CCCHList& chanList) const
 {
@@ -257,6 +287,10 @@ unsigned GSMConfig::TCHActive() const
 	return countActive(mTCHPool);
 }
 
+unsigned GSMConfig::PDTCHActive() const
+{
+	return countActive(mPDTCHPool);
+}
 
 unsigned GSMConfig::T3122() const
 {
