@@ -33,7 +33,9 @@ libcommon_la_SOURCES = \
 	Timeval.cpp \
 	Logger.cpp \
 	URLEncode.cpp \
-	Configuration.cpp
+	Configuration.cpp \
+	csn1.cpp \
+	gsm_rlcmac.cpp
 
 noinst_PROGRAMS = \
 	BitVectorTest \
@@ -44,7 +46,8 @@ noinst_PROGRAMS = \
 	VectorTest \
 	ConfigurationTest \
 	LogTest \
-	F16Test
+	F16Test \
+	RLCMACTest
 
 noinst_HEADERS = \
 	BitVector.h \
@@ -58,7 +61,12 @@ noinst_HEADERS = \
 	URLEncode.h \
 	Configuration.h \
 	F16.h \
-	Logger.h
+	Logger.h \
+	csn1.h \
+	gsm_rlcmac.h
+
+RLCMACTest_SOURCES = RLCMACTest.cpp
+RLCMACTest_LDADD = libcommon.la
 
 BitVectorTest_SOURCES = BitVectorTest.cpp
 BitVectorTest_LDADD = libcommon.la
@@ -87,6 +95,8 @@ LogTest_SOURCES = LogTest.cpp
 LogTest_LDADD = libcommon.la $(SQLITE_LA)
 
 F16Test_SOURCES = F16Test.cpp
+
+
 
 MOSTLYCLEANFILES += testSource testDestination
 
