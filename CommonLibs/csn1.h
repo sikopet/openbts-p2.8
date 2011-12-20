@@ -246,14 +246,13 @@ gint16 csnStreamEncoder(csnStream_t* ar, const CSN_DESCR* pDescr, BitVector *vec
         {CSN_TRAP_ERROR, _ERRCODE, {(void*)_Text}, 0, _Text, {(StreamSerializeFcn_t)0}}
 
 /******************************************************************************
- * M_BIT(Par1, Par2, Par3
+ * M_BIT(Par1, Par2)
  * Defines one bit element in the CSN1 syntax.
  *      Par1: C structure name
  *      Par2: C structure element name
- *      Par3: pointer to the header field
  *****************************************************************************/
-#define M_BIT(_STRUCT, _MEMBER, _HF_PTR)\
-        {CSN_BIT, 0, {0}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t) _HF_PTR}}
+#define M_BIT(_STRUCT, _MEMBER)\
+        {CSN_BIT, 0, {0}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t)0}}
 
 /******************************************************************************
  * M_NEXT_EXIST(Par1, Par2, Par3)
@@ -298,25 +297,24 @@ gint16 csnStreamEncoder(csnStream_t* ar, const CSN_DESCR* pDescr, BitVector *vec
         {CSN_NEXT_EXIST_LH, _NoOfExisting, {(void*)1}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t)0}}
 
 /******************************************************************************
- * M_UINT(Par1, Par2, Par3, Par4)
+ * M_UINT(Par1, Par2, Par3)
  * Defines an integer number.
  *      Par1: C structure name
  *      Par2: C structure element name
  *      Par3: number of bits used to code the element (between 1 and 32)
- *      Par4: pointer to the header field
  *****************************************************************************/
-#define M_UINT(_STRUCT, _MEMBER, _BITS, _HF_PTR)\
-        {CSN_UINT, _BITS, {(void*)1}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t) _HF_PTR}}
+#define M_UINT(_STRUCT, _MEMBER, _BITS)\
+        {CSN_UINT, _BITS, {(void*)1}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t)0}}
 
 /******************************************************************************
- * M_UINT(Par1, Par2, Par3, Par4)
+ * M_UINT(Par1, Par2, Par3)
  * This macro has the same functionality as M_UINT except that  in addition the
  * logical "exclusive or" operation with the background value "0x2B" is 
  * performed before the final value of the integer number is delivered from the 
  * received CSN.1 message
  *****************************************************************************/
-#define M_UINT_LH(_STRUCT, _MEMBER, _BITS, _HF_PTR)\
-        {CSN_UINT_LH, _BITS, {(void*)1}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t) _HF_PTR}}
+#define M_UINT_LH(_STRUCT, _MEMBER, _BITS)\
+        {CSN_UINT_LH, _BITS, {(void*)1}, offsetof(_STRUCT, _MEMBER), #_MEMBER, {(StreamSerializeFcn_t)0}}
 
 /******************************************************************************
  * M_UINT_OFFSET(Par1, Par2, Par3, Par4)

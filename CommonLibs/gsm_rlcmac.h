@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "packet-csn1.h"
+#include "csn1.h"
 #include <iostream>
 #include <cstdlib>
 #ifndef __PACKET_GSM_RLCMAC_H__

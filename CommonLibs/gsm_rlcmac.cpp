@@ -37,1191 +37,6 @@
 #define LOG(INFO) cout
 using namespace std;
 
-//static int proto_gsm_rlcmac = -1;
-//static int ett_gsm_rlcmac  = -1;
-
-/* RLC/MAC Downlink control block header */
-
-//static int hf_dl_ctrl_payload_type = -1;
-//static int hf_dl_ctrl_rrbp = -1;
-//static int hf_dl_ctrl_s_p = -1;
-//static int hf_dl_ctrl_usf = -1;
-//static int hf_dl_ctrl_rbsn = -1;
-//static int hf_dl_ctrl_rti = -1;
-//static int hf_dl_ctrl_fs = -1;
-//static int hf_dl_ctrl_ac = -1;
-//static int hf_dl_ctrl_pr = -1;
-//static int hf_dl_ctrl_tfi = -1;
-///static int hf_dl_ctrl_d = -1;
-
-//static int hf_dl_ctrl_rbsn_e = -1;
-//static int hf_dl_ctrl_fs_e = -1;
-//static int hf_dl_ctrl_spare = -1;
-static int hf_startingtime_n32;
-static int hf_startingtime_n51;
-static int hf_startingtime_n26;
-
-/*< Global TFI IE >*/
-static int hf_globalfi_t_uplink_tfi;
-static int hf_globalfi_t_downlink_tfi;
-
-/*< Starting Frame Number Description IE >*/
-static int hf_starting_frame_number_k;
-
-/*< Ack/Nack Description IE >*/
-static int hf_ack_nack_description_final_ack_indication;
-static int hf_ack_nack_description_starting_sequence_number;
-
-/*< Packet Timing Advance IE >*/
-static int hf_packetiming_advance_t_timing_advance_value;
-static int hf_packetiming_advance_t_timing_advance_index;
-static int hf_packetiming_advance_t_timing_advance_timeslot_number;
-
-/*< Power Control Parameters IE >*/
-static int hf_gprs_power_control_parameters_alpha;
-static int hf_gprs_power_control_parameters_t_avg_w;
-static int hf_gprs_power_control_parameters_t_avg_t;
-static int hf_gprs_power_control_parameters_pc_meas_chan;
-static int hf_gprs_power_control_parameters_n_avg_i;
-
-/*< Global Power Control Parameters IE >*/
-static int hf_global_power_control_parameters_alpha;
-static int hf_global_power_control_parameters_t_avg_w;
-static int hf_global_power_control_parameters_t_avg_t;
-static int hf_global_power_control_parameters_pb;
-static int hf_global_power_control_parameters_pc_meas_chan;
-static int hf_global_power_control_parameters_int_meas_channel_list_avail;
-static int hf_global_power_control_parameters_n_avg_i;
-
-/*< Global Packet Timing Advance IE >*/
-static int hf_global_packetiming_advance_t_timing_advance_value;
-static int hf_global_packetiming_advance_t_uplink_timing_advance_index;
-static int hf_global_packetiming_advance_t_uplink_timing_advance_timeslot_number;
-static int hf_global_packetiming_advance_t_downlink_timing_advance_index;
-static int hf_global_packetiming_advance_t_downlink_timing_advance_timeslot_number;
-
-/*< Channel Quality Report struct >*/
-static int hf_channel_quality_report_c_value;
-static int hf_channel_quality_report_rxqual;
-static int hf_channel_quality_report_sign_var;
-static int hf_channel_quality_report_slot0_i_level_tn;
-static int hf_channel_quality_report_slot1_i_level_tn;
-static int hf_channel_quality_report_slot2_i_level_tn;
-static int hf_channel_quality_report_slot3_i_level_tn;
-static int hf_channel_quality_report_slot4_i_level_tn;
-static int hf_channel_quality_report_slot5_i_level_tn;
-static int hf_channel_quality_report_slot6_i_level_tn;
-static int hf_channel_quality_report_slot7_i_level_tn;
-
-/*< EGPRS Ack/Nack Description >*/
-static int hf_egprs_acknack_length;
-static int hf_egprs_acknack_final_ack_indication;
-static int hf_egprs_acknack_beginning_of_window;
-static int hf_egprs_acknack_end_of_window;
-static int hf_egprs_acknack_starting_sequence_number;
-static int hf_egprs_acknack_crbb_length;
-static int hf_egprs_acknack_crbb_starting_color_code;
-
-/*<P1 Rest Octets>*/
-
-/*<P2 Rest Octets>*/
-static int hf_mobileallocationie_length;
-static int hf_single_rf_channel_spare;
-static int hf_single_rf_channel_arfcn;
-static int hf_rfhoppingchannel_maio;
-static int hf_rfhoppingchannel_hsn;
-static int hf_channel_description_channel_type_and_tdma_offset;
-static int hf_channel_description_tn;
-static int hf_channel_description_tsc;
-static int hf_group_call_reference_value;
-static int hf_group_call_reference_sf;
-static int hf_group_call_reference_af;
-static int hf_group_call_reference_call_priority;
-static int hf_group_call_reference_ciphering_information;
-static int hf_p1_rest_octets_nln_pch;
-static int hf_p1_rest_octets_nln_status;
-static int hf_p1_rest_octets_priority1;
-static int hf_p1_rest_octets_priority2;
-static int hf_p1_rest_octets_packet_page_indication_1;
-static int hf_p1_rest_octets_packet_page_indication_2;
-static int hf_p2_rest_octets_cn3;
-static int hf_p2_rest_octets_nln;
-static int hf_p2_rest_octets_nln_status;
-static int hf_p2_rest_octets_priority1;
-static int hf_p2_rest_octets_priority2;
-static int hf_p2_rest_octets_priority3;
-static int hf_p2_rest_octets_packet_page_indication_3;
-
-/* <IA Rest Octets> */
-static int hf_dynamicallocation_usf;
-static int hf_dynamicallocation_usf_granularity;
-static int hf_dynamicallocation_p0;
-static int hf_dynamicallocation_pr_mode;
-static int hf_egprstwophaseaccess_alpha;
-static int hf_egprstwophaseaccess_gamma;
-static int hf_egprstwophaseaccess_nr_of_radio_blocks_allocated;
-static int hf_egprstwophaseaccess_p0;
-static int hf_egprstwophaseaccess_bts_pwr_ctrl_mode;
-static int hf_egprstwophaseaccess_pr_mode;
-static int hf_egprs_onephaseaccess_tfi_assignment;
-static int hf_egprs_onephaseaccess_polling;
-static int hf_egprs_onephaseaccess_egprs_channel_coding_command;
-static int hf_egprs_onephaseaccess_tlli_block_channel_coding;
-static int hf_egprs_onephaseaccess_bep_period2;
-static int hf_egprs_onephaseaccess_resegment;
-static int hf_egprs_onephaseaccess_egprs_windowsize;
-static int hf_egprs_onephaseaccess_alpha;
-static int hf_egprs_onephaseaccess_gamma;
-static int hf_egprs_onephaseaccess_timing_advance_index;
-static int hf_ia_egprs_00_extendedra;
-static int hf_ia_egprs_uniontype ;
-static int hf_ia_freqparamsbeforetime_length;
-static int hf_ia_freqparamsbeforetime_maio;
-static int hf_gprs_singleblockallocation_alpha;
-static int hf_gprs_singleblockallocation_gamma;
-static int hf_gprs_singleblockallocation_p0;
-static int hf_gprs_singleblockallocation_bts_pwr_ctrl_mode;
-static int hf_gprs_singleblockallocation_pr_mode;
-static int hf_gprs_dynamicorfixedallocation_tfi_assignment;
-static int hf_gprs_dynamicorfixedallocation_polling;
-static int hf_gprs_dynamicorfixedallocation_channel_coding_command;
-static int hf_gprs_dynamicorfixedallocation_tlli_block_channel_coding;
-static int hf_gprs_dynamicorfixedallocation_alpha;
-static int hf_gprs_dynamicorfixedallocation_gamma;
-static int hf_gprs_dynamicorfixedallocation_timing_advance_index;
-static int hf_pu_ia_additionsr99_extendedra;
-static int hf_pd_ia_additionsr99_egprs_windowsize;
-static int hf_pd_ia_additionsr99_link_quality_measurement_mode;
-static int hf_pd_ia_additionsr99_bep_period2;
-static int hf_packet_downlink_immassignment_tlli;
-static int hf_packet_downlink_immassignment_tfi_assignment;
-static int hf_packet_downlink_immassignment_rlc_mode;
-static int hf_packet_downlink_immassignment_alpha;
-static int hf_packet_downlink_immassignment_gamma;
-static int hf_packet_downlink_immassignment_polling;
-static int hf_packet_downlink_immassignment_ta_valid;
-static int hf_packet_downlink_immassignment_timing_advance_index;
-static int hf_packet_downlink_immassignment_p0;
-static int hf_packet_downlink_immassignment_bts_pwr_ctrl_mode;
-static int hf_packet_downlink_immassignment_pr_mode;
-static int hf_second_part_packet_assignment_extendedra;
-static int hf_packetpollingid_tlli;
-static int hf_packetpollingid_tqi;
-
-/* <Packet Polling Request> */
-static int hf_packet_polling_request_message_type;
-static int hf_packet_polling_request_page_mode;
-static int hf_packet_polling_request_type_of_ack;
-static int hf_gprs_mobile_allocation_hsn;
-
-/*< SI 13 Rest Octets >*/
-static int hf_gprs_cell_options_nmo;
-static int hf_gprs_cell_options_drx_timer_max;
-static int hf_gprs_cell_options_access_burst_type;
-static int hf_gprs_cell_options_control_ack_type;
-static int hf_gprs_cell_options_bs_cv_max;
-static int hf_gprs_cell_options_pan_dec;
-static int hf_gprs_cell_options_pan_inc;
-static int hf_gprs_cell_options_pan_max;
-static int hf_pbcch_not_present_rac;
-static int hf_pbcch_not_present_spgc_ccch_sup;
-static int hf_pbcch_not_present_priority_access_thr;
-static int hf_pbcch_not_present_network_control_order;
-static int hf_pbcch_description_arfcn;
-static int hf_pbcch_description_maio;
-static int hf_pbcch_description_pb;
-static int hf_pbcch_description_tsc;
-static int hf_pbcch_description_tn;
-static int hf_pbcch_present_psi1_repeat_period;
-static int hf_si_13_bcch_change_mark;
-static int hf_si_13_si_change_field;
-static int hf_si_13_si13_change_mark;
-//static int hf_si_13_sgsnr;
-//static int hf_si_13_si_status_ind;
-
-/*< Packet TBF Release message content >*/
-static int hf_packetbf_release_message_type;
-static int hf_packetbf_release_page_mode;
-static int hf_packetbf_release_uplink_release;
-static int hf_packetbf_release_downlink_release;
-static int hf_packetbf_release_tbf_release_cause;
-
-/*< Packet Control Acknowledgement message content >*/
-static int hf_packet_control_acknowledgement_additionsr6_ctrl_ack_extension;
-static int hf_packet_control_acknowledgement_additionsr5_tn_rrbp;
-static int hf_packet_control_acknowledgement_additionsr5_g_rnti_extension;
-static int hf_packet_control_acknowledgement_payloadtype;
-static int hf_packet_control_acknowledgement_spare;
-static int hf_packet_control_acknowledgement_r;
-static int hf_packet_control_acknowledgement_message_type;
-static int hf_packet_control_acknowledgement_tlli;
-static int hf_packet_control_acknowledgement_ctrl_ack;
-
-/*< Packet Downlink Dummy Control Block message content >*/
-static int hf_packet_downlink_dummy_control_block_message_type;
-static int hf_packet_downlink_dummy_control_block_page_mode;
-
-/*< Packet Uplink Dummy Control Block message content >*/
-static int hf_packet_uplink_dummy_control_block_payloadtype;
-static int hf_packet_uplink_dummy_control_block_spare;
-static int hf_packet_uplink_dummy_control_block_r;
-static int hf_packet_uplink_dummy_control_block_message_type;
-static int hf_packet_uplink_dummy_control_block_tlli;
-static int hf_receive_n_pdu_number_nsapi;
-static int hf_receive_n_pdu_number_value;
-
-/*< MS Radio Access capability IE >*/
-static int hf_dtm_egprs_dtm_egprs_multislot_class;
-static int hf_dtm_egprs_highmultislotclass_dtm_egprs_highmultislotclass;
-static int hf_multislot_capability_hscsd_multislot_class;
-static int hf_multislot_capability_gprs_multislot_class;
-static int hf_multislot_capability_gprs_extended_dynamic_allocation_capability;
-static int hf_multislot_capability_sms_value;
-static int hf_multislot_capability_sm_value;
-static int hf_multislot_capability_ecsd_multislot_class;
-static int hf_multislot_capability_egprs_multislot_class;
-static int hf_multislot_capability_egprs_extended_dynamic_allocation_capability;
-static int hf_multislot_capability_dtm_gprs_multislot_class;
-static int hf_multislot_capability_single_slot_dtm;
-static int hf_content_rf_power_capability;
-static int hf_content_a5_bits;
-static int hf_content_es_ind;
-static int hf_content_ps;
-static int hf_content_vgcs;
-static int hf_content_vbs;
-static int hf_content_eight_psk_power_capability;
-static int hf_content_compact_interference_measurement_capability;
-static int hf_content_revision_level_indicator;
-static int hf_content_umts_fdd_radio_access_technology_capability;
-static int hf_content_umts_384_tdd_radio_access_technology_capability;
-static int hf_content_cdma2000_radio_access_technology_capability;
-static int hf_content_umts_128_tdd_radio_access_technology_capability;
-static int hf_content_geran_feature_package_1;
-static int hf_content_extended_dtm_gprs_multislot_class;
-static int hf_content_extended_dtm_egprs_multislot_class;
-static int hf_content_modulation_based_multislot_class_support;
-static int hf_content_highmultislotcapability;
-static int hf_content_geran_lu_modecapability;
-static int hf_content_gmsk_multislotpowerprofile;
-static int hf_content_eightpsk_multislotprofile;
-static int hf_content_multipletbf_capability;
-static int hf_content_downlinkadvancedreceiverperformance;
-static int hf_content_extendedrlc_mac_controlmessagesegmentionscapability;
-static int hf_content_dtm_enhancementscapability;
-static int hf_content_dtm_gprs_highmultislotclass;
-static int hf_content_ps_handovercapability;
-static int hf_additional_accessechnologies_struct_t_access_technology_type;
-static int hf_additional_accessechnologies_struct_t_gmsk_power_class;
-static int hf_additional_accessechnologies_struct_t_eight_psk_power_class;
-//static int hf_ms_radio_access_capability_iei;
-//static int hf_ms_radio_access_capability_length;
-
-/*< MS Classmark 3 IE >*/
-static int hf_arc_a5_bits;
-static int hf_multiband_a5_bits;
-static int hf_arc_arc2_spare;
-static int hf_arc_arc1;
-static int hf_edge_rf_pwr_edge_rf_pwrcap1;
-static int hf_edge_rf_pwr_edge_rf_pwrcap2;
-static int hf_ms_class3_unpacked_spare1;
-static int hf_ms_class3_unpacked_r_gsm_arc;
-static int hf_ms_class3_unpacked_multislotclass;
-static int hf_ms_class3_unpacked_ucs2;
-static int hf_ms_class3_unpacked_extendedmeasurementcapability;
-static int hf_ms_class3_unpacked_sms_value;
-static int hf_ms_class3_unpacked_sm_value;
-static int hf_ms_class3_unpacked_ms_positioningmethod;
-static int hf_ms_class3_unpacked_edge_multislotclass;
-static int hf_ms_class3_unpacked_modulationcapability;
-static int hf_ms_class3_unpacked_gsm400_bands;
-static int hf_ms_class3_unpacked_gsm400_arc;
-static int hf_ms_class3_unpacked_gsm850_arc;
-static int hf_ms_class3_unpacked_pcs1900_arc;
-static int hf_ms_class3_unpacked_umts_fdd_radio_access_technology_capability;
-static int hf_ms_class3_unpacked_umts_384_tdd_radio_access_technology_capability;
-static int hf_ms_class3_unpacked_cdma2000_radio_access_technology_capability;
-static int hf_ms_class3_unpacked_dtm_gprs_multislot_class;
-static int hf_ms_class3_unpacked_single_slot_dtm;
-static int hf_ms_class3_unpacked_gsm_band;
-static int hf_ms_class3_unpacked_gsm_700_associated_radio_capability;
-static int hf_ms_class3_unpacked_umts_128_tdd_radio_access_technology_capability;
-static int hf_ms_class3_unpacked_geran_feature_package_1;
-static int hf_ms_class3_unpacked_extended_dtm_gprs_multislot_class;
-static int hf_ms_class3_unpacked_extended_dtm_egprs_multislot_class;
-static int hf_ms_class3_unpacked_highmultislotcapability;
-static int hf_ms_class3_unpacked_geran_lu_modecapability;
-static int hf_ms_class3_unpacked_geran_featurepackage_2;
-static int hf_ms_class3_unpacked_gmsk_multislotpowerprofile;
-static int hf_ms_class3_unpacked_eightpsk_multislotprofile;
-static int hf_ms_class3_unpacked_tgsm_400_bandssupported;
-static int hf_ms_class3_unpacked_tgsm_400_associatedradiocapability;
-static int hf_ms_class3_unpacked_tgsm_900_associatedradiocapability;
-static int hf_ms_class3_unpacked_downlinkadvancedreceiverperformance;
-static int hf_ms_class3_unpacked_dtm_enhancementscapability;
-static int hf_ms_class3_unpacked_dtm_gprs_highmultislotclass;
-static int hf_ms_class3_unpacked_offsetrequired;
-static int hf_ms_class3_unpacked_repeatedsacch_capability;
-static int hf_ms_class3_unpacked_spare2;
-static int hf_channel_request_description_peak_throughput_class;
-static int hf_channel_request_description_radio_priority;
-static int hf_channel_request_description_rlc_mode;
-static int hf_channel_request_description_llc_pdu_type;
-static int hf_channel_request_description_rlc_octet_count;
-
-/* < Packet Resource Request message content > */
-static int hf_packetresourcerequestid_tlli;
-static int hf_bep_measurementreport_mean_bep_gmsk;
-static int hf_bep_measurementreport_mean_bep_8psk;
-static int hf_interferencemeasurementreport_i_level;
-static int hf_egprs_bep_linkqualitymeasurements_mean_bep_gmsk;
-static int hf_egprs_bep_linkqualitymeasurements_cv_bep_gmsk;
-static int hf_egprs_bep_linkqualitymeasurements_mean_bep_8psk;
-static int hf_egprs_bep_linkqualitymeasurements_cv_bep_8psk;
-static int hf_prr_additionsr99_pfi;
-static int hf_prr_additionsr99_ms_rac_additionalinformationavailable;
-static int hf_prr_additionsr99_retransmissionofprr;
-static int hf_packet_resource_request_payloadtype;
-static int hf_packet_resource_request_spare;
-static int hf_packet_resource_request_r;
-static int hf_packet_resource_request_message_type;
-static int hf_packet_resource_request_access_type;
-static int hf_packet_resource_request_change_mark;
-static int hf_packet_resource_request_c_value;
-static int hf_packet_resource_request_sign_var;
-
-/*< Packet Mobile TBF Status message content > */
-static int hf_packet_mobile_tbf_status_payloadtype;
-static int hf_packet_mobile_tbf_status_spare;
-static int hf_packet_mobile_tbf_status_r;
-static int hf_packet_mobile_tbf_status_message_type;
-static int hf_packet_mobile_tbf_status_tbf_cause;
-static int hf_packet_mobile_tbf_status_status_message_type;
-
-/*< Packet PSI Status message content > */
-static int hf_psi_message_psi_message_type;
-static int hf_psi_message_psix_change_mark;
-static int hf_psi_message_list_additional_msg_type;
-static int hf_unknown_psi_message_list_additional_msg_type;
-static int hf_packet_psi_status_payloadtype;
-static int hf_packet_psi_status_spare;
-static int hf_packet_psi_status_r;
-static int hf_packet_psi_status_message_type;
-static int hf_packet_psi_status_pbcch_change_mark;
-
-/* < Packet SI Status message content > */
-static int hf_si_message_si_message_type;
-static int hf_si_message_mess_rec;
-static int hf_si_message_list_additional_msg_type;
-static int hf_unknown_si_message_list_additional_msg_type;
-static int hf_packet_si_status_payloadtype;
-static int hf_packet_si_status_spare;
-static int hf_packet_si_status_r;
-static int hf_packet_si_status_message_type;
-static int hf_packet_si_status_bcch_change_mark;
-
-/* < Packet Downlink Ack/Nack message content > */
-static int hf_pd_acknack_additionsr99_pfi;
-static int hf_packet_downlink_ack_nack_payloadtype;
-static int hf_packet_downlink_ack_nack_spare;
-static int hf_packet_downlink_ack_nack_r;
-static int hf_packet_downlink_ack_nack_message_type;
-static int hf_packet_downlink_ack_nack_downlink_tfi;
-
-/*< EGPRS Packet Downlink Ack/Nack message content > */
-static int hf_egprs_channelqualityreport_c_value;
-static int hf_egprs_pd_acknack_payloadtype;
-static int hf_egprs_pd_acknack_spare;
-static int hf_egprs_pd_acknack_r;
-static int hf_egprs_pd_acknack_message_type;
-static int hf_egprs_pd_acknack_downlink_tfi;
-static int hf_egprs_pd_acknack_ms_out_of_memory;
-static int hf_egprs_pd_acknack_pfi;
-static int hf_fddarget_cell_t_fdd_arfcn;
-static int hf_fddarget_cell_t_diversity;
-static int hf_fddarget_cell_t_bandwith_fdd;
-static int hf_fddarget_cell_t_scrambling_code;
-static int hf_tddarget_cell_t_tdd_arfcn;
-static int hf_tddarget_cell_t_diversity;
-static int hf_tddarget_cell_t_bandwith_tdd;
-static int hf_tddarget_cell_t_cell_parameter;
-static int hf_tddarget_cell_t_sync_case_tstd;
-
-
-/*< Packet Cell Change Failure message content > */
-static int hf_packet_cell_change_failure_payloadtype;
-static int hf_packet_cell_change_failure_spare;
-static int hf_packet_cell_change_failure_r;
-static int hf_packet_cell_change_failure_message_type;
-static int hf_packet_cell_change_failure_tlli;
-static int hf_packet_cell_change_failure_arfcn;
-static int hf_packet_cell_change_failure_bsic;
-static int hf_packet_cell_change_failure_cause;
-static int hf_utran_csg_target_cell_ci;
-static int hf_eutran_csg_target_cell_ci;
-static int hf_eutran_csg_target_cell_tac;
-
-
-/*< Packet Uplink Ack/Nack message content > */
-static int hf_power_control_parameters_alpha;
-static int hf_power_control_parameters_slot0_gamma_tn;
-static int hf_power_control_parameters_slot1_gamma_tn;
-static int hf_power_control_parameters_slot2_gamma_tn;
-static int hf_power_control_parameters_slot3_gamma_tn;
-static int hf_power_control_parameters_slot4_gamma_tn;
-static int hf_power_control_parameters_slot5_gamma_tn;
-static int hf_power_control_parameters_slot6_gamma_tn;
-static int hf_power_control_parameters_slot7_gamma_tn;
-static int hf_pu_acknack_gprs_additionsr99_packetextendedtimingadvance;
-static int hf_pu_acknack_gprs_additionsr99_tbf_est;
-static int hf_pu_acknack_gprs_channel_coding_command;
-static int hf_pu_acknack_gprs_common_uplink_ack_nack_data_contention_resolution_tlli;
-static int hf_pu_acknack_gprs_fixedallocationdummy;
-static int hf_pu_acknack_egprs_00_egprs_channelcodingcommand;
-static int hf_pu_acknack_egprs_00_resegment;
-static int hf_pu_acknack_egprs_00_pre_emptive_transmission;
-static int hf_pu_acknack_egprs_00_prr_retransmission_request;
-static int hf_pu_acknack_egprs_00_arac_retransmission_request;
-static int hf_pu_acknack_egprs_00_common_uplink_ack_nack_data_contention_resolution_tlli;
-static int hf_pu_acknack_egprs_00_tbf_est;
-static int hf_pu_acknack_egprs_00_packet_extended_timing_advance;
-static int hf_packet_uplink_ack_nack_message_type;
-static int hf_packet_uplink_ack_nack_page_mode;
-static int hf_packet_uplink_ack_nack_uplink_tfi;
-
-/*< Packet Uplink Assignment message content > */
-static int hf_change_mark_change_mark_1;
-static int hf_change_mark_change_mark_2;
-static int hf_indirect_encoding_maio;
-static int hf_indirect_encoding_ma_number;
-static int hf_direct_encoding_1_maio;
-static int hf_direct_encoding_2_maio;
-static int hf_direct_encoding_2_hsn;
-static int hf_frequency_parameters_tsc;
-static int hf_frequency_parameters_arfcn;
-static int hf_packet_request_reference_random_access_information;
-static int hf_timeslot_allocation_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_alpha;
-static int hf_timeslot_allocation_power_ctrl_param_slot0_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot0_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot1_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot1_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot2_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot2_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot3_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot3_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot4_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot4_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot5_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot5_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot6_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot6_gamma_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot7_usf_tn;
-static int hf_timeslot_allocation_power_ctrl_param_slot7_gamma_tn;
-static int hf_dynamic_allocation_extended_dynamic_allocation;
-static int hf_dynamic_allocation_p0;
-static int hf_dynamic_allocation_pr_mode;
-static int hf_dynamic_allocation_usf_granularity;
-static int hf_dynamic_allocation_uplink_tfi_assignment;
-static int hf_dynamic_allocation_rlc_data_blocks_granted;
-static int hf_single_block_allocation_timeslot_number;
-static int hf_single_block_allocation_alpha;
-static int hf_single_block_allocation_gamma_tn;
-static int hf_single_block_allocation_p0;
-static int hf_single_block_allocation_bts_pwr_ctrl_mode;
-static int hf_single_block_allocation_pr_mode;
-static int hf_dtm_dynamic_allocation_extended_dynamic_allocation;
-static int hf_dtm_dynamic_allocation_p0;
-static int hf_dtm_dynamic_allocation_pr_mode;
-static int hf_dtm_dynamic_allocation_usf_granularity;
-static int hf_dtm_dynamic_allocation_uplink_tfi_assignment;
-static int hf_dtm_dynamic_allocation_rlc_data_blocks_granted;
-static int hf_dtm_single_block_allocation_timeslot_number;
-static int hf_dtm_single_block_allocation_alpha;
-static int hf_dtm_single_block_allocation_gamma_tn;
-static int hf_dtm_single_block_allocation_p0;
-static int hf_dtm_single_block_allocation_bts_pwr_ctrl_mode;
-static int hf_dtm_single_block_allocation_pr_mode;
-static int hf_h10lli_t_tlli;
-static int hf_h110qi_t_tqi;
-static int hf_packetuplinkid_tlli;
-static int hf_packetuplinkid_tqi;
-static int hf_pua_gprs_additionsr99_packet_extended_timing_advance;
-static int hf_pua_gprs_channel_coding_command;
-static int hf_pua_gprs_tlli_block_channel_coding;
-static int hf_compact_reducedma_bitmaplength;
-static int hf_compact_reducedma_maio_2;
-static int hf_multiblock_allocation_timeslot_number;
-static int hf_multiblock_allocation_alpha;
-static int hf_multiblock_allocation_gamma_tn;
-static int hf_multiblock_allocation_p0;
-static int hf_multiblock_allocation_bts_pwr_ctrl_mode;
-static int hf_multiblock_allocation_pr_mode;
-static int hf_multiblock_allocation_number_of_radio_blocks_allocated;
-static int hf_pua_egprs_00_contention_resolution_tlli;
-static int hf_pua_egprs_00_egprs_channel_coding_command;
-static int hf_pua_egprs_00_resegment;
-static int hf_pua_egprs_00_egprs_windowsize;
-static int hf_pua_egprs_00_arac_retransmission_request;
-static int hf_pua_egprs_00_tlli_block_channel_coding;
-static int hf_pua_egprs_00_bep_period2;
-static int hf_pua_egprs_00_packet_extended_timing_advance;
-static int hf_packet_uplink_assignment_message_type;
-static int hf_packet_uplink_assignment_page_mode;
-
-/*< Packet Downlink Assignment message content > */
-static int hf_measurement_mapping_struct_measurement_interval;
-static int hf_measurement_mapping_struct_measurement_bitmap;
-static int hf_packetdownlinkid_tlli;
-static int hf_pda_additionsr99_egprs_windowsize;
-static int hf_pda_additionsr99_link_quality_measurement_mode;
-static int hf_pda_additionsr99_bep_period2;
-static int hf_pda_additionsr99_packet_extended_timing_advance;
-static int hf_packet_downlink_assignment_message_type;
-static int hf_packet_downlink_assignment_page_mode;
-static int hf_packet_downlink_assignment_mac_mode;
-static int hf_packet_downlink_assignment_rlc_mode;
-static int hf_packet_downlink_assignment_control_ack;
-static int hf_packet_downlink_assignment_timeslot_allocation;
-static int hf_packet_downlink_assignment_p0;
-static int hf_packet_downlink_assignment_bts_pwr_ctrl_mode;
-static int hf_packet_downlink_assignment_pr_mode;
-static int hf_packet_downlink_assignment_downlink_tfi_assignment;
-static int hf_pdlacheck_message_type;
-static int hf_pdlacheck_page_mode;
-static int hf_dtm_packet_uplink_assignment_channel_coding_command;
-static int hf_dtm_packet_uplink_assignment_tlli_block_channel_coding;
-static int hf_dtm_packet_uplink_assignment_egprs_channel_coding_command;
-static int hf_dtm_packet_uplink_assignment_resegment;
-static int hf_dtm_packet_uplink_assignment_egprs_windowsize;
-static int hf_dtm_packet_uplink_assignment_packet_extended_timing_advance;
-static int hf_dtm_packet_downlink_assignment_mac_mode;
-static int hf_dtm_packet_downlink_assignment_rlc_mode;
-static int hf_dtm_packet_downlink_assignment_timeslot_allocation;
-static int hf_dtm_packet_downlink_assignment_p0;
-static int hf_dtm_packet_downlink_assignment_bts_pwr_ctrl_mode;
-static int hf_dtm_packet_downlink_assignment_pr_mode;
-static int hf_dtm_packet_downlink_assignment_downlink_tfi_assignment;
-static int hf_dtm_packet_downlink_assignment_egprs_windowsize;
-static int hf_dtm_packet_downlink_assignment_link_quality_measurement_mode;
-static int hf_dtm_packet_downlink_assignment_packet_extended_timing_advance;
-static int hf_dtm_channel_request_description_dtm_pkt_est_cause;
-static int hf_dtm_channel_request_description_pfi;
-
-/*< Packet Paging Request message content > */
-static int hf_mobile_identity_length_of_mobile_identity_contents;
-static int hf_page_request_for_rr_conn_channel_needed;
-static int hf_page_request_for_rr_conn_emlpp_priority;
-static int hf_packet_paging_request_message_type;
-static int hf_packet_paging_request_page_mode;
-static int hf_packet_paging_request_nln;
-static int hf_packet_pdch_release_message_type;
-static int hf_packet_pdch_release_page_mode;
-static int hf_packet_pdch_release_timeslots_available;
-
-/*< Packet Power Control/Timing Advance message content >*/
-static int hf_packetpowercontroltimingadvanceid_tqi;
-static int hf_packet_power_control_timing_advance_message_type;
-static int hf_packet_power_control_timing_advance_page_mode;
-
-/*< Packet Queueing Notification message content > */
-static int hf_packet_queueing_notification_message_type;
-static int hf_packet_queueing_notification_page_mode;
-static int hf_packet_queueing_notification_tqi;
-static int hf_trdynamic_allocation_extended_dynamic_allocation;
-static int hf_trdynamic_allocation_p0;
-static int hf_trdynamic_allocation_pr_mode;
-static int hf_trdynamic_allocation_usf_granularity;
-static int hf_trdynamic_allocation_rlc_data_blocks_granted;
-
-/*< Packet Timeslot Reconfigure message content > */
-static int hf_ptr_gprs_additionsr99_packet_extended_timing_advance;
-static int hf_ptr_gprs_channel_coding_command;
-static int hf_ptr_gprs_common_timeslot_reconfigure_data_downlink_rlc_mode;
-static int hf_ptr_gprs_common_timeslot_reconfigure_data_control_ack;
-static int hf_ptr_gprs_common_timeslot_reconfigure_data_downlink_tfi_assignment;
-static int hf_ptr_gprs_common_timeslot_reconfigure_data_uplink_tfi_assignment;
-static int hf_ptr_gprs_common_timeslot_reconfigure_data_downlink_timeslot_allocation;
-static int hf_ptr_egprs_00_egprs_channelcodingcommand;
-static int hf_ptr_egprs_00_resegment;
-static int hf_ptr_egprs_00_downlink_egprs_windowsize;
-static int hf_ptr_egprs_00_uplink_egprs_windowsize;
-static int hf_ptr_egprs_00_link_quality_measurement_mode;
-static int hf_ptr_egprs_00_packet_extended_timing_advance;
-static int hf_ptr_egprs_00_common_timeslot_reconfigure_data_downlink_rlc_mode;
-static int hf_ptr_egprs_00_common_timeslot_reconfigure_data_control_ack;
-static int hf_ptr_egprs_00_common_timeslot_reconfigure_data_downlink_tfi_assignment;
-static int hf_ptr_egprs_00_common_timeslot_reconfigure_data_uplink_tfi_assignment;
-static int hf_ptr_egprs_00_common_timeslot_reconfigure_data_downlink_timeslot_allocation;
-static int hf_packetimeslot_reconfigure_t_message_type;
-static int hf_packetimeslot_reconfigure_t_page_mode;
-static int hf_ptrcheck_message_type;
-static int hf_ptrcheck_page_mode;
-
-/*< Packet PRACH Parameters message content > */
-static int hf_prach_control_s;
-static int hf_prach_control_tx_int;
-static int hf_hcs_priority_class;
-static int hf_hcs_hcs_thr;
-static int hf_location_repeat_pbcch_location;
-static int hf_location_repeat_psi1_repeat_period;
-static int hf_si13_pbcch_location_si13_location;
-static int hf_cell_selection_bsic;
-static int hf_cell_selection_cell_bar_access_2;
-static int hf_cell_selection_exc_acc;
-static int hf_cell_selection_same_ra_as_serving_cell;
-static int hf_cell_selection_gprs_rxlev_access_min;
-static int hf_cell_selection_gprs_ms_txpwr_max_cch;
-static int hf_cell_selection_gprs_temporary_offset;
-static int hf_cell_selection_gprs_penalty_time;
-static int hf_cell_selection_gprs_reselect_offset;
-static int hf_neighbourcellparameters_start_frequency;
-static int hf_neighbourcellparameters_nr_of_remaining_cells;
-static int hf_cell_selection_2_cell_bar_access_2;
-static int hf_cell_selection_2_exc_acc;
-static int hf_cell_selection_2_same_ra_as_serving_cell;
-static int hf_cell_selection_2_gprs_rxlev_access_min;
-static int hf_cell_selection_2_gprs_ms_txpwr_max_cch;
-static int hf_cell_selection_2_gprs_temporary_offset;
-static int hf_cell_selection_2_gprs_penalty_time;
-static int hf_cell_selection_2_gprs_reselect_offset;
-static int hf_packet_prach_parameters_message_type;
-static int hf_packet_prach_parameters_page_mode;
-
-/* < Packet Access Reject message content > */
-static int hf_rejectid_tlli;
-static int hf_reject_wait_indication;
-static int hf_reject_wait_indication_size;
-static int hf_packet_access_reject_message_type;
-static int hf_packet_access_reject_page_mode;
-
-/* < Packet Cell Change Order message content > */
-static int hf_packetcellchangeorderid_tlli;
-static int hf_h_freqbsiccell_bsic;
-static int hf_cellselectionparamswithfreqdiff_bsic;
-static int hf_add_frequency_list_start_frequency;
-static int hf_add_frequency_list_bsic;
-static int hf_add_frequency_list_nr_of_frequencies;
-static int hf_removed_freq_index_removed_freq_index;
-static int hf_nc_measurement_parameters_network_control_order;
-static int hf_nc_measurement_parameters_nc_non_drx_period;
-static int hf_nc_measurement_parameters_nc_reporting_period_i;
-static int hf_nc_measurement_parameters_nc_reporting_period_t;
-static int hf_nc_measurement_parameters_with_frequency_list_network_control_order;
-static int hf_nc_measurement_parameters_with_frequency_list_nc_non_drx_period;
-static int hf_nc_measurement_parameters_with_frequency_list_nc_reporting_period_i;
-static int hf_nc_measurement_parameters_with_frequency_list_nc_reporting_period_t;
-
-/*< Packet Cell Change Order message contents >*/
-static int hf_ba_ind_ba_ind;
-static int hf_ba_ind_ba_ind_3g;
-static int hf_gprsreportpriority_number_cells;
-static int hf_offsetthreshold_reporting_offset;
-static int hf_offsetthreshold_reporting_threshold;
-static int hf_gprsmeasurementparams_pmo_pcco_multi_band_reporting;
-static int hf_gprsmeasurementparams_pmo_pcco_serving_band_reporting;
-static int hf_gprsmeasurementparams_pmo_pcco_scale_ord;
-static int hf_gprsmeasurementparams3g_qsearch_p;
-static int hf_gprsmeasurementparams3g_searchprio3g;
-static int hf_gprsmeasurementparams3g_repquantfdd;
-static int hf_gprsmeasurementparams3g_multiratreportingfdd;
-static int hf_gprsmeasurementparams3g_reportingoffsetfdd;
-static int hf_gprsmeasurementparams3g_reportingthresholdfdd;
-static int hf_gprsmeasurementparams3g_multiratreportingtdd;
-static int hf_gprsmeasurementparams3g_reportingoffsettdd;
-static int hf_gprsmeasurementparams3g_reportingthresholdtdd;
-static int hf_multiratparams3g_multiratreporting;
-static int hf_enh_gprsmeasurementparams3g_pmo_qsearch_p;
-static int hf_enh_gprsmeasurementparams3g_pmo_searchprio3g;
-static int hf_enh_gprsmeasurementparams3g_pmo_repquantfdd;
-static int hf_enh_gprsmeasurementparams3g_pmo_multiratreportingfdd;
-static int hf_enh_gprsmeasurementparams3g_pcco_qsearch_p;
-static int hf_enh_gprsmeasurementparams3g_pcco_searchprio3g;
-static int hf_enh_gprsmeasurementparams3g_pcco_repquantfdd;
-static int hf_enh_gprsmeasurementparams3g_pcco_multiratreportingfdd;
-static int hf_n2_removed_3gcell_index;
-static int hf_n2_cell_diff_length_3g;
-static int hf_cdma2000_description_complete_this;
-static int hf_utran_fdd_neighbourcells_zero;
-static int hf_utran_fdd_neighbourcells_uarfcn;
-static int hf_utran_fdd_neighbourcells_indic0;
-static int hf_utran_fdd_neighbourcells_nrofcells;
-static int hf_utran_fdd_description_bandwidth;
-static int hf_utran_tdd_neighbourcells_zero;
-static int hf_utran_tdd_neighbourcells_uarfcn;
-static int hf_utran_tdd_neighbourcells_indic0;
-static int hf_utran_tdd_neighbourcells_nrofcells;
-static int hf_utran_tdd_description_bandwidth;
-static int hf_neighbourcelldescription3g_pmo_index_start_3g;
-static int hf_neighbourcelldescription3g_pmo_absolute_index_start_emr;
-static int hf_neighbourcelldescription3g_pcco_index_start_3g;
-static int hf_neighbourcelldescription3g_pcco_absolute_index_start_emr;
-static int hf_enh_measurement_parameters_pmo_psi3_change_mark;
-static int hf_enh_measurement_parameters_pmo_pmo_ind;
-static int hf_enh_measurement_parameters_pmo_report_type;
-static int hf_enh_measurement_parameters_pmo_reporting_rate;
-static int hf_enh_measurement_parameters_pmo_invalid_bsic_reporting;
-static int hf_enh_measurement_parameters_pcco_psi3_change_mark;
-static int hf_enh_measurement_parameters_pcco_pmo_ind;
-static int hf_enh_measurement_parameters_pcco_report_type;
-static int hf_enh_measurement_parameters_pcco_reporting_rate;
-static int hf_enh_measurement_parameters_pcco_invalid_bsic_reporting;
-static int hf_ccn_support_description_number_cells;
-static int hf_lu_modecellselectionparameters_cell_bar_qualify_3;
-static int hf_lu_modeneighbourcellparams_nr_of_frequencies;
-static int hf_lu_modeonlycellselection_cell_bar_qualify_3;
-static int hf_lu_modeonlycellselection_same_ra_as_serving_cell;
-static int hf_lu_modeonlycellselection_gprs_rxlev_access_min;
-static int hf_lu_modeonlycellselection_gprs_ms_txpwr_max_cch;
-static int hf_lu_modeonlycellselection_gprs_temporary_offset;
-static int hf_lu_modeonlycellselection_gprs_penalty_time;
-static int hf_lu_modeonlycellselection_gprs_reselect_offset;
-static int hf_lu_modeonlycellselectionparamswithfreqdiff_bsic;
-static int hf_add_lu_modeonlyfrequencylist_start_frequency;
-static int hf_add_lu_modeonlyfrequencylist_bsic;
-static int hf_add_lu_modeonlyfrequencylist_nr_of_frequencies;
-static int hf_add_lu_modeonlyfrequencylist_freq_diff_length;
-static int hf_gprs_additionalmeasurementparams3g_fdd_reporting_threshold_2;
-static int hf_servingcellpriorityparametersdescription_geran_priority;
-static int hf_servingcellpriorityparametersdescription_thresh_priority_search;
-static int hf_servingcellpriorityparametersdescription_thresh_gsm_low;
-static int hf_servingcellpriorityparametersdescription_h_prio;
-static int hf_servingcellpriorityparametersdescription_t_reselection;
-static int hf_repeatedutran_priorityparameters_utran_priority;
-static int hf_repeatedutran_priorityparameters_thresh_utran_high;
-static int hf_repeatedutran_priorityparameters_thresh_utran_low;
-static int hf_repeatedutran_priorityparameters_utran_qrxlevmin;
-static int hf_priorityparametersdescription3g_pmo_default_utran_priority;
-static int hf_priorityparametersdescription3g_pmo_default_thresh_utran;
-static int hf_priorityparametersdescription3g_pmo_default_utran_qrxlevmin;
-static int hf_eutran_reportinghreshold_offset_t_eutran_fdd_reporting_threshold;
-static int hf_eutran_reportinghreshold_offset_t_eutran_fdd_reporting_threshold_2;
-static int hf_eutran_reportinghreshold_offset_t_eutran_fdd_reporting_offset;
-static int hf_eutran_reportinghreshold_offset_t_eutran_tdd_reporting_threshold;
-static int hf_eutran_reportinghreshold_offset_t_eutran_tdd_reporting_threshold_2;
-static int hf_eutran_reportinghreshold_offset_t_eutran_tdd_reporting_offset;
-static int hf_gprs_eutran_measurementparametersdescription_qsearch_p_eutran;
-static int hf_gprs_eutran_measurementparametersdescription_eutran_rep_quant;
-static int hf_gprs_eutran_measurementparametersdescription_eutran_multirat_reporting;
-static int hf_repeatedeutran_cells_earfcn;
-static int hf_repeatedeutran_cells_measurementbandwidth;
-static int hf_repeatedeutran_neighbourcells_eutran_priority;
-static int hf_repeatedeutran_neighbourcells_thresh_eutran_high;
-static int hf_repeatedeutran_neighbourcells_thresh_eutran_low;
-static int hf_repeatedeutran_neighbourcells_eutran_qrxlevmin;
-static int hf_pcid_pattern_pcid_pattern_length;
-static int hf_pcid_pattern_pcid_pattern_sense;
-static int hf_pcid_group_ie_pcid_bitmap_group;
-static int hf_eutran_frequency_index_eutran_frequency_index;
-static int hf_eutran_parametersdescription_pmo_eutran_ccn_active;
-static int hf_psc_pattern_sense;
-static int hf_psc_pattern_length;
-static int hf_meas_ctrl_param_meas_ctrl_eutran;
-static int hf_meas_ctrl_param_eutran_freq_idx;
-static int hf_meas_ctrl_param_meas_ctrl_utran;
-static int hf_meas_ctrl_param_utran_freq_idx;
-static int hf_rept_eutran_enh_cell_resel_param_eutran_qmin;
-static int hf_rept_eutran_enh_cell_resel_param_thresh_eutran_high_q;
-static int hf_rept_eutran_enh_cell_resel_param_thresh_eutran_low_q;
-static int hf_rept_eutran_enh_cell_resel_param_thresh_eutran_qqualmin;
-static int hf_rept_eutran_enh_cell_resel_param_thresh_eutran_rsrpmin;
-
-static int hf_utran_csg_fdd_reporting_threshold;
-static int hf_utran_csg_fdd_reporting_threshold2;
-static int hf_utran_csg_tdd_reporting_threshold;
-static int hf_eutran_csg_fdd_reporting_threshold;
-static int hf_eutran_csg_fdd_reporting_threshold2;
-static int hf_eutran_csg_tdd_reporting_threshold;
-static int hf_eutran_csg_tdd_reporting_threshold2;
-
-
-static int hf_pmo_additionsr8_ba_ind_3g;
-static int hf_pmo_additionsr8_pmo_ind;
-static int hf_pmo_additionsr7_reporting_offset_700;
-static int hf_pmo_additionsr7_reporting_threshold_700;
-static int hf_pmo_additionsr7_reporting_offset_810;
-static int hf_pmo_additionsr7_reporting_threshold_810;
-static int hf_pmo_additionsr6_ccn_active_3g;
-static int hf_pcco_additionsr6_ccn_active_3g;
-static int hf_pmo_additionsr5_grnti;
-static int hf_pcco_additionsr5_grnti;
-static int hf_pmo_additionsr4_ccn_active;
-static int hf_pcco_additionsr4_ccn_active;
-static int hf_pcco_additionsr4_container_id;
-static int hf_lsa_id_info_element_lsa_id;
-static int hf_lsa_id_info_element_shortlsa_id;
-static int hf_lsa_parameters_nr_of_freq_or_cells;
-static int hf_target_cell_gsm_immediate_rel;
-static int hf_target_cell_gsm_arfcn;
-static int hf_target_cell_gsm_bsic;
-static int hf_target_cell_3g_immediate_rel;
-static int hf_packet_cell_change_order_message_type;
-static int hf_packet_cell_change_order_page_mode;
-static int hf_target_cell_eutran_earfcn;
-static int hf_target_cell_eutran_measurement_bandwidth;
-static int hf_target_cell_eutran_pl_cell_id;
-static int hf_idvd_default_utran_priority;
-static int hf_idvd_utran_priority;
-static int hf_idvd_default_eutran_priority;
-static int hf_idvd_eutran_priority;
-static int hf_idvd_prio_geran_priority;
-static int hf_idvd_prio_t3230_timeout_value;
-static int hf_target_cell_g_rnti_ext;
-
-
-
-/*< Packet (Enhanced) Measurement Report message contents > */
-static int hf_ba_used_ba_used;
-static int hf_ba_used_ba_used_3g;
-static int hf_serving_cell_data_rxlev_serving_cell;
-static int hf_nc_measurements_frequency_n;
-static int hf_nc_measurements_bsic_n;
-static int hf_nc_measurements_rxlev_n;
-static int hf_repeatedinvalid_bsic_info_bcch_freq_n;
-static int hf_repeatedinvalid_bsic_info_bsic_n;
-static int hf_repeatedinvalid_bsic_info_rxlev_n;
-static int hf_reporting_quantity_instance_reporting_quantity;
-static int hf_nc_measurement_report_nc_mode;
-static int hf_nc_measurement_report_number_of_nc_measurements;
-static int hf_enh_nc_measurement_report_nc_mode;
-static int hf_enh_nc_measurement_report_psi3_change_mark;
-static int hf_enh_nc_measurement_report_pmo_used;
-static int hf_enh_nc_measurement_report_bsic_seen;
-static int hf_enh_nc_measurement_report_scale;
-static int hf_ext_measurement_report_ext_reporting_type;
-static int hf_ext_measurement_report_slot0_i_level;
-static int hf_ext_measurement_report_slot1_i_level;
-static int hf_ext_measurement_report_slot2_i_level;
-static int hf_ext_measurement_report_slot3_i_level;
-static int hf_ext_measurement_report_slot4_i_level;
-static int hf_ext_measurement_report_slot5_i_level;
-static int hf_ext_measurement_report_slot6_i_level;
-static int hf_ext_measurement_report_slot7_i_level;
-static int hf_ext_measurement_report_number_of_ext_measurements;
-static int hf_measurements_3g_cell_list_index_3g;
-static int hf_measurements_3g_reporting_quantity;
-static int hf_pmr_additionsr99_psi3_change_mark;
-static int hf_pmr_additionsr99_pmo_used;
-static int hf_pmr_eutran_meas_rpt_freq_idx;
-static int hf_pmr_eutran_meas_rpt_cell_id;
-static int hf_pmr_eutran_meas_rpt_quantity;
-static int hf_emr_servingcell_dtx_used;
-static int hf_emr_servingcell_rxlev_val;
-static int hf_emr_servingcell_rx_qual_full;
-static int hf_emr_servingcell_mean_bep;
-static int hf_emr_servingcell_cv_bep;
-static int hf_emr_servingcell_nbr_rcvd_blocks;
-static int hf_enhancedmeasurementreport_rr_short_pd;
-static int hf_enhancedmeasurementreport_message_type;
-static int hf_enhancedmeasurementreport_shortlayer2_header;
-static int hf_enhancedmeasurementreport_bsic_seen;
-static int hf_enhancedmeasurementreport_scale;
-static int hf_packet_measurement_report_payloadtype;
-static int hf_packet_measurement_report_spare;
-static int hf_packet_measurement_report_r;
-static int hf_packet_measurement_report_message_type;
-static int hf_packet_measurement_report_tlli;
-static int hf_packet_measurement_report_psi5_change_mark;
-static int hf_packet_enh_measurement_report_payloadtype;
-static int hf_packet_enh_measurement_report_spare;
-static int hf_packet_enh_measurement_report_r;
-static int hf_packet_enh_measurement_report_message_type;
-static int hf_packet_enh_measurement_report_tlli;
-
-/*< Packet Measurement Order message contents >*/
-static int hf_ext_frequency_list_start_frequency;
-static int hf_ext_frequency_list_nr_of_frequencies;
-static int hf_ext_frequency_list_freq_diff_length;
-static int hf_packet_measurement_order_message_type;
-static int hf_packet_measurement_order_page_mode;
-static int hf_packet_measurement_order_pmo_index;
-static int hf_packet_measurement_order_pmo_count;
-static int hf_ccn_measurement_report_rxlev_serving_cell;
-static int hf_ccn_measurement_report_number_of_nc_measurements;
-static int hf_target_cell_gsm_notif_arfcn;
-static int hf_target_cell_gsm_notif_bsic;
-static int hf_fdd_target_cell_notif_fdd_arfcn;
-static int hf_fdd_target_cell_notif_bandwith_fdd;
-static int hf_fdd_target_cell_notif_scrambling_code;
-static int hf_target_cell_3g_notif_reporting_quantity;
-static int hf_pccn_additionsr6_ba_used_3g;
-
-/*< Packet Cell Change Notification message contents > */
-static int hf_packet_cell_change_notification_payloadtype;
-static int hf_packet_cell_change_notification_spare;
-static int hf_packet_cell_change_notification_r;
-static int hf_packet_cell_change_notification_message_type;
-static int hf_packet_cell_change_notification_ba_ind;
-static int hf_packet_cell_change_notification_psi3_change_mark;
-static int hf_packet_cell_change_notification_pmo_used;
-static int hf_packet_cell_change_notification_pccn_sending;
-static int hf_packet_cell_change_notification_lte_reporting_quantity;
-static int hf_eutran_ccn_meas_rpt_3g_ba_used;
-static int hf_eutran_ccn_meas_rpt_freq_idx;
-static int hf_eutran_ccn_meas_cell_id;
-static int hf_eutran_ccn_meas_rpt_quantity;
-static int hf_utran_csg_meas_rpt_cgi;
-static int hf_utran_csg_meas_rpt_csg_id;
-static int hf_utran_csg_meas_rpt_access_mode;
-static int hf_utran_csg_meas_rpt_quantity;
-static int hf_eutran_csg_meas_rpt_cgi;
-static int hf_eutran_csg_meas_rpt_ta;
-static int hf_eutran_csg_meas_rpt_csg_id;
-static int hf_eutran_csg_meas_rpt_access_mode;
-static int hf_eutran_csg_meas_rpt_quantity;
-
-
-
-/*< Packet Cell Change Continue message contents > */
-static int hf_packet_cell_change_continue_message_type;
-static int hf_packet_cell_change_continue_page_mode;
-static int hf_packet_cell_change_continue_arfcn;
-static int hf_packet_cell_change_continue_bsic;
-static int hf_packet_cell_change_continue_container_id;
-
-/*< Packet Neighbour Cell Data message contents > */
-static int hf_pncd_container_with_id_arfcn;
-static int hf_pncd_container_with_id_bsic;
-static int hf_packet_neighbour_cell_data_message_type;
-static int hf_packet_neighbour_cell_data_page_mode;
-static int hf_packet_neighbour_cell_data_container_id;
-static int hf_packet_neighbour_cell_data_spare;
-static int hf_packet_neighbour_cell_data_container_index;
-
-/*< Packet Serving Cell Data message contents > */
-static int hf_packet_serving_cell_data_message_type;
-static int hf_packet_serving_cell_data_page_mode;
-static int hf_packet_serving_cell_data_spare;
-static int hf_packet_serving_cell_data_container_index;
-static int hf_servingcelldata_rxlev_serving_cell;
-static int hf_repeated_invalid_bsic_info_bcch_freq_ncell;
-static int hf_repeated_invalid_bsic_info_bsic;
-static int hf_repeated_invalid_bsic_info_rxlev_ncell;
-static int hf_reporting_quantity_reporting_quantity;
-static int hf_nc_measurementreport_nc_mode;
-static int hf_nc_measurementreport_psi3_change_mark;
-static int hf_nc_measurementreport_pmo_used;
-static int hf_nc_measurementreport_scale;
-
-/*< Packet Handover Command message content > */
-static int hf_globaltimeslotdescription_ms_timeslotallocation;
-static int hf_pho_downlinkassignment_timeslotallocation;
-static int hf_pho_downlinkassignment_pfi;
-static int hf_pho_downlinkassignment_rlc_mode;
-static int hf_pho_downlinkassignment_tfi_assignment;
-static int hf_pho_downlinkassignment_controlack;
-static int hf_pho_downlinkassignment_egprs_windowsize;
-static int hf_pho_usf_1_7_usf;
-static int hf_usf_allocationarray_usf_0;
-static int hf_pho_uplinkassignment_pfi;
-static int hf_pho_uplinkassignment_rlc_mode;
-static int hf_pho_uplinkassignment_tfi_assignment;
-static int hf_pho_uplinkassignment_channelcodingcommand;
-static int hf_pho_uplinkassignment_egprs_channelcodingcommand;
-static int hf_pho_uplinkassignment_egprs_windowsize;
-static int hf_pho_uplinkassignment_usf_granularity;
-static int hf_pho_uplinkassignment_usf_singleallocation;
-static int hf_pho_gprs_channelcodingcommand;
-static int hf_egprs_description_egprs_windowsize;
-static int hf_egprs_description_linkqualitymeasurementmode;
-static int hf_egprs_description_bep_period2;
-static int hf_pho_egprs_egprs_windowsize;
-static int hf_pho_egprs_egprs_channelcodingcommand;
-static int hf_pho_egprs_bep_period2;
-static int hf_pho_timingadvance_packetextendedtimingadvance;
-static int hf_nas_container_nas_containerlength;
-static int hf_ps_handoverto_utran_payload_rrc_containerlength;
-static int hf_pho_radioresources_handoverreference;
-static int hf_pho_radioresources_arfcn;
-static int hf_pho_radioresources_si;
-static int hf_pho_radioresources_nci;
-static int hf_pho_radioresources_bsic;
-static int hf_pho_radioresources_ccn_active;
-static int hf_pho_radioresources_ccn_active_3g;
-static int hf_pho_radioresources_networkcontrolorder;
-static int hf_pho_radioresources_extended_dynamic_allocation;
-static int hf_pho_radioresources_rlc_reset;
-static int hf_pho_radioresources_po;
-static int hf_pho_radioresources_pr_mode;
-static int hf_pho_radioresources_uplinkcontroltimeslot;
-static int hf_packet_handover_command_messagetype;
-static int hf_packet_handover_command_pagemode;
-static int hf_packet_handover_command_containerid;
-
-/*< End Packet Handover Command >*/
-
-/*< Packet Physical Information message content > */
-static int hf_packet_physicalinformation_messagetype;
-static int hf_packet_physicalinformation_pagemode;
-static int hf_packet_physicalinformation_timingadvance;
-
-/*< End Packet Physical Information > */
-
-/* < Additinal MS Radio Access Capability */
-static int hf_additionalmsradcap_tlli;
-/* < End Additinal MS Radio Access Capability */
-
-
-/* < Packet Pause > */
-static int hf_packet_pause_message_type;
-static int hf_packet_pause_tlli;
-/* < End Packet Pause > */
-
-/* < Packet System Information Type 1 > */
-static int hf_packet_system_info_type1_message_type;
-static int hf_packet_system_info_type1_page_mode;
-static int hf_packet_system_info_type1_pbcch_change_mark;
-static int hf_packet_system_info_type1_psi_change_field;
-static int hf_packet_system_info_type1_psi1_repeat_period;
-static int hf_packet_system_info_type1_psi_count_lr;
-static int hf_packet_system_info_type1_psi_count_hr;
-static int hf_packet_system_info_type1_measurement_order;
-static int hf_packet_system_info_type1_psi_status_ind;
-static int hf_packet_system_info_type1_mscr;
-static int hf_packet_system_info_type1_sgsnr;
-static int hf_packet_system_info_type1_band_indicator;
-static int hf_pccch_org_bs_pcc_rel;
-static int hf_pccch_org_pbcch_blks;
-static int hf_pccch_org_pag_blks_res;
-static int hf_pccch_org_prach_blks;
-/* <End Packet System Information Type 1> */
-
-/* <Packet System Information Type 2> */
-static int hf_packet_system_info_type2_message_type;
-static int hf_packet_system_info_type2_page_mode;
-static int hf_packet_system_info_type2_change_mark;
-static int hf_packet_system_info_type2_index;
-static int hf_packet_system_info_type2_count;
-static int hf_packet_system_info_type2_ref_freq_num;
-static int hf_packet_system_info_type2_ma_number;
-//static int hf_packet_system_info_type2_ma_hsn;
-static int hf_packet_system_info_type2_pcch_desc_tsc;
-static int hf_packet_system_info_type2_non_hopping_arfcn;
-static int hf_packet_system_info_type2_non_hopping_timeslot;
-static int hf_packet_system_info_type2_hopping_ma_num;
-static int hf_packet_system_info_type2_hopping_maio;
-static int hf_packet_system_info_type2_hopping_timeslot;
-
-static int hf_packet_cell_id_rac;
-static int hf_packet_cell_id_cell_idneity;
-static int hf_packet_lai_lac;
-static int hf_packet_plmn_mcc1;
-static int hf_packet_plmn_mcc2;
-static int hf_packet_plmn_mcc3;
-static int hf_packet_plmn_mnc1;
-static int hf_packet_plmn_mnc2;
-static int hf_packet_plmn_mnc3;
-static int hf_packet_non_gprs_cell_opt_att;
-static int hf_packet_non_gprs_cell_opt_t3212;
-static int hf_packet_non_gprs_cell_opt_neci;
-static int hf_packet_non_gprs_cell_opt_pwrc;
-static int hf_packet_non_gprs_cell_opt_dtx;
-static int hf_packet_non_gprs_cell_opt_radio_link_timeout;
-static int hf_packet_non_gprs_cell_opt_bs_ag_blks_res;
-static int hf_packet_non_gprs_cell_opt_ccch_conf;
-static int hf_packet_non_gprs_cell_opt_bs_pa_mfrms;
-static int hf_packet_non_gprs_cell_opt_max_retrans;
-static int hf_packet_non_gprs_cell_opt_tx_int;
-static int hf_packet_non_gprs_cell_opt_ec;
-static int hf_packet_non_gprs_cell_opt_ms_txpwr_max_ccch;
-//static int hf_packet_non_gprs_cell_opt_ext_len;
-/* <End Packet System Information Type 2> */
-
-
-/* <Packet System Information Type 3> */
-static int hf_packet_system_info_type3_message_type;
-static int hf_packet_system_info_type3_page_mode;
-static int hf_packet_system_info_type3_change_mark;
-static int hf_packet_system_info_type3_bis_count;
-
-static int hf_packet_scell_param_cell_bar_access_2;
-static int hf_packet_scell_param_exc_acc;
-static int hf_packet_scell_param_gprs_rxlev_access_min;
-static int hf_packet_scell_param_gprs_ms_txpwr_max_cch;
-static int hf_packet_scell_param_multiband_reporting;
-
-static int hf_packet_gen_cell_sel_gprs_cell_resl_hyst;
-static int hf_packet_gen_cell_sel_c31_hyst;
-static int hf_packet_gen_cell_sel_c32_qual;
-static int hf_packet_gen_cell_sel_t_resel;
-static int hf_packet_gen_cell_sel_ra_resel_hyst;
-
-static int hf_packet_compact_cell_sel_bsic;
-static int hf_packet_compact_cell_sel_cell_bar_access_2;
-static int hf_packet_compact_cell_sel_exc_acc;
-static int hf_packet_compact_cell_sel_same_as_scell;
-static int hf_packet_compact_cell_sel_gprs_rxlev_access_min;
-static int hf_packet_compact_cell_sel_gprs_ms_txpwr_max_cch;
-static int hf_packet_compact_cell_sel_gprs_temp_offset;
-static int hf_packet_compact_cell_sel_gprs_penalty_time;
-static int hf_packet_compact_cell_sel_gprs_resel_offset;
-static int hf_packet_compact_cell_sel_time_group;
-static int hf_packet_compact_cell_sel_guar_const_pwr_blks;
-static int hf_packet_compact_ncell_param_start_freq;
-static int hf_packet_compact_ncell_param_nr_of_remaining_cells;
-/* <End Packet System Information Type 3> */
-
-/* <Packet System Information Type 5> */
-static int hf_gprsmeasurementparams3g_psi5_repquantfdd;
-static int hf_gprsmeasurementparams3g_psi5_multiratreportingfdd;
-static int hf_gprsmeasurementparams3g_psi5_reportingoffsetfdd;
-static int hf_gprsmeasurementparams3g_psi5_reportingthresholdfdd;
-static int hf_gprsmeasurementparams3g_psi5_multiratreportingtdd;
-static int hf_gprsmeasurementparams3g_psi5_reportingoffsettdd;
-static int hf_gprsmeasurementparams3g_psi5_reportingthresholdtdd;
-static int hf_enh_reporting_parameters_report_type;
-static int hf_enh_reporting_parameters_reporting_rate;
-static int hf_enh_reporting_parameters_invalid_bsic_reporting;
-static int hf_enh_reporting_parameters_ncc_permitted;
-static int hf_packet_system_info_type5_message_type;
-static int hf_packet_system_info_type5_page_mode;
-static int hf_packet_system_info_type5_change_mark;
-static int hf_packet_system_info_type5_index;
-static int hf_packet_system_info_type5_count;
-/* <End Packet System Information Type 5> */
-
-
-/* <Packet System Information Type 13> */
-static int hf_packet_system_info_type13_lb_ms_mxpwr_max_cch;
-static int hf_packet_system_info_type13_si2n_support;
-static int hf_packet_system_info_type13_si_status_ind;
-static int hf_packet_system_info_type13_sgsnr;
-static int hf_packet_system_info_type13_message_type;
-static int hf_packet_system_info_type13_page_mode;
-static int hf_packet_system_info_type13_bcch_change_mark;
-static int hf_packet_system_info_type13_si_change_field;
-static int hf_packet_system_info_type13_change_mark;
-/* <End Packet System Information Type 13> */
-
-
-
-
-static int hf_si1_restoctet_nch_position;
-static int hf_si1_restoctet_bandindicator;
-static int hf_selection_parameters_cbq;
-static int hf_selection_parameters_cell_reselect_offset;
-static int hf_selection_parameters_temporary_offset;
-static int hf_selection_parameters_penalty_time;
-static int hf_si3_rest_octet_power_offset;
-static int hf_si3_rest_octet_system_information_2ter_indicator;
-static int hf_si3_rest_octet_early_classmark_sending_control;
-static int hf_si3_rest_octet_where;
-static int hf_si3_rest_octet_ra_colour;
-static int hf_si3_rest_octet_si13_position;
-static int hf_si3_rest_octet_ecs_restriction3g;
-static int hf_si3_rest_octet_si2quaterindicator;
-static int hf_si4_rest_octet_power_offset;
-static int hf_si4_rest_octet_ra_colour;
-static int hf_si4_rest_octet_si13_position;
-static int hf_pch_and_nch_info_pagingchannelrestructuring;
-static int hf_pch_and_nch_info_nln_sacch;
-static int hf_pch_and_nch_info_callpriority;
-static int hf_pch_and_nch_info_nln_status;
-static int hf_si6_restoctet_vbs_vgcs_options;
-static int hf_si6_restoctet_rac;
-static int hf_si6_restoctet_max_lapdm;
-static int hf_si6_restoctet_bandindicator;
-
-
 /* Payload type as defined in TS 44.060 / 10.4.7 */
 #define PAYLOAD_TYPE_DATA              0
 #define PAYLOAD_TYPE_CTRL_NO_OPT_OCTET 1
@@ -1232,27 +47,27 @@ static int hf_si6_restoctet_bandindicator;
 /*(not all parts of CSN_DESCR structure are always initialized.)*/
 static const
 CSN_DESCR_BEGIN(PLMN_t)
-  M_UINT       (PLMN_t,  MCC2,  4, &hf_packet_plmn_mcc2),
-  M_UINT       (PLMN_t,  MCC1,  4, &hf_packet_plmn_mcc1),
-  M_UINT       (PLMN_t,  MNC3,  4, &hf_packet_plmn_mnc3),
-  M_UINT       (PLMN_t,  MCC3,  4, &hf_packet_plmn_mcc3),
-  M_UINT       (PLMN_t,  MNC2,  4, &hf_packet_plmn_mnc2),
-  M_UINT       (PLMN_t,  MNC1,  4, &hf_packet_plmn_mnc1),
+  M_UINT       (PLMN_t,  MCC2,  4),
+  M_UINT       (PLMN_t,  MCC1,  4),
+  M_UINT       (PLMN_t,  MNC3,  4),
+  M_UINT       (PLMN_t,  MCC3,  4),
+  M_UINT       (PLMN_t,  MNC2,  4),
+  M_UINT       (PLMN_t,  MNC1,  4),
 CSN_DESCR_END  (PLMN_t)
 
 static const
 CSN_DESCR_BEGIN(StartingTime_t)
-  M_UINT       (StartingTime_t,  N32,  5, &hf_startingtime_n32),
-  M_UINT       (StartingTime_t,  N51,  6, &hf_startingtime_n51),
-  M_UINT       (StartingTime_t,  N26,  5, &hf_startingtime_n26),
+  M_UINT       (StartingTime_t,  N32,  5),
+  M_UINT       (StartingTime_t,  N51,  6),
+  M_UINT       (StartingTime_t,  N26,  5),
 CSN_DESCR_END  (StartingTime_t)
 
 /*< Global TFI IE >*/
 static const
 CSN_DESCR_BEGIN(Global_TFI_t)
   M_UNION      (Global_TFI_t, 2),
-  M_UINT       (Global_TFI_t,  u.UPLINK_TFI,  5, &hf_globalfi_t_uplink_tfi),
-  M_UINT       (Global_TFI_t,  u.DOWNLINK_TFI,  5, &hf_globalfi_t_downlink_tfi),
+  M_UINT       (Global_TFI_t,  u.UPLINK_TFI,  5),
+  M_UINT       (Global_TFI_t,  u.DOWNLINK_TFI,  5),
 CSN_DESCR_END  (Global_TFI_t)
 
 /*< Starting Frame Number Description IE >*/
@@ -1260,14 +75,14 @@ static const
 CSN_DESCR_BEGIN(Starting_Frame_Number_t)
   M_UNION      (Starting_Frame_Number_t, 2),
   M_TYPE       (Starting_Frame_Number_t, u.StartingTime, StartingTime_t),
-  M_UINT       (Starting_Frame_Number_t,  u.k,  13, &hf_starting_frame_number_k),
+  M_UINT       (Starting_Frame_Number_t,  u.k,  13),
 CSN_DESCR_END(Starting_Frame_Number_t)
 
 /*< Ack/Nack Description IE >*/
 static const
 CSN_DESCR_BEGIN(Ack_Nack_Description_t)
-  M_UINT        (Ack_Nack_Description_t,  FINAL_ACK_INDICATION, 1, &hf_ack_nack_description_final_ack_indication),
-  M_UINT       (Ack_Nack_Description_t,  STARTING_SEQUENCE_NUMBER,  7, &hf_ack_nack_description_starting_sequence_number),
+  M_UINT       (Ack_Nack_Description_t,  FINAL_ACK_INDICATION, 1),
+  M_UINT       (Ack_Nack_Description_t,  STARTING_SEQUENCE_NUMBER,  7),
   M_BITMAP     (Ack_Nack_Description_t, RECEIVED_BLOCK_BITMAP, 64),
 CSN_DESCR_END  (Ack_Nack_Description_t)
 
@@ -1275,96 +90,96 @@ CSN_DESCR_END  (Ack_Nack_Description_t)
 static const
 CSN_DESCR_BEGIN(Packet_Timing_Advance_t)
   M_NEXT_EXIST (Packet_Timing_Advance_t, Exist_TIMING_ADVANCE_VALUE, 1),
-  M_UINT       (Packet_Timing_Advance_t,  TIMING_ADVANCE_VALUE,  6, &hf_packetiming_advance_t_timing_advance_value),
+  M_UINT       (Packet_Timing_Advance_t,  TIMING_ADVANCE_VALUE,  6),
 
   M_NEXT_EXIST (Packet_Timing_Advance_t, Exist_IndexAndtimeSlot, 2),
-  M_UINT       (Packet_Timing_Advance_t,  TIMING_ADVANCE_INDEX,  4, &hf_packetiming_advance_t_timing_advance_index),
-  M_UINT       (Packet_Timing_Advance_t,  TIMING_ADVANCE_TIMESLOT_NUMBER,  3, &hf_packetiming_advance_t_timing_advance_timeslot_number),
+  M_UINT       (Packet_Timing_Advance_t,  TIMING_ADVANCE_INDEX,  4),
+  M_UINT       (Packet_Timing_Advance_t,  TIMING_ADVANCE_TIMESLOT_NUMBER,  3),
 CSN_DESCR_END  (Packet_Timing_Advance_t)
 
 /*< Power Control Parameters IE >*/
 static const
 CSN_DESCR_BEGIN(GPRS_Power_Control_Parameters_t)
-  M_UINT       (GPRS_Power_Control_Parameters_t,  ALPHA,  4, &hf_gprs_power_control_parameters_alpha),
-  M_UINT       (GPRS_Power_Control_Parameters_t,  T_AVG_W,  5, &hf_gprs_power_control_parameters_t_avg_w),
-  M_UINT       (GPRS_Power_Control_Parameters_t,  T_AVG_T,  5, &hf_gprs_power_control_parameters_t_avg_t),
-  M_BIT        (GPRS_Power_Control_Parameters_t,  PC_MEAS_CHAN, &hf_gprs_power_control_parameters_pc_meas_chan),
-  M_UINT       (GPRS_Power_Control_Parameters_t,  N_AVG_I,  4, &hf_gprs_power_control_parameters_n_avg_i),
+  M_UINT       (GPRS_Power_Control_Parameters_t,  ALPHA,  4),
+  M_UINT       (GPRS_Power_Control_Parameters_t,  T_AVG_W,  5),
+  M_UINT       (GPRS_Power_Control_Parameters_t,  T_AVG_T,  5),
+  M_BIT        (GPRS_Power_Control_Parameters_t,  PC_MEAS_CHAN),
+  M_UINT       (GPRS_Power_Control_Parameters_t,  N_AVG_I,  4),
 CSN_DESCR_END  (GPRS_Power_Control_Parameters_t)
 
 /*< Global Power Control Parameters IE >*/
 static const
 CSN_DESCR_BEGIN(Global_Power_Control_Parameters_t)
-  M_UINT       (Global_Power_Control_Parameters_t,  ALPHA,  4, &hf_global_power_control_parameters_alpha),
-  M_UINT       (Global_Power_Control_Parameters_t,  T_AVG_W,  5, &hf_global_power_control_parameters_t_avg_w),
-  M_UINT       (Global_Power_Control_Parameters_t,  T_AVG_T,  5, &hf_global_power_control_parameters_t_avg_t),
-  M_UINT       (Global_Power_Control_Parameters_t,  Pb,  4, &hf_global_power_control_parameters_pb),
-  M_UINT       (Global_Power_Control_Parameters_t,  PC_MEAS_CHAN,  1, &hf_global_power_control_parameters_pc_meas_chan),
-  M_UINT       (Global_Power_Control_Parameters_t,  INT_MEAS_CHANNEL_LIST_AVAIL,  1, &hf_global_power_control_parameters_int_meas_channel_list_avail),
-  M_UINT       (Global_Power_Control_Parameters_t,  N_AVG_I,  4, &hf_global_power_control_parameters_n_avg_i),
+  M_UINT       (Global_Power_Control_Parameters_t,  ALPHA,  4),
+  M_UINT       (Global_Power_Control_Parameters_t,  T_AVG_W,  5),
+  M_UINT       (Global_Power_Control_Parameters_t,  T_AVG_T,  5),
+  M_UINT       (Global_Power_Control_Parameters_t,  Pb,  4),
+  M_UINT       (Global_Power_Control_Parameters_t,  PC_MEAS_CHAN,  1),
+  M_UINT       (Global_Power_Control_Parameters_t,  INT_MEAS_CHANNEL_LIST_AVAIL,  1),
+  M_UINT       (Global_Power_Control_Parameters_t,  N_AVG_I,  4),
 CSN_DESCR_END  (Global_Power_Control_Parameters_t)
 
 /*< Global Packet Timing Advance IE >*/
 static const
 CSN_DESCR_BEGIN(Global_Packet_Timing_Advance_t)
   M_NEXT_EXIST (Global_Packet_Timing_Advance_t, Exist_TIMING_ADVANCE_VALUE, 1),
-  M_UINT       (Global_Packet_Timing_Advance_t,  TIMING_ADVANCE_VALUE,  6, &hf_global_packetiming_advance_t_timing_advance_value),
+  M_UINT       (Global_Packet_Timing_Advance_t,  TIMING_ADVANCE_VALUE,  6),
 
   M_NEXT_EXIST (Global_Packet_Timing_Advance_t, Exist_UPLINK_TIMING_ADVANCE, 2),
-  M_UINT       (Global_Packet_Timing_Advance_t,  UPLINK_TIMING_ADVANCE_INDEX,  4, &hf_global_packetiming_advance_t_uplink_timing_advance_index),
-  M_UINT       (Global_Packet_Timing_Advance_t,  UPLINK_TIMING_ADVANCE_TIMESLOT_NUMBER,  3, &hf_global_packetiming_advance_t_uplink_timing_advance_timeslot_number),
+  M_UINT       (Global_Packet_Timing_Advance_t,  UPLINK_TIMING_ADVANCE_INDEX,  4),
+  M_UINT       (Global_Packet_Timing_Advance_t,  UPLINK_TIMING_ADVANCE_TIMESLOT_NUMBER,  3),
 
   M_NEXT_EXIST (Global_Packet_Timing_Advance_t, Exist_DOWNLINK_TIMING_ADVANCE, 2),
-  M_UINT       (Global_Packet_Timing_Advance_t,  DOWNLINK_TIMING_ADVANCE_INDEX,  4, &hf_global_packetiming_advance_t_downlink_timing_advance_index),
-  M_UINT       (Global_Packet_Timing_Advance_t,  DOWNLINK_TIMING_ADVANCE_TIMESLOT_NUMBER,  3, &hf_global_packetiming_advance_t_downlink_timing_advance_timeslot_number),
+  M_UINT       (Global_Packet_Timing_Advance_t,  DOWNLINK_TIMING_ADVANCE_INDEX,  4),
+  M_UINT       (Global_Packet_Timing_Advance_t,  DOWNLINK_TIMING_ADVANCE_TIMESLOT_NUMBER,  3),
 CSN_DESCR_END  (Global_Packet_Timing_Advance_t)
 
 /*< Channel Quality Report struct >*/
 static const
 CSN_DESCR_BEGIN(Channel_Quality_Report_t)
-  M_UINT       (Channel_Quality_Report_t,  C_VALUE,  6, &hf_channel_quality_report_c_value),
-  M_UINT       (Channel_Quality_Report_t,  RXQUAL,  3, &hf_channel_quality_report_rxqual),
-  M_UINT       (Channel_Quality_Report_t,  SIGN_VAR,  6, &hf_channel_quality_report_sign_var),
+  M_UINT       (Channel_Quality_Report_t,  C_VALUE,  6),
+  M_UINT       (Channel_Quality_Report_t,  RXQUAL,  3),
+  M_UINT       (Channel_Quality_Report_t,  SIGN_VAR,  6),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[0].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[0].I_LEVEL_TN,  4, &hf_channel_quality_report_slot0_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[0].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[1].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[1].I_LEVEL_TN,  4, &hf_channel_quality_report_slot1_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[1].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[2].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[2].I_LEVEL_TN,  4, &hf_channel_quality_report_slot2_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[2].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[3].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[3].I_LEVEL_TN,  4, &hf_channel_quality_report_slot3_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[3].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[4].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[4].I_LEVEL_TN,  4, &hf_channel_quality_report_slot4_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[4].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[5].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[5].I_LEVEL_TN,  4, &hf_channel_quality_report_slot5_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[5].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[6].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[6].I_LEVEL_TN,  4, &hf_channel_quality_report_slot6_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[6].I_LEVEL_TN,  4),
 
   M_NEXT_EXIST (Channel_Quality_Report_t, Slot[7].Exist, 1),
-  M_UINT       (Channel_Quality_Report_t,  Slot[7].I_LEVEL_TN,  4, &hf_channel_quality_report_slot7_i_level_tn),
+  M_UINT       (Channel_Quality_Report_t,  Slot[7].I_LEVEL_TN,  4),
 CSN_DESCR_END  (Channel_Quality_Report_t)
 
 /*< EGPRS Ack/Nack Description >*/
 static const
 CSN_DESCR_BEGIN   (EGPRS_AckNack_t)
   M_NEXT_EXIST    (EGPRS_AckNack_t, Exist_LENGTH, 1),
-  M_UINT          (EGPRS_AckNack_t,  LENGTH,  8, &hf_egprs_acknack_length),
+  M_UINT          (EGPRS_AckNack_t,  LENGTH,  8),
 
-  M_UINT          (EGPRS_AckNack_t,  FINAL_ACK_INDICATION,  1, &hf_egprs_acknack_final_ack_indication),
-  M_UINT          (EGPRS_AckNack_t,  BEGINNING_OF_WINDOW,  1, &hf_egprs_acknack_beginning_of_window),
-  M_UINT          (EGPRS_AckNack_t,  END_OF_WINDOW,  1, &hf_egprs_acknack_end_of_window),
-  M_UINT          (EGPRS_AckNack_t,  STARTING_SEQUENCE_NUMBER,  11, &hf_egprs_acknack_starting_sequence_number),
+  M_UINT          (EGPRS_AckNack_t,  FINAL_ACK_INDICATION,  1),
+  M_UINT          (EGPRS_AckNack_t,  BEGINNING_OF_WINDOW,  1),
+  M_UINT          (EGPRS_AckNack_t,  END_OF_WINDOW,  1),
+  M_UINT          (EGPRS_AckNack_t,  STARTING_SEQUENCE_NUMBER,  11),
 
   M_NEXT_EXIST    (EGPRS_AckNack_t, Exist_CRBB, 3),
-  M_UINT          (EGPRS_AckNack_t,  CRBB_LENGTH,  7, &hf_egprs_acknack_crbb_length),
-  M_UINT          (EGPRS_AckNack_t,  CRBB_STARTING_COLOR_CODE,  1, &hf_egprs_acknack_crbb_starting_color_code),
+  M_UINT          (EGPRS_AckNack_t,  CRBB_LENGTH,  7),
+  M_UINT          (EGPRS_AckNack_t,  CRBB_STARTING_COLOR_CODE,  1),
   M_LEFT_VAR_BMP  (EGPRS_AckNack_t, CRBB, CRBB_LENGTH, 0),
 CSN_DESCR_END     (EGPRS_AckNack_t)
 
@@ -1372,20 +187,20 @@ CSN_DESCR_END     (EGPRS_AckNack_t)
 /*<P2 Rest Octets>*/
 static const
 CSN_DESCR_BEGIN(MobileAllocationIE_t)
-  M_UINT       (MobileAllocationIE_t,  Length,  8, &hf_mobileallocationie_length),
+  M_UINT       (MobileAllocationIE_t,  Length,  8),
   M_VAR_ARRAY  (MobileAllocationIE_t, MA, Length, 0),
 CSN_DESCR_END  (MobileAllocationIE_t)
 
 static const
 CSN_DESCR_BEGIN(SingleRFChannel_t)
-  M_UINT       (SingleRFChannel_t,  spare,  2, &hf_single_rf_channel_spare),
-  M_UINT       (SingleRFChannel_t,  ARFCN,  10, &hf_single_rf_channel_arfcn),
+  M_UINT       (SingleRFChannel_t,  spare,  2),
+  M_UINT       (SingleRFChannel_t,  ARFCN,  10),
 CSN_DESCR_END  (SingleRFChannel_t)
 
 static const
 CSN_DESCR_BEGIN(RFHoppingChannel_t)
-  M_UINT       (RFHoppingChannel_t,  MAIO,  6, &hf_rfhoppingchannel_maio),
-  M_UINT       (RFHoppingChannel_t,  HSN,  6, &hf_rfhoppingchannel_hsn),
+  M_UINT       (RFHoppingChannel_t,  MAIO,  6),
+  M_UINT       (RFHoppingChannel_t,  HSN,  6),
 CSN_DESCR_END  (RFHoppingChannel_t)
 
 static const
@@ -1397,9 +212,9 @@ CSN_DESCR_END  (MobileAllocation_or_Frequency_Short_List_t)
 
 static const
 CSN_DESCR_BEGIN(Channel_Description_t)
-  M_UINT       (Channel_Description_t,  Channel_type_and_TDMA_offset,  5, &hf_channel_description_channel_type_and_tdma_offset),
-  M_UINT       (Channel_Description_t,  TN,  3, &hf_channel_description_tn),
-  M_UINT       (Channel_Description_t,  TSC,  3, &hf_channel_description_tsc),
+  M_UINT       (Channel_Description_t,  Channel_type_and_TDMA_offset,  5),
+  M_UINT       (Channel_Description_t,  TN,  3),
+  M_UINT       (Channel_Description_t,  TSC,  3),
 
   M_UNION      (Channel_Description_t, 2),
   M_TYPE       (Channel_Description_t, u.SingleRFChannel, SingleRFChannel_t),
@@ -1416,11 +231,11 @@ CSN_DESCR_END  (Group_Channel_Description_t)
 
 static const
 CSN_DESCR_BEGIN(Group_Call_Reference_t)
-  M_UINT       (Group_Call_Reference_t,  value,  27, &hf_group_call_reference_value),
-  M_BIT        (Group_Call_Reference_t,  SF, &hf_group_call_reference_sf),
-  M_BIT        (Group_Call_Reference_t,  AF, &hf_group_call_reference_af),
-  M_UINT       (Group_Call_Reference_t,  call_priority,  3, &hf_group_call_reference_call_priority),
-  M_UINT       (Group_Call_Reference_t,  Ciphering_information,  4, &hf_group_call_reference_ciphering_information),
+  M_UINT       (Group_Call_Reference_t,  value,  27),
+  M_BIT        (Group_Call_Reference_t,  SF),
+  M_BIT        (Group_Call_Reference_t,  AF),
+  M_UINT       (Group_Call_Reference_t,  call_priority,  3),
+  M_UINT       (Group_Call_Reference_t,  Ciphering_information,  4),
 CSN_DESCR_END  (Group_Call_Reference_t)
 
 static const
@@ -1434,41 +249,41 @@ CSN_DESCR_END (Group_Call_information_t)
 static const
 CSN_DESCR_BEGIN  (P1_Rest_Octets_t)
   M_NEXT_EXIST_LH(P1_Rest_Octets_t, Exist_NLN_PCH_and_NLN_status, 2),
-  M_UINT         (P1_Rest_Octets_t,  NLN_PCH,  2, &hf_p1_rest_octets_nln_pch),
-  M_UINT         (P1_Rest_Octets_t,  NLN_status,  1, &hf_p1_rest_octets_nln_status),
+  M_UINT         (P1_Rest_Octets_t,  NLN_PCH,  2),
+  M_UINT         (P1_Rest_Octets_t,  NLN_status,  1),
 
   M_NEXT_EXIST_LH(P1_Rest_Octets_t, Exist_Priority1, 1),
-  M_UINT         (P1_Rest_Octets_t,  Priority1,  3, &hf_p1_rest_octets_priority1),
+  M_UINT         (P1_Rest_Octets_t,  Priority1,  3),
 
   M_NEXT_EXIST_LH(P1_Rest_Octets_t, Exist_Priority2, 1),
-  M_UINT         (P1_Rest_Octets_t,  Priority2,  3, &hf_p1_rest_octets_priority2),
+  M_UINT         (P1_Rest_Octets_t,  Priority2,  3),
 
   M_NEXT_EXIST_LH(P1_Rest_Octets_t, Exist_Group_Call_information, 1),
   M_TYPE         (P1_Rest_Octets_t, Group_Call_information, Group_Call_information_t),
 
-  M_UINT_LH      (P1_Rest_Octets_t,  Packet_Page_Indication_1,  1, &hf_p1_rest_octets_packet_page_indication_1),
-  M_UINT_LH      (P1_Rest_Octets_t,  Packet_Page_Indication_2,  1, &hf_p1_rest_octets_packet_page_indication_2),
+  M_UINT_LH      (P1_Rest_Octets_t,  Packet_Page_Indication_1,  1),
+  M_UINT_LH      (P1_Rest_Octets_t,  Packet_Page_Indication_2,  1),
 CSN_DESCR_END    (P1_Rest_Octets_t)
 
 static const
 CSN_DESCR_BEGIN  (P2_Rest_Octets_t)
   M_NEXT_EXIST_LH(P2_Rest_Octets_t, Exist_CN3, 1),
-  M_UINT         (P2_Rest_Octets_t,  CN3,  2, &hf_p2_rest_octets_cn3),
+  M_UINT         (P2_Rest_Octets_t,  CN3,  2),
 
   M_NEXT_EXIST_LH(P2_Rest_Octets_t, Exist_NLN_and_status, 2),
-  M_UINT         (P2_Rest_Octets_t,  NLN,  2, &hf_p2_rest_octets_nln),
-  M_UINT         (P2_Rest_Octets_t,  NLN_status,  1, &hf_p2_rest_octets_nln_status),
+  M_UINT         (P2_Rest_Octets_t,  NLN,  2),
+  M_UINT         (P2_Rest_Octets_t,  NLN_status,  1),
 
   M_NEXT_EXIST_LH(P2_Rest_Octets_t, Exist_Priority1, 1),
-  M_UINT         (P2_Rest_Octets_t,  Priority1,  3, &hf_p2_rest_octets_priority1),
+  M_UINT         (P2_Rest_Octets_t,  Priority1,  3),
 
   M_NEXT_EXIST_LH(P2_Rest_Octets_t, Exist_Priority2, 1),
-  M_UINT         (P2_Rest_Octets_t,  Priority2,  3, &hf_p2_rest_octets_priority2),
+  M_UINT         (P2_Rest_Octets_t,  Priority2,  3),
 
   M_NEXT_EXIST_LH(P2_Rest_Octets_t, Exist_Priority3, 1),
-  M_UINT         (P2_Rest_Octets_t,  Priority3,  3, &hf_p2_rest_octets_priority3),
+  M_UINT         (P2_Rest_Octets_t,  Priority3,  3),
 
-  M_UINT_LH      (P2_Rest_Octets_t,  Packet_Page_Indication_3,  1, &hf_p2_rest_octets_packet_page_indication_3),
+  M_UINT_LH      (P2_Rest_Octets_t,  Packet_Page_Indication_3,  1),
 CSN_DESCR_END    (P2_Rest_Octets_t)
 
 
@@ -1479,54 +294,54 @@ CSN_DESCR_END    (P2_Rest_Octets_t)
  */
 static const
 CSN_DESCR_BEGIN(DynamicAllocation_t)
-  M_UINT       (DynamicAllocation_t,  USF,  3, &hf_dynamicallocation_usf),
-  M_UINT       (DynamicAllocation_t,  USF_GRANULARITY,  1, &hf_dynamicallocation_usf_granularity),
+  M_UINT       (DynamicAllocation_t,  USF,  3),
+  M_UINT       (DynamicAllocation_t,  USF_GRANULARITY,  1),
 
   M_NEXT_EXIST (DynamicAllocation_t, Exist_P0_PR_MODE, 2),
-  M_UINT       (DynamicAllocation_t,  P0,  4, &hf_dynamicallocation_p0),
-  M_UINT       (DynamicAllocation_t,  PR_MODE,  1, &hf_dynamicallocation_pr_mode),
+  M_UINT       (DynamicAllocation_t,  P0,  4),
+  M_UINT       (DynamicAllocation_t,  PR_MODE,  1),
 CSN_DESCR_END  (DynamicAllocation_t)
 
 static const
 CSN_DESCR_BEGIN(EGPRS_TwoPhaseAccess_t)
   M_NEXT_EXIST (EGPRS_TwoPhaseAccess_t, Exist_ALPHA, 1),
-  M_UINT       (EGPRS_TwoPhaseAccess_t,  ALPHA,  4, &hf_egprstwophaseaccess_alpha),
+  M_UINT       (EGPRS_TwoPhaseAccess_t,  ALPHA,  4),
 
-  M_UINT       (EGPRS_TwoPhaseAccess_t,  GAMMA,  5, &hf_egprstwophaseaccess_gamma),
+  M_UINT       (EGPRS_TwoPhaseAccess_t,  GAMMA,  5),
   M_TYPE       (EGPRS_TwoPhaseAccess_t, TBF_STARTING_TIME, StartingTime_t),
-  M_UINT       (EGPRS_TwoPhaseAccess_t,  NR_OF_RADIO_BLOCKS_ALLOCATED,  2, &hf_egprstwophaseaccess_nr_of_radio_blocks_allocated),
+  M_UINT       (EGPRS_TwoPhaseAccess_t,  NR_OF_RADIO_BLOCKS_ALLOCATED,  2),
 
   M_NEXT_EXIST (EGPRS_TwoPhaseAccess_t, Exist_P0_BTS_PWR_CTRL_PR_MODE, 3),
-  M_UINT       (EGPRS_TwoPhaseAccess_t,  P0,  4, &hf_egprstwophaseaccess_p0),
-  M_UINT       (EGPRS_TwoPhaseAccess_t,  BTS_PWR_CTRL_MODE,  1, &hf_egprstwophaseaccess_bts_pwr_ctrl_mode),
-  M_UINT       (EGPRS_TwoPhaseAccess_t,  PR_MODE,  1, &hf_egprstwophaseaccess_pr_mode),
+  M_UINT       (EGPRS_TwoPhaseAccess_t,  P0,  4),
+  M_UINT       (EGPRS_TwoPhaseAccess_t,  BTS_PWR_CTRL_MODE,  1),
+  M_UINT       (EGPRS_TwoPhaseAccess_t,  PR_MODE,  1),
 CSN_DESCR_END  (EGPRS_TwoPhaseAccess_t)
 
 static const
 CSN_DESCR_BEGIN(EGPRS_OnePhaseAccess_t)
-  M_UINT       (EGPRS_OnePhaseAccess_t,  TFI_ASSIGNMENT,  5, &hf_egprs_onephaseaccess_tfi_assignment),
-  M_UINT       (EGPRS_OnePhaseAccess_t,  POLLING,  1, &hf_egprs_onephaseaccess_polling),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  TFI_ASSIGNMENT,  5),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  POLLING,  1),
 
   M_UNION      (EGPRS_OnePhaseAccess_t, 2),
   M_TYPE       (EGPRS_OnePhaseAccess_t, Allocation.DynamicAllocation, DynamicAllocation_t),
   CSN_ERROR    (EGPRS_OnePhaseAccess_t, "1 <Fixed Allocation>", CSN_ERROR_STREAM_NOT_SUPPORTED),
 
-  M_UINT       (EGPRS_OnePhaseAccess_t,  EGPRS_CHANNEL_CODING_COMMAND,  4, &hf_egprs_onephaseaccess_egprs_channel_coding_command),
-  M_UINT       (EGPRS_OnePhaseAccess_t,  TLLI_BLOCK_CHANNEL_CODING,  1, &hf_egprs_onephaseaccess_tlli_block_channel_coding),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  EGPRS_CHANNEL_CODING_COMMAND,  4),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  TLLI_BLOCK_CHANNEL_CODING,  1),
 
   M_NEXT_EXIST (EGPRS_OnePhaseAccess_t, Exist_BEP_PERIOD2, 1),
-  M_UINT       (EGPRS_OnePhaseAccess_t,  BEP_PERIOD2,  4, &hf_egprs_onephaseaccess_bep_period2),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  BEP_PERIOD2,  4),
 
-  M_UINT       (EGPRS_OnePhaseAccess_t,  RESEGMENT,  1, &hf_egprs_onephaseaccess_resegment),
-  M_UINT       (EGPRS_OnePhaseAccess_t,  EGPRS_WindowSize,  5, &hf_egprs_onephaseaccess_egprs_windowsize),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  RESEGMENT,  1),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  EGPRS_WindowSize,  5),
 
   M_NEXT_EXIST (EGPRS_OnePhaseAccess_t, Exist_ALPHA, 1),
-  M_UINT       (EGPRS_OnePhaseAccess_t,  ALPHA,  4, &hf_egprs_onephaseaccess_alpha),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  ALPHA,  4),
 
-  M_UINT       (EGPRS_OnePhaseAccess_t,  GAMMA,  5, &hf_egprs_onephaseaccess_gamma),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  GAMMA,  5),
 
   M_NEXT_EXIST (EGPRS_OnePhaseAccess_t, Exist_TIMING_ADVANCE_INDEX, 1),
-  M_UINT       (EGPRS_OnePhaseAccess_t,  TIMING_ADVANCE_INDEX,  4, &hf_egprs_onephaseaccess_timing_advance_index),
+  M_UINT       (EGPRS_OnePhaseAccess_t,  TIMING_ADVANCE_INDEX,  4),
 
   M_NEXT_EXIST (EGPRS_OnePhaseAccess_t, Exist_TBF_STARTING_TIME, 1),
   M_TYPE       (EGPRS_OnePhaseAccess_t, TBF_STARTING_TIME, StartingTime_t),
@@ -1534,7 +349,7 @@ CSN_DESCR_END  (EGPRS_OnePhaseAccess_t)
 
 static const
 CSN_DESCR_BEGIN(IA_EGPRS_00_t)
-  M_UINT       (IA_EGPRS_00_t,  ExtendedRA,  5, &hf_ia_egprs_00_extendedra),
+  M_UINT       (IA_EGPRS_00_t,  ExtendedRA,  5),
 
   M_REC_ARRAY  (IA_EGPRS_00_t, AccessTechnologyType, NrOfAccessTechnologies, 4),
 
@@ -1557,51 +372,51 @@ CSN_ChoiceElement_t IA_EGPRS_Choice[] =
  */
 static const
 CSN_DESCR_BEGIN(IA_EGPRS_t)
-  M_UINT       (IA_EGPRS_t,  UnionType ,  1, &hf_ia_egprs_uniontype ),
+  M_UINT       (IA_EGPRS_t,  UnionType ,  1 ),
   M_CHOICE     (IA_EGPRS_t, UnionType, IA_EGPRS_Choice, ElementsOf(IA_EGPRS_Choice)),
 CSN_DESCR_END  (IA_EGPRS_t)
 
 static const
 CSN_DESCR_BEGIN(IA_FreqParamsBeforeTime_t)
-  M_UINT       (IA_FreqParamsBeforeTime_t,  Length,  6, &hf_ia_freqparamsbeforetime_length),
-  M_UINT       (IA_FreqParamsBeforeTime_t,  MAIO,  6, &hf_ia_freqparamsbeforetime_maio),
+  M_UINT       (IA_FreqParamsBeforeTime_t,  Length,  6),
+  M_UINT       (IA_FreqParamsBeforeTime_t,  MAIO,  6),
   M_VAR_ARRAY  (IA_FreqParamsBeforeTime_t, MobileAllocation, Length, 8),
 CSN_DESCR_END  (IA_FreqParamsBeforeTime_t)
 
 static const
 CSN_DESCR_BEGIN  (GPRS_SingleBlockAllocation_t)
   M_NEXT_EXIST   (GPRS_SingleBlockAllocation_t, Exist_ALPHA, 1),
-  M_UINT         (GPRS_SingleBlockAllocation_t,  ALPHA,  4, &hf_gprs_singleblockallocation_alpha),
+  M_UINT         (GPRS_SingleBlockAllocation_t,  ALPHA,  4),
 
-  M_UINT         (GPRS_SingleBlockAllocation_t,  GAMMA,  5, &hf_gprs_singleblockallocation_gamma),
+  M_UINT         (GPRS_SingleBlockAllocation_t,  GAMMA,  5),
   M_FIXED        (GPRS_SingleBlockAllocation_t, 2, 0x01),
   M_TYPE         (GPRS_SingleBlockAllocation_t, TBF_STARTING_TIME, StartingTime_t), /*bit(16)*/
 
   M_NEXT_EXIST_LH(GPRS_SingleBlockAllocation_t, Exist_P0_BTS_PWR_CTRL_PR_MODE, 3),
-  M_UINT         (GPRS_SingleBlockAllocation_t,  P0,  4, &hf_gprs_singleblockallocation_p0),
-  M_UINT         (GPRS_SingleBlockAllocation_t,  BTS_PWR_CTRL_MODE,  1, &hf_gprs_singleblockallocation_bts_pwr_ctrl_mode),
-  M_UINT         (GPRS_SingleBlockAllocation_t,  PR_MODE,  1, &hf_gprs_singleblockallocation_pr_mode),
+  M_UINT         (GPRS_SingleBlockAllocation_t,  P0,  4),
+  M_UINT         (GPRS_SingleBlockAllocation_t,  BTS_PWR_CTRL_MODE,  1),
+  M_UINT         (GPRS_SingleBlockAllocation_t,  PR_MODE,  1),
 CSN_DESCR_END    (GPRS_SingleBlockAllocation_t)
 
 static const
 CSN_DESCR_BEGIN  (GPRS_DynamicOrFixedAllocation_t)
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  TFI_ASSIGNMENT,  5, &hf_gprs_dynamicorfixedallocation_tfi_assignment),
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  POLLING,  1, &hf_gprs_dynamicorfixedallocation_polling),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  TFI_ASSIGNMENT,  5),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  POLLING,  1),
 
   M_UNION        (GPRS_DynamicOrFixedAllocation_t, 2),
   M_TYPE         (GPRS_DynamicOrFixedAllocation_t, Allocation.DynamicAllocation, DynamicAllocation_t),
   CSN_ERROR      (GPRS_DynamicOrFixedAllocation_t, "1 <Fixed Allocation>", CSN_ERROR_STREAM_NOT_SUPPORTED),
 
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  CHANNEL_CODING_COMMAND,  2, &hf_gprs_dynamicorfixedallocation_channel_coding_command),
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  TLLI_BLOCK_CHANNEL_CODING,  1, &hf_gprs_dynamicorfixedallocation_tlli_block_channel_coding),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  CHANNEL_CODING_COMMAND,  2),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  TLLI_BLOCK_CHANNEL_CODING,  1),
 
   M_NEXT_EXIST   (GPRS_DynamicOrFixedAllocation_t, Exist_ALPHA, 1),
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  ALPHA,  4, &hf_gprs_dynamicorfixedallocation_alpha),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  ALPHA,  4),
 
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  GAMMA,  5, &hf_gprs_dynamicorfixedallocation_gamma),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  GAMMA,  5),
 
   M_NEXT_EXIST   (GPRS_DynamicOrFixedAllocation_t, Exist_TIMING_ADVANCE_INDEX, 1),
-  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  TIMING_ADVANCE_INDEX,  4, &hf_gprs_dynamicorfixedallocation_timing_advance_index),
+  M_UINT         (GPRS_DynamicOrFixedAllocation_t,  TIMING_ADVANCE_INDEX,  4),
 
   M_NEXT_EXIST   (GPRS_DynamicOrFixedAllocation_t, Exist_TBF_STARTING_TIME, 1),
   M_TYPE         (GPRS_DynamicOrFixedAllocation_t, TBF_STARTING_TIME, StartingTime_t),
@@ -1610,7 +425,7 @@ CSN_DESCR_END    (GPRS_DynamicOrFixedAllocation_t)
 static const
 CSN_DESCR_BEGIN(PU_IA_AdditionsR99_t)
   M_NEXT_EXIST (PU_IA_AdditionsR99_t, Exist_ExtendedRA, 1),
-  M_UINT       (PU_IA_AdditionsR99_t,  ExtendedRA,  5, &hf_pu_ia_additionsr99_extendedra),
+  M_UINT       (PU_IA_AdditionsR99_t,  ExtendedRA,  5),
 CSN_DESCR_END  (PU_IA_AdditionsR99_t)
 
 static const
@@ -1625,36 +440,36 @@ CSN_DESCR_END            (Packet_Uplink_ImmAssignment_t)
 
 static const
 CSN_DESCR_BEGIN(PD_IA_AdditionsR99_t)
-  M_UINT       (PD_IA_AdditionsR99_t,  EGPRS_WindowSize,  5, &hf_pd_ia_additionsr99_egprs_windowsize),
-  M_UINT       (PD_IA_AdditionsR99_t,  LINK_QUALITY_MEASUREMENT_MODE,  2, &hf_pd_ia_additionsr99_link_quality_measurement_mode),
+  M_UINT       (PD_IA_AdditionsR99_t,  EGPRS_WindowSize,  5),
+  M_UINT       (PD_IA_AdditionsR99_t,  LINK_QUALITY_MEASUREMENT_MODE,  2),
 
   M_NEXT_EXIST (PD_IA_AdditionsR99_t, Exist_BEP_PERIOD2, 1),
-  M_UINT       (PD_IA_AdditionsR99_t,  BEP_PERIOD2,  4, &hf_pd_ia_additionsr99_bep_period2),
+  M_UINT       (PD_IA_AdditionsR99_t,  BEP_PERIOD2,  4),
 CSN_DESCR_END  (PD_IA_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Downlink_ImmAssignment_t)
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  TLLI,  32, &hf_packet_downlink_immassignment_tlli),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  TLLI,  32),
 
   M_NEXT_EXIST (Packet_Downlink_ImmAssignment_t, Exist_TFI_to_TA_VALID, 6 + 1),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  TFI_ASSIGNMENT,  5, &hf_packet_downlink_immassignment_tfi_assignment),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  RLC_MODE,  1, &hf_packet_downlink_immassignment_rlc_mode),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  TFI_ASSIGNMENT,  5),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  RLC_MODE,  1),
   M_NEXT_EXIST (Packet_Downlink_ImmAssignment_t, Exist_ALPHA, 1),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  ALPHA,  4, &hf_packet_downlink_immassignment_alpha),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  GAMMA,  5, &hf_packet_downlink_immassignment_gamma),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  POLLING,  1, &hf_packet_downlink_immassignment_polling),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  TA_VALID,  1, &hf_packet_downlink_immassignment_ta_valid),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  ALPHA,  4),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  GAMMA,  5),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  POLLING,  1),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  TA_VALID,  1),
 
   M_NEXT_EXIST (Packet_Downlink_ImmAssignment_t, Exist_TIMING_ADVANCE_INDEX, 1),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  TIMING_ADVANCE_INDEX,  4, &hf_packet_downlink_immassignment_timing_advance_index),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  TIMING_ADVANCE_INDEX,  4),
 
   M_NEXT_EXIST (Packet_Downlink_ImmAssignment_t, Exist_TBF_STARTING_TIME, 1),
   M_TYPE       (Packet_Downlink_ImmAssignment_t, TBF_STARTING_TIME, StartingTime_t),
 
   M_NEXT_EXIST (Packet_Downlink_ImmAssignment_t, Exist_P0_PR_MODE, 3),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  P0,  4, &hf_packet_downlink_immassignment_p0),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  BTS_PWR_CTRL_MODE,  1, &hf_packet_downlink_immassignment_bts_pwr_ctrl_mode),
-  M_UINT       (Packet_Downlink_ImmAssignment_t,  PR_MODE,  1, &hf_packet_downlink_immassignment_pr_mode),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  P0,  4),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  BTS_PWR_CTRL_MODE,  1),
+  M_UINT       (Packet_Downlink_ImmAssignment_t,  PR_MODE,  1),
 
   M_NEXT_EXIST_OR_NULL_LH(Packet_Downlink_ImmAssignment_t, Exist_AdditionsR99, 1),
   M_TYPE       (Packet_Downlink_ImmAssignment_t, AdditionsR99, PD_IA_AdditionsR99_t),
@@ -1664,7 +479,7 @@ static const
 CSN_DESCR_BEGIN          (Second_Part_Packet_Assignment_t)
   M_NEXT_EXIST_OR_NULL_LH(Second_Part_Packet_Assignment_t, Exist_SecondPart, 2),
   M_NEXT_EXIST           (Second_Part_Packet_Assignment_t, Exist_ExtendedRA, 1),
-  M_UINT                 (Second_Part_Packet_Assignment_t,  ExtendedRA,  5, &hf_second_part_packet_assignment_extendedra),
+  M_UINT                 (Second_Part_Packet_Assignment_t,  ExtendedRA,  5),
 CSN_DESCR_END            (Second_Part_Packet_Assignment_t)
 
 static const
@@ -1686,8 +501,8 @@ static const
 CSN_ChoiceElement_t PacketPollingID[] =
 {
   {1, 0,    M_TYPE(PacketPollingID_t, u.Global_TFI, Global_TFI_t)},
-  {2, 0x02, M_UINT(PacketPollingID_t, u.TLLI, 32, &hf_packetpollingid_tlli)},
-  {3, 0x06, M_UINT(PacketPollingID_t, u.TQI, 16, &hf_packetpollingid_tqi)},
+  {2, 0x02, M_UINT(PacketPollingID_t, u.TLLI, 32)},
+  {3, 0x06, M_UINT(PacketPollingID_t, u.TQI, 16)},
 /*{3, 0x07 , M_TYPE(PacketUplinkID_t, u.Packet_Request_Reference, Packet_Request_Reference_t)},*/
 };
 
@@ -1698,10 +513,10 @@ CSN_DESCR_END  (PacketPollingID_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Polling_Request_t)
-  M_UINT       (Packet_Polling_Request_t,  MESSAGE_TYPE,  6, &hf_packet_polling_request_message_type),
-  M_UINT       (Packet_Polling_Request_t,  PAGE_MODE,  2, &hf_packet_polling_request_page_mode),
+  M_UINT       (Packet_Polling_Request_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Polling_Request_t,  PAGE_MODE,  2),
   M_TYPE       (Packet_Polling_Request_t, ID, PacketPollingID_t),
-  M_BIT        (Packet_Polling_Request_t,  TYPE_OF_ACK, &hf_packet_polling_request_type_of_ack),
+  M_BIT        (Packet_Polling_Request_t,  TYPE_OF_ACK),
 CSN_DESCR_END  (Packet_Polling_Request_t)
 
 static const
@@ -1717,7 +532,7 @@ CSN_DESCR_END  (ARFCN_index_list_t)
 
 static const
 CSN_DESCR_BEGIN(GPRS_Mobile_Allocation_t)
-  M_UINT       (GPRS_Mobile_Allocation_t,  HSN,  6, &hf_gprs_mobile_allocation_hsn),
+  M_UINT       (GPRS_Mobile_Allocation_t,  HSN,  6),
   M_REC_ARRAY  (GPRS_Mobile_Allocation_t, RFL_NUMBER, ElementsOf_RFL_NUMBER, 4),
   M_UNION      (GPRS_Mobile_Allocation_t, 2),
   M_TYPE       (GPRS_Mobile_Allocation_t, u.MA, MobileAllocation_t),
@@ -1733,18 +548,18 @@ CSN_DESCR_END   (Extension_Bits_t)
 
 static const
 CSN_DESCR_BEGIN(GPRS_Cell_Options_t)
-  M_UINT       (GPRS_Cell_Options_t,  NMO,  2, &hf_gprs_cell_options_nmo),
+  M_UINT       (GPRS_Cell_Options_t,  NMO,  2),
   M_UINT_OFFSET(GPRS_Cell_Options_t, T3168, 3, 1),
   M_UINT_OFFSET(GPRS_Cell_Options_t, T3192, 3, 1),
-  M_UINT       (GPRS_Cell_Options_t,  DRX_TIMER_MAX,  3, &hf_gprs_cell_options_drx_timer_max),
-  M_BIT        (GPRS_Cell_Options_t,  ACCESS_BURST_TYPE, &hf_gprs_cell_options_access_burst_type),
-  M_BIT        (GPRS_Cell_Options_t,  CONTROL_ACK_TYPE, &hf_gprs_cell_options_control_ack_type),
-  M_UINT       (GPRS_Cell_Options_t,  BS_CV_MAX,  4, &hf_gprs_cell_options_bs_cv_max),
+  M_UINT       (GPRS_Cell_Options_t,  DRX_TIMER_MAX,  3),
+  M_BIT        (GPRS_Cell_Options_t,  ACCESS_BURST_TYPE),
+  M_BIT        (GPRS_Cell_Options_t,  CONTROL_ACK_TYPE),
+  M_UINT       (GPRS_Cell_Options_t,  BS_CV_MAX,  4),
 
   M_NEXT_EXIST (GPRS_Cell_Options_t, Exist_PAN, 3),
-  M_UINT       (GPRS_Cell_Options_t,  PAN_DEC,  3, &hf_gprs_cell_options_pan_dec),
-  M_UINT       (GPRS_Cell_Options_t,  PAN_INC,  3, &hf_gprs_cell_options_pan_inc),
-  M_UINT       (GPRS_Cell_Options_t,  PAN_MAX,  3, &hf_gprs_cell_options_pan_max),
+  M_UINT       (GPRS_Cell_Options_t,  PAN_DEC,  3),
+  M_UINT       (GPRS_Cell_Options_t,  PAN_INC,  3),
+  M_UINT       (GPRS_Cell_Options_t,  PAN_MAX,  3),
 
   M_NEXT_EXIST (GPRS_Cell_Options_t, Exist_Extension_Bits, 1),
   M_TYPE       (GPRS_Cell_Options_t, Extension_Bits, Extension_Bits_t),
@@ -1752,10 +567,10 @@ CSN_DESCR_END  (GPRS_Cell_Options_t)
 
 static const
 CSN_DESCR_BEGIN(PBCCH_Not_present_t)
-  M_UINT       (PBCCH_Not_present_t,  RAC,  8, &hf_pbcch_not_present_rac),
-  M_BIT        (PBCCH_Not_present_t,  SPGC_CCCH_SUP, &hf_pbcch_not_present_spgc_ccch_sup),
-  M_UINT       (PBCCH_Not_present_t,  PRIORITY_ACCESS_THR,  3, &hf_pbcch_not_present_priority_access_thr),
-  M_UINT       (PBCCH_Not_present_t,  NETWORK_CONTROL_ORDER,  2, &hf_pbcch_not_present_network_control_order),
+  M_UINT       (PBCCH_Not_present_t,  RAC,  8),
+  M_BIT        (PBCCH_Not_present_t,  SPGC_CCCH_SUP),
+  M_UINT       (PBCCH_Not_present_t,  PRIORITY_ACCESS_THR,  3),
+  M_UINT       (PBCCH_Not_present_t,  NETWORK_CONTROL_ORDER,  2),
   M_TYPE       (PBCCH_Not_present_t, GPRS_Cell_Options, GPRS_Cell_Options_t),
   M_TYPE       (PBCCH_Not_present_t, GPRS_Power_Control_Parameters, GPRS_Power_Control_Parameters_t),
 CSN_DESCR_END  (PBCCH_Not_present_t)
@@ -1764,42 +579,42 @@ static const
 CSN_ChoiceElement_t SI13_PBCCH_Description_Channel[] =
 {/* this one is used in SI13*/
   {2, 0x00 , M_NULL(PBCCH_Description_t, u.dummy)},/*Default to BCCH carrier*/
-  {2, 0x01 , M_UINT(PBCCH_Description_t, u.ARFCN, 10, &hf_pbcch_description_arfcn)},
-  {1, 0x01 , M_UINT(PBCCH_Description_t, u.MAIO, 6, &hf_pbcch_description_maio)},
+  {2, 0x01 , M_UINT(PBCCH_Description_t, u.ARFCN, 10)},
+  {1, 0x01 , M_UINT(PBCCH_Description_t, u.MAIO, 6)},
 };
 
 static const
 CSN_DESCR_BEGIN(PBCCH_Description_t)/*SI13*/
-  M_UINT       (PBCCH_Description_t,  Pb,  4, &hf_pbcch_description_pb),
-  M_UINT       (PBCCH_Description_t,  TSC,  3, &hf_pbcch_description_tsc),
-  M_UINT       (PBCCH_Description_t,  TN,  3, &hf_pbcch_description_tn),
+  M_UINT       (PBCCH_Description_t,  Pb,  4),
+  M_UINT       (PBCCH_Description_t,  TSC,  3),
+  M_UINT       (PBCCH_Description_t,  TN,  3),
 
   M_CHOICE     (PBCCH_Description_t, UnionType, SI13_PBCCH_Description_Channel, ElementsOf(SI13_PBCCH_Description_Channel)),
 CSN_DESCR_END  (PBCCH_Description_t)
 
 static const
 CSN_DESCR_BEGIN(PBCCH_present_t)
-  M_UINT       (PBCCH_present_t,  PSI1_REPEAT_PERIOD,  4, &hf_pbcch_present_psi1_repeat_period),
+  M_UINT       (PBCCH_present_t,  PSI1_REPEAT_PERIOD,  4),
   M_TYPE       (PBCCH_present_t, PBCCH_Description, PBCCH_Description_t),
 CSN_DESCR_END  (PBCCH_present_t)
 
 static const
 CSN_DESCR_BEGIN(SI13_AdditionsR6)
   M_NEXT_EXIST (SI13_AdditionsR6, Exist_LB_MS_TXPWR_MAX_CCH, 1),
-  M_UINT       (SI13_AdditionsR6,  LB_MS_TXPWR_MAX_CCH,  5, &hf_packet_system_info_type13_lb_ms_mxpwr_max_cch),
-  M_UINT       (SI13_AdditionsR6,  SI2n_SUPPORT,  2, &hf_packet_system_info_type13_si2n_support),
+  M_UINT       (SI13_AdditionsR6,  LB_MS_TXPWR_MAX_CCH,  5),
+  M_UINT       (SI13_AdditionsR6,  SI2n_SUPPORT,  2),
 CSN_DESCR_END  (SI13_AdditionsR6)
 
 static const
 CSN_DESCR_BEGIN(SI13_AdditionsR4)
-  M_UINT       (SI13_AdditionsR4,  SI_STATUS_IND,  1, &hf_packet_system_info_type13_si_status_ind),
+  M_UINT       (SI13_AdditionsR4,  SI_STATUS_IND,  1),
   M_NEXT_EXIST_OR_NULL_LH (SI13_AdditionsR4, Exist_AdditionsR6, 1),
   M_TYPE       (SI13_AdditionsR4,  AdditionsR6, SI13_AdditionsR6),
 CSN_DESCR_END  (SI13_AdditionsR4)
 
 static const
 CSN_DESCR_BEGIN(SI13_AdditionR99)
-  M_UINT       (SI13_AdditionR99,  SGSNR,  1, &hf_packet_system_info_type13_sgsnr),
+  M_UINT       (SI13_AdditionR99,  SGSNR,  1),
   M_NEXT_EXIST_OR_NULL_LH (SI13_AdditionR99, Exist_AdditionsR4, 1),
   M_TYPE       (SI13_AdditionR99,  AdditionsR4, SI13_AdditionsR4),
 CSN_DESCR_END  (SI13_AdditionR99)
@@ -1808,11 +623,11 @@ static const
 CSN_DESCR_BEGIN          (SI_13_t)
   M_THIS_EXIST_LH        (SI_13_t),
 
-  M_UINT                 (SI_13_t,  BCCH_CHANGE_MARK,  3, &hf_si_13_bcch_change_mark),
-  M_UINT                 (SI_13_t,  SI_CHANGE_FIELD,  4, &hf_si_13_si_change_field),
+  M_UINT                 (SI_13_t,  BCCH_CHANGE_MARK,  3),
+  M_UINT                 (SI_13_t,  SI_CHANGE_FIELD,  4),
 
   M_NEXT_EXIST           (SI_13_t, Exist_MA, 2),
-  M_UINT                 (SI_13_t,  SI13_CHANGE_MARK,  2, &hf_si_13_si13_change_mark),
+  M_UINT                 (SI_13_t,  SI13_CHANGE_MARK,  2),
   M_TYPE                 (SI_13_t, GPRS_Mobile_Allocation, GPRS_Mobile_Allocation_t),
 
   M_UNION                (SI_13_t, 2),
@@ -1830,13 +645,13 @@ CSN_DESCR_END            (SI_13_t)
 /*< Packet TBF Release message content >*/
 static const
 CSN_DESCR_BEGIN(Packet_TBF_Release_t)
-  M_UINT       (Packet_TBF_Release_t,  MESSAGE_TYPE,  6, &hf_packetbf_release_message_type),
-  M_UINT       (Packet_TBF_Release_t,  PAGE_MODE,  2, &hf_packetbf_release_page_mode),
+  M_UINT       (Packet_TBF_Release_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_TBF_Release_t,  PAGE_MODE,  2),
   M_FIXED      (Packet_TBF_Release_t, 1, 0x00),
   M_TYPE       (Packet_TBF_Release_t, Global_TFI, Global_TFI_t),
-  M_BIT        (Packet_TBF_Release_t,  UPLINK_RELEASE, &hf_packetbf_release_uplink_release),
-  M_BIT        (Packet_TBF_Release_t,  DOWNLINK_RELEASE, &hf_packetbf_release_downlink_release),
-  M_UINT       (Packet_TBF_Release_t,  TBF_RELEASE_CAUSE,  4, &hf_packetbf_release_tbf_release_cause),
+  M_BIT        (Packet_TBF_Release_t,  UPLINK_RELEASE),
+  M_BIT        (Packet_TBF_Release_t,  DOWNLINK_RELEASE),
+  M_UINT       (Packet_TBF_Release_t,  TBF_RELEASE_CAUSE,  4),
 CSN_DESCR_END  (Packet_TBF_Release_t)
 
 /*< Packet Control Acknowledgement message content >*/
@@ -1844,15 +659,15 @@ CSN_DESCR_END  (Packet_TBF_Release_t)
 static const
 CSN_DESCR_BEGIN        (Packet_Control_Acknowledgement_AdditionsR6_t)
   M_NEXT_EXIST         (Packet_Control_Acknowledgement_AdditionsR6_t, Exist_CTRL_ACK_Extension, 1),
-  M_UINT               (Packet_Control_Acknowledgement_AdditionsR6_t,  CTRL_ACK_Extension,  9, &hf_packet_control_acknowledgement_additionsr6_ctrl_ack_extension),
+  M_UINT               (Packet_Control_Acknowledgement_AdditionsR6_t,  CTRL_ACK_Extension,  9),
 CSN_DESCR_END          (Packet_Control_Acknowledgement_AdditionsR6_t)
 
 static const
 CSN_DESCR_BEGIN        (Packet_Control_Acknowledgement_AdditionsR5_t)
   M_NEXT_EXIST         (Packet_Control_Acknowledgement_AdditionsR5_t, Exist_TN_RRBP, 1),
-  M_UINT               (Packet_Control_Acknowledgement_AdditionsR5_t,  TN_RRBP,  3, &hf_packet_control_acknowledgement_additionsr5_tn_rrbp),
+  M_UINT               (Packet_Control_Acknowledgement_AdditionsR5_t,  TN_RRBP,  3),
   M_NEXT_EXIST         (Packet_Control_Acknowledgement_AdditionsR5_t, Exist_G_RNTI_Extension, 1),
-  M_UINT               (Packet_Control_Acknowledgement_AdditionsR5_t,  G_RNTI_Extension,  4, &hf_packet_control_acknowledgement_additionsr5_g_rnti_extension),
+  M_UINT               (Packet_Control_Acknowledgement_AdditionsR5_t,  G_RNTI_Extension,  4),
 
   M_NEXT_EXIST_OR_NULL (Packet_Control_Acknowledgement_AdditionsR5_t, Exist_AdditionsR6, 1),
   M_TYPE               (Packet_Control_Acknowledgement_AdditionsR5_t, AdditionsR6, Packet_Control_Acknowledgement_AdditionsR6_t),
@@ -1860,13 +675,13 @@ CSN_DESCR_END          (Packet_Control_Acknowledgement_AdditionsR5_t)
 
 static const
 CSN_DESCR_BEGIN        (Packet_Control_Acknowledgement_t)
-  M_UINT               (Packet_Control_Acknowledgement_t,  PayloadType,  2, &hf_packet_control_acknowledgement_payloadtype),
-  M_UINT               (Packet_Control_Acknowledgement_t,  spare,  5, &hf_packet_control_acknowledgement_spare),
-  M_BIT                (Packet_Control_Acknowledgement_t,  R, &hf_packet_control_acknowledgement_r),
+  M_UINT               (Packet_Control_Acknowledgement_t,  PayloadType,  2),
+  M_UINT               (Packet_Control_Acknowledgement_t,  spare,  5),
+  M_BIT                (Packet_Control_Acknowledgement_t,  R),
 
-  M_UINT               (Packet_Control_Acknowledgement_t,  MESSAGE_TYPE,  6, &hf_packet_control_acknowledgement_message_type),
-  M_UINT               (Packet_Control_Acknowledgement_t,  TLLI,  32, &hf_packet_control_acknowledgement_tlli),
-  M_UINT               (Packet_Control_Acknowledgement_t,  CTRL_ACK,  2, &hf_packet_control_acknowledgement_ctrl_ack),
+  M_UINT               (Packet_Control_Acknowledgement_t,  MESSAGE_TYPE,  6),
+  M_UINT               (Packet_Control_Acknowledgement_t,  TLLI,  32),
+  M_UINT               (Packet_Control_Acknowledgement_t,  CTRL_ACK,  2),
   M_NEXT_EXIST_OR_NULL (Packet_Control_Acknowledgement_t, Exist_AdditionsR5, 1),
   M_TYPE               (Packet_Control_Acknowledgement_t, AdditionsR5, Packet_Control_Acknowledgement_AdditionsR5_t),
 CSN_DESCR_END  (Packet_Control_Acknowledgement_t)
@@ -1874,8 +689,8 @@ CSN_DESCR_END  (Packet_Control_Acknowledgement_t)
 /*< Packet Downlink Dummy Control Block message content >*/
 static const
 CSN_DESCR_BEGIN(Packet_Downlink_Dummy_Control_Block_t)
-  M_UINT       (Packet_Downlink_Dummy_Control_Block_t,  MESSAGE_TYPE,  6, &hf_packet_downlink_dummy_control_block_message_type),
-  M_UINT       (Packet_Downlink_Dummy_Control_Block_t,  PAGE_MODE,  2, &hf_packet_downlink_dummy_control_block_page_mode),
+  M_UINT       (Packet_Downlink_Dummy_Control_Block_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Downlink_Dummy_Control_Block_t,  PAGE_MODE,  2),
 
   M_NEXT_EXIST (Packet_Downlink_Dummy_Control_Block_t, Exist_PERSISTENCE_LEVEL, 1),
   M_UINT_ARRAY (Packet_Downlink_Dummy_Control_Block_t, PERSISTENCE_LEVEL, 4, 4),
@@ -1884,19 +699,19 @@ CSN_DESCR_END  (Packet_Downlink_Dummy_Control_Block_t)
 /*< Packet Uplink Dummy Control Block message content >*/
 static const
 CSN_DESCR_BEGIN(Packet_Uplink_Dummy_Control_Block_t)
-  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  PayloadType,  2, &hf_packet_uplink_dummy_control_block_payloadtype),
-  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  spare,  5, &hf_packet_uplink_dummy_control_block_spare),
-  M_BIT        (Packet_Uplink_Dummy_Control_Block_t,  R, &hf_packet_uplink_dummy_control_block_r),
+  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  PayloadType,  2),
+  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  spare,  5),
+  M_BIT        (Packet_Uplink_Dummy_Control_Block_t,  R),
 
-  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  MESSAGE_TYPE,  6, &hf_packet_uplink_dummy_control_block_message_type),
-  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  TLLI,  32, &hf_packet_uplink_dummy_control_block_tlli),
+  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Uplink_Dummy_Control_Block_t,  TLLI,  32),
 /*M_FIXED      (Packet_Uplink_Dummy_Control_Block_t, 1, 0),*/
 CSN_DESCR_END  (Packet_Uplink_Dummy_Control_Block_t)
 
 static const
 CSN_DESCR_BEGIN(Receive_N_PDU_Number_t)
-  M_UINT       (Receive_N_PDU_Number_t,  nsapi,  4, &hf_receive_n_pdu_number_nsapi),
-  M_UINT       (Receive_N_PDU_Number_t,  value,  8, &hf_receive_n_pdu_number_value),
+  M_UINT       (Receive_N_PDU_Number_t,  nsapi,  4),
+  M_UINT       (Receive_N_PDU_Number_t,  value,  8),
 CSN_DESCR_END  (Receive_N_PDU_Number_t)
 
 gint16 Receive_N_PDU_Number_list_Dissector(csnStream_t* ar, BitVector *vector, size_t& readIndex, void* data)
@@ -1921,93 +736,93 @@ CSN_DESCR_END  (Receive_N_PDU_Number_list_t)
 static const
 CSN_DESCR_BEGIN       (DTM_EGPRS_t)
   M_NEXT_EXIST        (DTM_EGPRS_t, Exist_DTM_EGPRS_multislot_class, 1),
-  M_UINT              (DTM_EGPRS_t,  DTM_EGPRS_multislot_class,  2, &hf_dtm_egprs_dtm_egprs_multislot_class),
+  M_UINT              (DTM_EGPRS_t,  DTM_EGPRS_multislot_class,  2),
 CSN_DESCR_END         (DTM_EGPRS_t)
 
 static const
 CSN_DESCR_BEGIN       (DTM_EGPRS_HighMultislotClass_t)
   M_NEXT_EXIST        (DTM_EGPRS_HighMultislotClass_t, Exist_DTM_EGPRS_HighMultislotClass, 1),
-  M_UINT              (DTM_EGPRS_HighMultislotClass_t,  DTM_EGPRS_HighMultislotClass,  3, &hf_dtm_egprs_highmultislotclass_dtm_egprs_highmultislotclass),
+  M_UINT              (DTM_EGPRS_HighMultislotClass_t,  DTM_EGPRS_HighMultislotClass,  3),
 CSN_DESCR_END         (DTM_EGPRS_HighMultislotClass_t)
 
 static const
 CSN_DESCR_BEGIN       (Multislot_capability_t)
   M_NEXT_EXIST        (Multislot_capability_t, Exist_HSCSD_multislot_class, 1),
-  M_UINT              (Multislot_capability_t,  HSCSD_multislot_class,  5, &hf_multislot_capability_hscsd_multislot_class),
+  M_UINT              (Multislot_capability_t,  HSCSD_multislot_class,  5),
 
   M_NEXT_EXIST        (Multislot_capability_t, Exist_GPRS_multislot_class, 2),
-  M_UINT              (Multislot_capability_t,  GPRS_multislot_class,  5, &hf_multislot_capability_gprs_multislot_class),
-  M_UINT              (Multislot_capability_t,  GPRS_Extended_Dynamic_Allocation_Capability,  1, &hf_multislot_capability_gprs_extended_dynamic_allocation_capability),
+  M_UINT              (Multislot_capability_t,  GPRS_multislot_class,  5),
+  M_UINT              (Multislot_capability_t,  GPRS_Extended_Dynamic_Allocation_Capability,  1),
 
   M_NEXT_EXIST        (Multislot_capability_t, Exist_SM, 2),
-  M_UINT              (Multislot_capability_t,  SMS_VALUE,  4, &hf_multislot_capability_sms_value),
-  M_UINT              (Multislot_capability_t,  SM_VALUE,  4, &hf_multislot_capability_sm_value),
+  M_UINT              (Multislot_capability_t,  SMS_VALUE,  4),
+  M_UINT              (Multislot_capability_t,  SM_VALUE,  4),
 
   M_NEXT_EXIST        (Multislot_capability_t, Exist_ECSD_multislot_class, 1),
-  M_UINT              (Multislot_capability_t,  ECSD_multislot_class,  5, &hf_multislot_capability_ecsd_multislot_class),
+  M_UINT              (Multislot_capability_t,  ECSD_multislot_class,  5),
 
   M_NEXT_EXIST        (Multislot_capability_t, Exist_EGPRS_multislot_class, 2),
-  M_UINT              (Multislot_capability_t,  EGPRS_multislot_class,  5, &hf_multislot_capability_egprs_multislot_class),
-  M_UINT              (Multislot_capability_t,  EGPRS_Extended_Dynamic_Allocation_Capability,  1, &hf_multislot_capability_egprs_extended_dynamic_allocation_capability),
+  M_UINT              (Multislot_capability_t,  EGPRS_multislot_class,  5),
+  M_UINT              (Multislot_capability_t,  EGPRS_Extended_Dynamic_Allocation_Capability,  1),
 
   M_NEXT_EXIST        (Multislot_capability_t, Exist_DTM_GPRS_multislot_class, 3),
-  M_UINT              (Multislot_capability_t,  DTM_GPRS_multislot_class,  2, &hf_multislot_capability_dtm_gprs_multislot_class),
-  M_UINT              (Multislot_capability_t,  Single_Slot_DTM,  1, &hf_multislot_capability_single_slot_dtm),
+  M_UINT              (Multislot_capability_t,  DTM_GPRS_multislot_class,  2),
+  M_UINT              (Multislot_capability_t,  Single_Slot_DTM,  1),
   M_TYPE              (Multislot_capability_t, DTM_EGPRS_Params, DTM_EGPRS_t),
 CSN_DESCR_END         (Multislot_capability_t)
 
 static const
 CSN_DESCR_BEGIN       (Content_t)
-  M_UINT              (Content_t,  RF_Power_Capability,  3, &hf_content_rf_power_capability),
+  M_UINT              (Content_t,  RF_Power_Capability,  3),
 
   M_NEXT_EXIST        (Content_t, Exist_A5_bits, 1),
-  M_UINT              (Content_t,  A5_bits,  7, &hf_content_a5_bits),
+  M_UINT              (Content_t,  A5_bits,  7),
 
-  M_UINT              (Content_t,  ES_IND,  1, &hf_content_es_ind),
-  M_UINT              (Content_t,  PS,  1, &hf_content_ps),
-  M_UINT              (Content_t,  VGCS,  1, &hf_content_vgcs),
-  M_UINT              (Content_t,  VBS,  1, &hf_content_vbs),
+  M_UINT              (Content_t,  ES_IND,  1),
+  M_UINT              (Content_t,  PS,  1),
+  M_UINT              (Content_t,  VGCS,  1),
+  M_UINT              (Content_t,  VBS,  1),
 
   M_NEXT_EXIST_OR_NULL(Content_t, Exist_Multislot_capability, 1),
   M_TYPE              (Content_t, Multislot_capability, Multislot_capability_t),
 
   M_NEXT_EXIST        (Content_t, Exist_Eight_PSK_Power_Capability, 1),
-  M_UINT              (Content_t,  Eight_PSK_Power_Capability,  2, &hf_content_eight_psk_power_capability),
+  M_UINT              (Content_t,  Eight_PSK_Power_Capability,  2),
 
-  M_UINT              (Content_t,  COMPACT_Interference_Measurement_Capability,  1, &hf_content_compact_interference_measurement_capability),
-  M_UINT              (Content_t,  Revision_Level_Indicator,  1, &hf_content_revision_level_indicator),
-  M_UINT              (Content_t,  UMTS_FDD_Radio_Access_Technology_Capability,  1, &hf_content_umts_fdd_radio_access_technology_capability),
-  M_UINT              (Content_t,  UMTS_384_TDD_Radio_Access_Technology_Capability,  1, &hf_content_umts_384_tdd_radio_access_technology_capability),
-  M_UINT              (Content_t,  CDMA2000_Radio_Access_Technology_Capability,  1, &hf_content_cdma2000_radio_access_technology_capability),
+  M_UINT              (Content_t,  COMPACT_Interference_Measurement_Capability,  1),
+  M_UINT              (Content_t,  Revision_Level_Indicator,  1),
+  M_UINT              (Content_t,  UMTS_FDD_Radio_Access_Technology_Capability,  1),
+  M_UINT              (Content_t,  UMTS_384_TDD_Radio_Access_Technology_Capability,  1),
+  M_UINT              (Content_t,  CDMA2000_Radio_Access_Technology_Capability,  1),
 
-  M_UINT              (Content_t,  UMTS_128_TDD_Radio_Access_Technology_Capability,  1, &hf_content_umts_128_tdd_radio_access_technology_capability),
-  M_UINT              (Content_t,  GERAN_Feature_Package_1,  1, &hf_content_geran_feature_package_1),
+  M_UINT              (Content_t,  UMTS_128_TDD_Radio_Access_Technology_Capability,  1),
+  M_UINT              (Content_t,  GERAN_Feature_Package_1,  1),
 
   M_NEXT_EXIST        (Content_t, Exist_Extended_DTM_multislot_class, 2),
-  M_UINT              (Content_t,  Extended_DTM_GPRS_multislot_class,  2, &hf_content_extended_dtm_gprs_multislot_class),
-  M_UINT              (Content_t,  Extended_DTM_EGPRS_multislot_class,  2, &hf_content_extended_dtm_egprs_multislot_class),
+  M_UINT              (Content_t,  Extended_DTM_GPRS_multislot_class,  2),
+  M_UINT              (Content_t,  Extended_DTM_EGPRS_multislot_class,  2),
 
-  M_UINT              (Content_t,  Modulation_based_multislot_class_support,  1, &hf_content_modulation_based_multislot_class_support),
+  M_UINT              (Content_t,  Modulation_based_multislot_class_support,  1),
 
   M_NEXT_EXIST        (Content_t, Exist_HighMultislotCapability, 1),
-  M_UINT              (Content_t,  HighMultislotCapability,  2, &hf_content_highmultislotcapability),
+  M_UINT              (Content_t,  HighMultislotCapability,  2),
 
   M_NEXT_EXIST        (Content_t, Exist_GERAN_lu_ModeCapability, 1),
-  M_UINT              (Content_t,  GERAN_lu_ModeCapability,  4, &hf_content_geran_lu_modecapability),
+  M_UINT              (Content_t,  GERAN_lu_ModeCapability,  4),
 
-  M_UINT              (Content_t,  GMSK_MultislotPowerProfile,  2, &hf_content_gmsk_multislotpowerprofile),
-  M_UINT              (Content_t,  EightPSK_MultislotProfile,  2, &hf_content_eightpsk_multislotprofile),
+  M_UINT              (Content_t,  GMSK_MultislotPowerProfile,  2),
+  M_UINT              (Content_t,  EightPSK_MultislotProfile,  2),
 
-  M_UINT              (Content_t,  MultipleTBF_Capability,  1, &hf_content_multipletbf_capability),
-  M_UINT              (Content_t,  DownlinkAdvancedReceiverPerformance,  2, &hf_content_downlinkadvancedreceiverperformance),
-  M_UINT              (Content_t,  ExtendedRLC_MAC_ControlMessageSegmentionsCapability,  1, &hf_content_extendedrlc_mac_controlmessagesegmentionscapability),
-  M_UINT              (Content_t,  DTM_EnhancementsCapability,  1, &hf_content_dtm_enhancementscapability),
+  M_UINT              (Content_t,  MultipleTBF_Capability,  1),
+  M_UINT              (Content_t,  DownlinkAdvancedReceiverPerformance,  2),
+  M_UINT              (Content_t,  ExtendedRLC_MAC_ControlMessageSegmentionsCapability,  1),
+  M_UINT              (Content_t,  DTM_EnhancementsCapability,  1),
 
   M_NEXT_EXIST        (Content_t, Exist_DTM_GPRS_HighMultislotClass, 2),
-  M_UINT              (Content_t,  DTM_GPRS_HighMultislotClass,  3, &hf_content_dtm_gprs_highmultislotclass),
+  M_UINT              (Content_t,  DTM_GPRS_HighMultislotClass,  3),
   M_TYPE              (Content_t, DTM_EGPRS_HighMultislotClass, DTM_EGPRS_HighMultislotClass_t),
 
-  M_UINT              (Content_t,  PS_HandoverCapability,  1, &hf_content_ps_handovercapability),
+  M_UINT              (Content_t,  PS_HandoverCapability,  1),
 CSN_DESCR_END         (Content_t)
 
 gint16 Content_Dissector(csnStream_t* ar, BitVector *vector, size_t& readIndex, void* data)
@@ -2024,9 +839,9 @@ gint16 Content_Dissector(csnStream_t* ar, BitVector *vector, size_t& readIndex, 
 
 static const
 CSN_DESCR_BEGIN       (Additional_access_technologies_struct_t)
-  M_UINT              (Additional_access_technologies_struct_t,  Access_Technology_Type,  4, &hf_additional_accessechnologies_struct_t_access_technology_type),
-  M_UINT              (Additional_access_technologies_struct_t,  GMSK_Power_class,  3, &hf_additional_accessechnologies_struct_t_gmsk_power_class),
-  M_UINT              (Additional_access_technologies_struct_t,  Eight_PSK_Power_class,  2, &hf_additional_accessechnologies_struct_t_eight_psk_power_class),
+  M_UINT              (Additional_access_technologies_struct_t,  Access_Technology_Type,  4),
+  M_UINT              (Additional_access_technologies_struct_t,  GMSK_Power_class,  3),
+  M_UINT              (Additional_access_technologies_struct_t,  Eight_PSK_Power_class,  2),
 CSN_DESCR_END         (Additional_access_technologies_struct_t)
 
 static const
@@ -2065,8 +880,8 @@ CSN_DESCR_END  (MS_RA_capability_value_t)
 static const
 CSN_DESCR_BEGIN (MS_Radio_Access_capability_t)
 /*Will be done in the main routines:*/
-/*M_UINT        (MS_Radio_Access_capability_t,  IEI,  8, &hf_ms_radio_access_capability_iei),*/
-/*M_UINT        (MS_Radio_Access_capability_t,  Length,  8, &hf_ms_radio_access_capability_length),*/
+/*M_UINT        (MS_Radio_Access_capability_t,  IEI,  8),*/
+/*M_UINT        (MS_Radio_Access_capability_t,  Length,  8),*/
 
   M_REC_TARRAY_1(MS_Radio_Access_capability_t, MS_RA_capability_value[0], MS_RA_capability_value_t, Count_MS_RA_capability_value),
 CSN_DESCR_END   (MS_Radio_Access_capability_t)
@@ -2074,15 +889,15 @@ CSN_DESCR_END   (MS_Radio_Access_capability_t)
 /*< MS Classmark 3 IE >*/
 static const
 CSN_DESCR_BEGIN(ARC_t)
-  M_UINT       (ARC_t,  A5_Bits,  4, &hf_arc_a5_bits),
-  M_UINT       (ARC_t,  Arc2_Spare,  4, &hf_arc_arc2_spare),
-  M_UINT       (ARC_t,  Arc1,  4, &hf_arc_arc1),
+  M_UINT       (ARC_t,  A5_Bits,  4),
+  M_UINT       (ARC_t,  Arc2_Spare,  4),
+  M_UINT       (ARC_t,  Arc1,  4),
 CSN_DESCR_END  (ARC_t)
 
 static const
 CSN_ChoiceElement_t MultibandChoice[] =
 {
-  {3, 0x00, M_UINT(Multiband_t, u.A5_Bits, 4, &hf_multiband_a5_bits)},
+  {3, 0x00, M_UINT(Multiband_t, u.A5_Bits, 4)},
   {3, 0x05, M_TYPE(Multiband_t, u.ARC, ARC_t)},
   {3, 0x06, M_TYPE(Multiband_t, u.ARC, ARC_t)},
   {3, 0x01, M_TYPE(Multiband_t, u.ARC, ARC_t)},
@@ -2098,109 +913,109 @@ CSN_DESCR_END  (Multiband_t)
 static const
 CSN_DESCR_BEGIN(EDGE_RF_Pwr_t)
   M_NEXT_EXIST (EDGE_RF_Pwr_t, ExistEDGE_RF_PwrCap1, 1),
-  M_UINT       (EDGE_RF_Pwr_t,  EDGE_RF_PwrCap1,  2, &hf_edge_rf_pwr_edge_rf_pwrcap1),
+  M_UINT       (EDGE_RF_Pwr_t,  EDGE_RF_PwrCap1,  2),
 
   M_NEXT_EXIST (EDGE_RF_Pwr_t, ExistEDGE_RF_PwrCap2, 1),
-  M_UINT       (EDGE_RF_Pwr_t,  EDGE_RF_PwrCap2,  2, &hf_edge_rf_pwr_edge_rf_pwrcap2),
+  M_UINT       (EDGE_RF_Pwr_t,  EDGE_RF_PwrCap2,  2),
 CSN_DESCR_END  (EDGE_RF_Pwr_t)
 
 static const
 CSN_DESCR_BEGIN(MS_Class3_Unpacked_t)
-  M_UINT       (MS_Class3_Unpacked_t,  Spare1,  1, &hf_ms_class3_unpacked_spare1),
+  M_UINT       (MS_Class3_Unpacked_t,  Spare1,  1),
   M_TYPE       (MS_Class3_Unpacked_t, Multiband, Multiband_t),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_R_Support, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  R_GSM_Arc,  3, &hf_ms_class3_unpacked_r_gsm_arc),
+  M_UINT       (MS_Class3_Unpacked_t,  R_GSM_Arc,  3),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_MultiSlotCapability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  MultiSlotClass,  5, &hf_ms_class3_unpacked_multislotclass),
+  M_UINT       (MS_Class3_Unpacked_t,  MultiSlotClass,  5),
 
-  M_UINT       (MS_Class3_Unpacked_t,  UCS2,  1, &hf_ms_class3_unpacked_ucs2),
-  M_UINT       (MS_Class3_Unpacked_t,  ExtendedMeasurementCapability,  1, &hf_ms_class3_unpacked_extendedmeasurementcapability),
+  M_UINT       (MS_Class3_Unpacked_t,  UCS2,  1),
+  M_UINT       (MS_Class3_Unpacked_t,  ExtendedMeasurementCapability,  1),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_MS_MeasurementCapability, 2),
-  M_UINT       (MS_Class3_Unpacked_t,  SMS_VALUE,  4, &hf_ms_class3_unpacked_sms_value),
-  M_UINT       (MS_Class3_Unpacked_t,  SM_VALUE,  4, &hf_ms_class3_unpacked_sm_value),
+  M_UINT       (MS_Class3_Unpacked_t,  SMS_VALUE,  4),
+  M_UINT       (MS_Class3_Unpacked_t,  SM_VALUE,  4),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_MS_PositioningMethodCapability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  MS_PositioningMethod,  5, &hf_ms_class3_unpacked_ms_positioningmethod),
+  M_UINT       (MS_Class3_Unpacked_t,  MS_PositioningMethod,  5),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_EDGE_MultiSlotCapability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  EDGE_MultiSlotClass,  5, &hf_ms_class3_unpacked_edge_multislotclass),
+  M_UINT       (MS_Class3_Unpacked_t,  EDGE_MultiSlotClass,  5),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_EDGE_Struct, 2),
-  M_UINT       (MS_Class3_Unpacked_t,  ModulationCapability,  1, &hf_ms_class3_unpacked_modulationcapability),
+  M_UINT       (MS_Class3_Unpacked_t,  ModulationCapability,  1),
   M_TYPE       (MS_Class3_Unpacked_t, EDGE_RF_PwrCaps, EDGE_RF_Pwr_t),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_GSM400_Info, 2),
-  M_UINT       (MS_Class3_Unpacked_t,  GSM400_Bands,  2, &hf_ms_class3_unpacked_gsm400_bands),
-  M_UINT       (MS_Class3_Unpacked_t,  GSM400_Arc,  4, &hf_ms_class3_unpacked_gsm400_arc),
+  M_UINT       (MS_Class3_Unpacked_t,  GSM400_Bands,  2),
+  M_UINT       (MS_Class3_Unpacked_t,  GSM400_Arc,  4),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_GSM850_Arc, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  GSM850_Arc,  4, &hf_ms_class3_unpacked_gsm850_arc),
+  M_UINT       (MS_Class3_Unpacked_t,  GSM850_Arc,  4),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_PCS1900_Arc, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  PCS1900_Arc,  4, &hf_ms_class3_unpacked_pcs1900_arc),
+  M_UINT       (MS_Class3_Unpacked_t,  PCS1900_Arc,  4),
 
-  M_UINT       (MS_Class3_Unpacked_t,  UMTS_FDD_Radio_Access_Technology_Capability,  1, &hf_ms_class3_unpacked_umts_fdd_radio_access_technology_capability),
-  M_UINT       (MS_Class3_Unpacked_t,  UMTS_384_TDD_Radio_Access_Technology_Capability,  1, &hf_ms_class3_unpacked_umts_384_tdd_radio_access_technology_capability),
-  M_UINT       (MS_Class3_Unpacked_t,  CDMA2000_Radio_Access_Technology_Capability,  1, &hf_ms_class3_unpacked_cdma2000_radio_access_technology_capability),
+  M_UINT       (MS_Class3_Unpacked_t,  UMTS_FDD_Radio_Access_Technology_Capability,  1),
+  M_UINT       (MS_Class3_Unpacked_t,  UMTS_384_TDD_Radio_Access_Technology_Capability,  1),
+  M_UINT       (MS_Class3_Unpacked_t,  CDMA2000_Radio_Access_Technology_Capability,  1),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_DTM_GPRS_multislot_class, 3),
-  M_UINT       (MS_Class3_Unpacked_t,  DTM_GPRS_multislot_class,  2, &hf_ms_class3_unpacked_dtm_gprs_multislot_class),
-  M_UINT       (MS_Class3_Unpacked_t,  Single_Slot_DTM,  1, &hf_ms_class3_unpacked_single_slot_dtm),
+  M_UINT       (MS_Class3_Unpacked_t,  DTM_GPRS_multislot_class,  2),
+  M_UINT       (MS_Class3_Unpacked_t,  Single_Slot_DTM,  1),
   M_TYPE       (MS_Class3_Unpacked_t, DTM_EGPRS_Params, DTM_EGPRS_t),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_SingleBandSupport, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  GSM_Band,  4, &hf_ms_class3_unpacked_gsm_band),
+  M_UINT       (MS_Class3_Unpacked_t,  GSM_Band,  4),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_GSM_700_Associated_Radio_Capability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  GSM_700_Associated_Radio_Capability,  4, &hf_ms_class3_unpacked_gsm_700_associated_radio_capability),
+  M_UINT       (MS_Class3_Unpacked_t,  GSM_700_Associated_Radio_Capability,  4),
 
-  M_UINT       (MS_Class3_Unpacked_t,  UMTS_128_TDD_Radio_Access_Technology_Capability,  1, &hf_ms_class3_unpacked_umts_128_tdd_radio_access_technology_capability),
-  M_UINT       (MS_Class3_Unpacked_t,  GERAN_Feature_Package_1,  1, &hf_ms_class3_unpacked_geran_feature_package_1),
+  M_UINT       (MS_Class3_Unpacked_t,  UMTS_128_TDD_Radio_Access_Technology_Capability,  1),
+  M_UINT       (MS_Class3_Unpacked_t,  GERAN_Feature_Package_1,  1),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_Extended_DTM_multislot_class, 2),
-  M_UINT       (MS_Class3_Unpacked_t,  Extended_DTM_GPRS_multislot_class,  2, &hf_ms_class3_unpacked_extended_dtm_gprs_multislot_class),
-  M_UINT       (MS_Class3_Unpacked_t,  Extended_DTM_EGPRS_multislot_class,  2, &hf_ms_class3_unpacked_extended_dtm_egprs_multislot_class),
+  M_UINT       (MS_Class3_Unpacked_t,  Extended_DTM_GPRS_multislot_class,  2),
+  M_UINT       (MS_Class3_Unpacked_t,  Extended_DTM_EGPRS_multislot_class,  2),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_HighMultislotCapability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  HighMultislotCapability,  2, &hf_ms_class3_unpacked_highmultislotcapability),
+  M_UINT       (MS_Class3_Unpacked_t,  HighMultislotCapability,  2),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_GERAN_lu_ModeCapability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  GERAN_lu_ModeCapability,  4, &hf_ms_class3_unpacked_geran_lu_modecapability),
+  M_UINT       (MS_Class3_Unpacked_t,  GERAN_lu_ModeCapability,  4),
 
-  M_UINT       (MS_Class3_Unpacked_t,  GERAN_FeaturePackage_2,  1, &hf_ms_class3_unpacked_geran_featurepackage_2),
+  M_UINT       (MS_Class3_Unpacked_t,  GERAN_FeaturePackage_2,  1),
 
-  M_UINT       (MS_Class3_Unpacked_t,  GMSK_MultislotPowerProfile,  2, &hf_ms_class3_unpacked_gmsk_multislotpowerprofile),
-  M_UINT       (MS_Class3_Unpacked_t,  EightPSK_MultislotProfile,  2, &hf_ms_class3_unpacked_eightpsk_multislotprofile),
+  M_UINT       (MS_Class3_Unpacked_t,  GMSK_MultislotPowerProfile,  2),
+  M_UINT       (MS_Class3_Unpacked_t,  EightPSK_MultislotProfile,  2),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_TGSM_400_Bands, 2),
-  M_UINT       (MS_Class3_Unpacked_t,  TGSM_400_BandsSupported,  2, &hf_ms_class3_unpacked_tgsm_400_bandssupported),
-  M_UINT       (MS_Class3_Unpacked_t,  TGSM_400_AssociatedRadioCapability,  4, &hf_ms_class3_unpacked_tgsm_400_associatedradiocapability),
+  M_UINT       (MS_Class3_Unpacked_t,  TGSM_400_BandsSupported,  2),
+  M_UINT       (MS_Class3_Unpacked_t,  TGSM_400_AssociatedRadioCapability,  4),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_TGSM_900_AssociatedRadioCapability, 1),
-  M_UINT       (MS_Class3_Unpacked_t,  TGSM_900_AssociatedRadioCapability,  4, &hf_ms_class3_unpacked_tgsm_900_associatedradiocapability),
+  M_UINT       (MS_Class3_Unpacked_t,  TGSM_900_AssociatedRadioCapability,  4),
 
-  M_UINT       (MS_Class3_Unpacked_t,  DownlinkAdvancedReceiverPerformance,  2, &hf_ms_class3_unpacked_downlinkadvancedreceiverperformance),
-  M_UINT       (MS_Class3_Unpacked_t,  DTM_EnhancementsCapability,  1, &hf_ms_class3_unpacked_dtm_enhancementscapability),
+  M_UINT       (MS_Class3_Unpacked_t,  DownlinkAdvancedReceiverPerformance,  2),
+  M_UINT       (MS_Class3_Unpacked_t,  DTM_EnhancementsCapability,  1),
 
   M_NEXT_EXIST (MS_Class3_Unpacked_t, Exist_DTM_GPRS_HighMultislotClass, 3),
-  M_UINT       (MS_Class3_Unpacked_t,  DTM_GPRS_HighMultislotClass,  3, &hf_ms_class3_unpacked_dtm_gprs_highmultislotclass),
-  M_UINT       (MS_Class3_Unpacked_t,  OffsetRequired,  1, &hf_ms_class3_unpacked_offsetrequired),
+  M_UINT       (MS_Class3_Unpacked_t,  DTM_GPRS_HighMultislotClass,  3),
+  M_UINT       (MS_Class3_Unpacked_t,  OffsetRequired,  1),
   M_TYPE       (MS_Class3_Unpacked_t, DTM_EGPRS_HighMultislotClass, DTM_EGPRS_HighMultislotClass_t),
 
-  M_UINT       (MS_Class3_Unpacked_t,  RepeatedSACCH_Capability,  1, &hf_ms_class3_unpacked_repeatedsacch_capability),
-  M_UINT       (MS_Class3_Unpacked_t,  Spare2,  1, &hf_ms_class3_unpacked_spare2),
+  M_UINT       (MS_Class3_Unpacked_t,  RepeatedSACCH_Capability,  1),
+  M_UINT       (MS_Class3_Unpacked_t,  Spare2,  1),
 CSN_DESCR_END  (MS_Class3_Unpacked_t)
 
 static const
 CSN_DESCR_BEGIN(Channel_Request_Description_t)
-  M_UINT       (Channel_Request_Description_t,  PEAK_THROUGHPUT_CLASS,  4, &hf_channel_request_description_peak_throughput_class),
-  M_UINT       (Channel_Request_Description_t,  RADIO_PRIORITY,  2, &hf_channel_request_description_radio_priority),
-  M_BIT        (Channel_Request_Description_t,  RLC_MODE, &hf_channel_request_description_rlc_mode),
-  M_BIT        (Channel_Request_Description_t,  LLC_PDU_TYPE, &hf_channel_request_description_llc_pdu_type),
-  M_UINT       (Channel_Request_Description_t,  RLC_OCTET_COUNT,  16, &hf_channel_request_description_rlc_octet_count),
+  M_UINT       (Channel_Request_Description_t,  PEAK_THROUGHPUT_CLASS,  4),
+  M_UINT       (Channel_Request_Description_t,  RADIO_PRIORITY,  2),
+  M_BIT        (Channel_Request_Description_t,  RLC_MODE),
+  M_BIT        (Channel_Request_Description_t,  LLC_PDU_TYPE),
+  M_UINT       (Channel_Request_Description_t,  RLC_OCTET_COUNT,  16),
 CSN_DESCR_END  (Channel_Request_Description_t)
 
 /* < Packet Resource Request message content > */
@@ -2208,7 +1023,7 @@ static const
 CSN_ChoiceElement_t PacketResourceRequestID[] =
 {
   {1, 0,    M_TYPE(PacketResourceRequestID_t, u.Global_TFI, Global_TFI_t)},
-  {1, 0x01, M_UINT(PacketResourceRequestID_t, u.TLLI, 32, &hf_packetresourcerequestid_tlli)},
+  {1, 0x01, M_UINT(PacketResourceRequestID_t, u.TLLI, 32)},
 };
 
 static const
@@ -2220,14 +1035,14 @@ static const
 CSN_DESCR_BEGIN(BEP_MeasurementReport_t)
   M_NEXT_EXIST (BEP_MeasurementReport_t, Exist, 3),
   M_UNION      (BEP_MeasurementReport_t, 2),
-  M_UINT       (BEP_MeasurementReport_t,  u.MEAN_BEP_GMSK,  4, &hf_bep_measurementreport_mean_bep_gmsk),
-  M_UINT       (BEP_MeasurementReport_t,  u.MEAN_BEP_8PSK,  4, &hf_bep_measurementreport_mean_bep_8psk),
+  M_UINT       (BEP_MeasurementReport_t,  u.MEAN_BEP_GMSK,  4),
+  M_UINT       (BEP_MeasurementReport_t,  u.MEAN_BEP_8PSK,  4),
 CSN_DESCR_END  (BEP_MeasurementReport_t)
 
 static const
 CSN_DESCR_BEGIN(InterferenceMeasurementReport_t)
   M_NEXT_EXIST (InterferenceMeasurementReport_t, Exist, 1),
-  M_UINT       (InterferenceMeasurementReport_t,  I_LEVEL,  4, &hf_interferencemeasurementreport_i_level),
+  M_UINT       (InterferenceMeasurementReport_t,  I_LEVEL,  4),
 CSN_DESCR_END  (InterferenceMeasurementReport_t)
 
 static const
@@ -2242,12 +1057,12 @@ CSN_DESCR_END  (EGPRS_TimeslotLinkQualityMeasurements_t)
 static const
 CSN_DESCR_BEGIN(EGPRS_BEP_LinkQualityMeasurements_t)
   M_NEXT_EXIST (EGPRS_BEP_LinkQualityMeasurements_t, Exist_MEAN_CV_BEP_GMSK, 2),
-  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  MEAN_BEP_GMSK,  5, &hf_egprs_bep_linkqualitymeasurements_mean_bep_gmsk),
-  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  CV_BEP_GMSK,  3, &hf_egprs_bep_linkqualitymeasurements_cv_bep_gmsk),
+  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  MEAN_BEP_GMSK,  5),
+  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  CV_BEP_GMSK,  3),
 
   M_NEXT_EXIST (EGPRS_BEP_LinkQualityMeasurements_t, Exist_MEAN_CV_BEP_8PSK, 2),
-  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  MEAN_BEP_8PSK,  5, &hf_egprs_bep_linkqualitymeasurements_mean_bep_8psk),
-  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  CV_BEP_8PSK,  3, &hf_egprs_bep_linkqualitymeasurements_cv_bep_8psk),
+  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  MEAN_BEP_8PSK,  5),
+  M_UINT       (EGPRS_BEP_LinkQualityMeasurements_t,  CV_BEP_8PSK,  3),
 CSN_DESCR_END  (EGPRS_BEP_LinkQualityMeasurements_t)
 
 static const
@@ -2259,23 +1074,23 @@ CSN_DESCR_BEGIN(PRR_AdditionsR99_t)
   M_TYPE       (PRR_AdditionsR99_t, EGPRS_TimeslotLinkQualityMeasurements, EGPRS_TimeslotLinkQualityMeasurements_t),
 
   M_NEXT_EXIST (PRR_AdditionsR99_t, Exist_PFI, 1),
-  M_UINT       (PRR_AdditionsR99_t,  PFI,  7, &hf_prr_additionsr99_pfi),
+  M_UINT       (PRR_AdditionsR99_t,  PFI,  7),
 
-  M_UINT       (PRR_AdditionsR99_t,  MS_RAC_AdditionalInformationAvailable,  1, &hf_prr_additionsr99_ms_rac_additionalinformationavailable),
-  M_UINT       (PRR_AdditionsR99_t,  RetransmissionOfPRR,  1, &hf_prr_additionsr99_retransmissionofprr),
+  M_UINT       (PRR_AdditionsR99_t,  MS_RAC_AdditionalInformationAvailable,  1),
+  M_UINT       (PRR_AdditionsR99_t,  RetransmissionOfPRR,  1),
 CSN_DESCR_END  (PRR_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN       (Packet_Resource_Request_t)
   /* Mac header */
-  M_UINT              (Packet_Resource_Request_t,  PayloadType,  2, &hf_packet_resource_request_payloadtype),
-  M_UINT              (Packet_Resource_Request_t,  spare,  5, &hf_packet_resource_request_spare),
-  M_UINT              (Packet_Resource_Request_t,  R,  1, &hf_packet_resource_request_r),
-  M_UINT              (Packet_Resource_Request_t,  MESSAGE_TYPE,  6, &hf_packet_resource_request_message_type),
+  M_UINT              (Packet_Resource_Request_t,  PayloadType,  2),
+  M_UINT              (Packet_Resource_Request_t,  spare,  5),
+  M_UINT              (Packet_Resource_Request_t,  R,  1),
+  M_UINT              (Packet_Resource_Request_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
   M_NEXT_EXIST        (Packet_Resource_Request_t, Exist_ACCESS_TYPE, 1),
-  M_UINT              (Packet_Resource_Request_t,  ACCESS_TYPE,  2, &hf_packet_resource_request_access_type),
+  M_UINT              (Packet_Resource_Request_t,  ACCESS_TYPE,  2),
 
   M_TYPE              (Packet_Resource_Request_t, ID, PacketResourceRequestID_t),
 
@@ -2285,12 +1100,12 @@ CSN_DESCR_BEGIN       (Packet_Resource_Request_t)
   M_TYPE              (Packet_Resource_Request_t, Channel_Request_Description, Channel_Request_Description_t),
 
   M_NEXT_EXIST        (Packet_Resource_Request_t, Exist_CHANGE_MARK, 1),
-  M_UINT              (Packet_Resource_Request_t,  CHANGE_MARK,  2, &hf_packet_resource_request_change_mark),
+  M_UINT              (Packet_Resource_Request_t,  CHANGE_MARK,  2),
 
-  M_UINT              (Packet_Resource_Request_t,  C_VALUE,  6, &hf_packet_resource_request_c_value),
+  M_UINT              (Packet_Resource_Request_t,  C_VALUE,  6),
 
   M_NEXT_EXIST        (Packet_Resource_Request_t, Exist_SIGN_VAR, 1),
-  M_UINT              (Packet_Resource_Request_t,  SIGN_VAR,  6, &hf_packet_resource_request_sign_var),
+  M_UINT              (Packet_Resource_Request_t,  SIGN_VAR,  6),
 
   M_TYPE_ARRAY        (Packet_Resource_Request_t, Slot, InterferenceMeasurementReport_t, 8),
 
@@ -2302,24 +1117,24 @@ CSN_DESCR_END         (Packet_Resource_Request_t)
 static const
 CSN_DESCR_BEGIN(Packet_Mobile_TBF_Status_t)
   /* Mac header */
-  M_UINT       (Packet_Mobile_TBF_Status_t,  PayloadType,  2, &hf_packet_mobile_tbf_status_payloadtype),
-  M_UINT       (Packet_Mobile_TBF_Status_t,  spare,  5, &hf_packet_mobile_tbf_status_spare),
-  M_UINT       (Packet_Mobile_TBF_Status_t,  R,  1, &hf_packet_mobile_tbf_status_r),
-  M_UINT       (Packet_Mobile_TBF_Status_t,  MESSAGE_TYPE,  6, &hf_packet_mobile_tbf_status_message_type),
+  M_UINT       (Packet_Mobile_TBF_Status_t,  PayloadType,  2),
+  M_UINT       (Packet_Mobile_TBF_Status_t,  spare,  5),
+  M_UINT       (Packet_Mobile_TBF_Status_t,  R,  1),
+  M_UINT       (Packet_Mobile_TBF_Status_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
   M_TYPE       (Packet_Mobile_TBF_Status_t, Global_TFI, Global_TFI_t),
-  M_UINT       (Packet_Mobile_TBF_Status_t,  TBF_CAUSE,  3, &hf_packet_mobile_tbf_status_tbf_cause),
+  M_UINT       (Packet_Mobile_TBF_Status_t,  TBF_CAUSE,  3),
 
   M_NEXT_EXIST (Packet_Mobile_TBF_Status_t, Exist_STATUS_MESSAGE_TYPE, 1),
-  M_UINT       (Packet_Mobile_TBF_Status_t,  STATUS_MESSAGE_TYPE,  6, &hf_packet_mobile_tbf_status_status_message_type),
+  M_UINT       (Packet_Mobile_TBF_Status_t,  STATUS_MESSAGE_TYPE,  6),
 CSN_DESCR_END  (Packet_Mobile_TBF_Status_t)
 
 /*< Packet PSI Status message content > */
 static const
 CSN_DESCR_BEGIN(PSI_Message_t)
-  M_UINT       (PSI_Message_t,  PSI_MESSAGE_TYPE,  6, &hf_psi_message_psi_message_type),
-  M_UINT       (PSI_Message_t,  PSIX_CHANGE_MARK,  2, &hf_psi_message_psix_change_mark),
+  M_UINT       (PSI_Message_t,  PSI_MESSAGE_TYPE,  6),
+  M_UINT       (PSI_Message_t,  PSIX_CHANGE_MARK,  2),
   M_NEXT_EXIST (PSI_Message_t, Exist_PSIX_COUNT_and_Instance_Bitmap, 2),
   M_FIXED      (PSI_Message_t, 4, 0),   /* Placeholder for PSIX_COUNT (4 bits) */
   M_FIXED      (PSI_Message_t, 1, 0),   /* Placeholder for Instance bitmap (1 bit) */
@@ -2329,26 +1144,26 @@ static const
 CSN_DESCR_BEGIN(PSI_Message_List_t)
   M_REC_TARRAY (PSI_Message_List_t, PSI_Message[0], PSI_Message_t, Count_PSI_Message),
   M_FIXED      (PSI_Message_List_t, 1, 0x00),
-  M_UINT       (PSI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1, &hf_psi_message_list_additional_msg_type),
+  M_UINT       (PSI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1),
 CSN_DESCR_END  (PSI_Message_List_t)
 
 static const
 CSN_DESCR_BEGIN(Unknown_PSI_Message_List_t)
   M_FIXED      (Unknown_PSI_Message_List_t, 1, 0x00),
-  M_UINT       (Unknown_PSI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1, &hf_unknown_psi_message_list_additional_msg_type),
+  M_UINT       (Unknown_PSI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1),
 CSN_DESCR_END  (Unknown_PSI_Message_List_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_PSI_Status_t)
   /* Mac header */
-  M_UINT       (Packet_PSI_Status_t,  PayloadType,  2, &hf_packet_psi_status_payloadtype),
-  M_UINT       (Packet_PSI_Status_t,  spare,  5, &hf_packet_psi_status_spare),
-  M_UINT       (Packet_PSI_Status_t,  R,  1, &hf_packet_psi_status_r),
-  M_UINT       (Packet_PSI_Status_t,  MESSAGE_TYPE,  6, &hf_packet_psi_status_message_type),
+  M_UINT       (Packet_PSI_Status_t,  PayloadType,  2),
+  M_UINT       (Packet_PSI_Status_t,  spare,  5),
+  M_UINT       (Packet_PSI_Status_t,  R,  1),
+  M_UINT       (Packet_PSI_Status_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
   M_TYPE       (Packet_PSI_Status_t, Global_TFI, Global_TFI_t),
-  M_UINT       (Packet_PSI_Status_t,  PBCCH_CHANGE_MARK,  3, &hf_packet_psi_status_pbcch_change_mark),
+  M_UINT       (Packet_PSI_Status_t,  PBCCH_CHANGE_MARK,  3),
   M_TYPE       (Packet_PSI_Status_t, PSI_Message_List, PSI_Message_List_t),
   M_TYPE       (Packet_PSI_Status_t, Unknown_PSI_Message_List, Unknown_PSI_Message_List_t),
 CSN_DESCR_END  (Packet_PSI_Status_t)
@@ -2357,34 +1172,34 @@ CSN_DESCR_END  (Packet_PSI_Status_t)
 
 static const
 CSN_DESCR_BEGIN(SI_Message_t)
-  M_UINT       (SI_Message_t,  SI_MESSAGE_TYPE,  8, &hf_si_message_si_message_type),
-  M_UINT       (SI_Message_t,  MESS_REC,  2, &hf_si_message_mess_rec),
+  M_UINT       (SI_Message_t,  SI_MESSAGE_TYPE,  8),
+  M_UINT       (SI_Message_t,  MESS_REC,  2),
 CSN_DESCR_END  (SI_Message_t)
 
 static const
 CSN_DESCR_BEGIN(SI_Message_List_t)
   M_REC_TARRAY (SI_Message_List_t, SI_Message[0], SI_Message_t, Count_SI_Message),
   M_FIXED      (SI_Message_List_t, 1, 0x00),
-  M_UINT       (SI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1, &hf_si_message_list_additional_msg_type),
+  M_UINT       (SI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1),
 CSN_DESCR_END  (SI_Message_List_t)
 
 static const
 CSN_DESCR_BEGIN(Unknown_SI_Message_List_t)
   M_FIXED      (Unknown_SI_Message_List_t, 1, 0x00),
-  M_UINT       (Unknown_SI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1, &hf_unknown_si_message_list_additional_msg_type),
+  M_UINT       (Unknown_SI_Message_List_t,  ADDITIONAL_MSG_TYPE,  1),
 CSN_DESCR_END  (Unknown_SI_Message_List_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_SI_Status_t)
   /* Mac header */
-  M_UINT       (Packet_SI_Status_t,  PayloadType,  2, &hf_packet_si_status_payloadtype),
-  M_UINT       (Packet_SI_Status_t,  spare,  5, &hf_packet_si_status_spare),
-  M_UINT       (Packet_SI_Status_t,  R,  1, &hf_packet_si_status_r),
-  M_UINT       (Packet_SI_Status_t,  MESSAGE_TYPE,  6, &hf_packet_si_status_message_type),
+  M_UINT       (Packet_SI_Status_t,  PayloadType,  2),
+  M_UINT       (Packet_SI_Status_t,  spare,  5),
+  M_UINT       (Packet_SI_Status_t,  R,  1),
+  M_UINT       (Packet_SI_Status_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
   M_TYPE       (Packet_SI_Status_t, Global_TFI, Global_TFI_t),
-  M_UINT       (Packet_SI_Status_t,  BCCH_CHANGE_MARK,  3, &hf_packet_si_status_bcch_change_mark),
+  M_UINT       (Packet_SI_Status_t,  BCCH_CHANGE_MARK,  3),
   M_TYPE       (Packet_SI_Status_t, SI_Message_List, SI_Message_List_t),
   M_TYPE       (Packet_SI_Status_t, Unknown_SI_Message_List, Unknown_SI_Message_List_t),
 CSN_DESCR_END  (Packet_SI_Status_t)
@@ -2393,16 +1208,16 @@ CSN_DESCR_END  (Packet_SI_Status_t)
 static const
 CSN_DESCR_BEGIN(PD_AckNack_AdditionsR99_t)
   M_NEXT_EXIST (PD_AckNack_AdditionsR99_t, Exist_PFI, 1),
-  M_UINT       (PD_AckNack_AdditionsR99_t,  PFI,  7, &hf_pd_acknack_additionsr99_pfi),
+  M_UINT       (PD_AckNack_AdditionsR99_t,  PFI,  7),
 CSN_DESCR_END  (PD_AckNack_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN       (Packet_Downlink_Ack_Nack_t)
-  M_UINT              (Packet_Downlink_Ack_Nack_t,  PayloadType,  2, &hf_packet_downlink_ack_nack_payloadtype),
-  M_UINT              (Packet_Downlink_Ack_Nack_t,  spare,  5, &hf_packet_downlink_ack_nack_spare),
-  M_BIT               (Packet_Downlink_Ack_Nack_t,  R, &hf_packet_downlink_ack_nack_r),
-  M_UINT              (Packet_Downlink_Ack_Nack_t,  MESSAGE_TYPE,  6, &hf_packet_downlink_ack_nack_message_type),
-  M_UINT              (Packet_Downlink_Ack_Nack_t,  DOWNLINK_TFI,  5, &hf_packet_downlink_ack_nack_downlink_tfi),
+  M_UINT              (Packet_Downlink_Ack_Nack_t,  PayloadType,  2),
+  M_UINT              (Packet_Downlink_Ack_Nack_t,  spare,  5),
+  M_BIT               (Packet_Downlink_Ack_Nack_t,  R),
+  M_UINT              (Packet_Downlink_Ack_Nack_t,  MESSAGE_TYPE,  6),
+  M_UINT              (Packet_Downlink_Ack_Nack_t,  DOWNLINK_TFI,  5),
   M_TYPE              (Packet_Downlink_Ack_Nack_t, Ack_Nack_Description, Ack_Nack_Description_t),
 
   M_NEXT_EXIST        (Packet_Downlink_Ack_Nack_t, Exist_Channel_Request_Description, 1),
@@ -2419,20 +1234,20 @@ CSN_DESCR_END         (Packet_Downlink_Ack_Nack_t)
 static const
 CSN_DESCR_BEGIN(EGPRS_ChannelQualityReport_t)
   M_TYPE       (EGPRS_ChannelQualityReport_t, EGPRS_BEP_LinkQualityMeasurements, EGPRS_BEP_LinkQualityMeasurements_t),
-  M_UINT       (EGPRS_ChannelQualityReport_t,  C_VALUE,  6, &hf_egprs_channelqualityreport_c_value),
+  M_UINT       (EGPRS_ChannelQualityReport_t,  C_VALUE,  6),
   M_TYPE       (EGPRS_ChannelQualityReport_t, EGPRS_TimeslotLinkQualityMeasurements, EGPRS_TimeslotLinkQualityMeasurements_t),
 CSN_DESCR_END  (EGPRS_ChannelQualityReport_t)
 
 static const
 CSN_DESCR_BEGIN(EGPRS_PD_AckNack_t)
 /*  M_CALLBACK   (EGPRS_PD_AckNack_t, (void*)21, IsSupported, IsSupported), */
-  M_UINT       (EGPRS_PD_AckNack_t,  PayloadType,  2, &hf_egprs_pd_acknack_payloadtype),
-  M_UINT       (EGPRS_PD_AckNack_t,  spare,  5, &hf_egprs_pd_acknack_spare),
-  M_BIT        (EGPRS_PD_AckNack_t,  R, &hf_egprs_pd_acknack_r),
+  M_UINT       (EGPRS_PD_AckNack_t,  PayloadType,  2),
+  M_UINT       (EGPRS_PD_AckNack_t,  spare,  5),
+  M_BIT        (EGPRS_PD_AckNack_t,  R),
 
-  M_UINT       (EGPRS_PD_AckNack_t,  MESSAGE_TYPE,  6, &hf_egprs_pd_acknack_message_type),
-  M_UINT       (EGPRS_PD_AckNack_t,  DOWNLINK_TFI,  5, &hf_egprs_pd_acknack_downlink_tfi),
-  M_UINT       (EGPRS_PD_AckNack_t,  MS_OUT_OF_MEMORY,  1, &hf_egprs_pd_acknack_ms_out_of_memory),
+  M_UINT       (EGPRS_PD_AckNack_t,  MESSAGE_TYPE,  6),
+  M_UINT       (EGPRS_PD_AckNack_t,  DOWNLINK_TFI,  5),
+  M_UINT       (EGPRS_PD_AckNack_t,  MS_OUT_OF_MEMORY,  1),
 
   M_NEXT_EXIST (EGPRS_PD_AckNack_t, Exist_EGPRS_ChannelQualityReport, 1),
   M_TYPE       (EGPRS_PD_AckNack_t, EGPRS_ChannelQualityReport, EGPRS_ChannelQualityReport_t),
@@ -2441,7 +1256,7 @@ CSN_DESCR_BEGIN(EGPRS_PD_AckNack_t)
   M_TYPE       (EGPRS_PD_AckNack_t, ChannelRequestDescription, Channel_Request_Description_t),
 
   M_NEXT_EXIST (EGPRS_PD_AckNack_t, Exist_PFI, 1),
-  M_UINT       (EGPRS_PD_AckNack_t,  PFI,  7, &hf_egprs_pd_acknack_pfi),
+  M_UINT       (EGPRS_PD_AckNack_t,  PFI,  7),
 
   M_NEXT_EXIST (EGPRS_PD_AckNack_t, Exist_ExtensionBits, 1),
   M_TYPE       (EGPRS_PD_AckNack_t, ExtensionBits, Extension_Bits_t),
@@ -2454,42 +1269,42 @@ CSN_DESCR_END  (EGPRS_PD_AckNack_t)
 
 static const
 CSN_DESCR_BEGIN(FDD_Target_Cell_t)
-  M_UINT       (FDD_Target_Cell_t,  FDD_ARFCN,  14, &hf_fddarget_cell_t_fdd_arfcn),
-  M_UINT       (FDD_Target_Cell_t,  DIVERSITY,  1, &hf_fddarget_cell_t_diversity),
+  M_UINT       (FDD_Target_Cell_t,  FDD_ARFCN,  14),
+  M_UINT       (FDD_Target_Cell_t,  DIVERSITY,  1),
   M_NEXT_EXIST (FDD_Target_Cell_t, Exist_Bandwith_FDD, 1),
-  M_UINT       (FDD_Target_Cell_t,  BANDWITH_FDD,  3, &hf_fddarget_cell_t_bandwith_fdd),
-  M_UINT       (FDD_Target_Cell_t,  SCRAMBLING_CODE,  9, &hf_fddarget_cell_t_scrambling_code),
+  M_UINT       (FDD_Target_Cell_t,  BANDWITH_FDD,  3),
+  M_UINT       (FDD_Target_Cell_t,  SCRAMBLING_CODE,  9),
 CSN_DESCR_END  (FDD_Target_Cell_t)
 
 static const
 CSN_DESCR_BEGIN(TDD_Target_Cell_t)
-  M_UINT       (TDD_Target_Cell_t,  TDD_ARFCN,  14, &hf_tddarget_cell_t_tdd_arfcn),
-  M_UINT       (TDD_Target_Cell_t,  DIVERSITY_TDD,  1, &hf_tddarget_cell_t_diversity),
+  M_UINT       (TDD_Target_Cell_t,  TDD_ARFCN,  14),
+  M_UINT       (TDD_Target_Cell_t,  DIVERSITY_TDD,  1),
   M_NEXT_EXIST (TDD_Target_Cell_t, Exist_Bandwith_TDD, 1),
-  M_UINT       (TDD_Target_Cell_t,  BANDWITH_TDD,  3, &hf_tddarget_cell_t_bandwith_tdd),
-  M_UINT       (TDD_Target_Cell_t,  CELL_PARAMETER,  7, &hf_tddarget_cell_t_cell_parameter),
-  M_UINT       (TDD_Target_Cell_t,  Sync_Case_TSTD,  1, &hf_tddarget_cell_t_sync_case_tstd),
+  M_UINT       (TDD_Target_Cell_t,  BANDWITH_TDD,  3),
+  M_UINT       (TDD_Target_Cell_t,  CELL_PARAMETER,  7),
+  M_UINT       (TDD_Target_Cell_t,  Sync_Case_TSTD,  1),
 CSN_DESCR_END  (TDD_Target_Cell_t)
 
 static const
 CSN_DESCR_BEGIN(EUTRAN_Target_Cell_t)
-  M_UINT       (EUTRAN_Target_Cell_t,  EARFCN,  16, &hf_target_cell_eutran_earfcn),
+  M_UINT       (EUTRAN_Target_Cell_t,  EARFCN,  16),
   M_NEXT_EXIST (EUTRAN_Target_Cell_t, Exist_Measurement_Bandwidth, 1),
-  M_UINT       (EUTRAN_Target_Cell_t,  Measurement_Bandwidth,  3, &hf_target_cell_eutran_measurement_bandwidth),
-  M_UINT       (EUTRAN_Target_Cell_t,  Physical_Layer_Cell_Identity,  9, &hf_target_cell_eutran_pl_cell_id),
+  M_UINT       (EUTRAN_Target_Cell_t,  Measurement_Bandwidth,  3),
+  M_UINT       (EUTRAN_Target_Cell_t,  Physical_Layer_Cell_Identity,  9),
 CSN_DESCR_END  (EUTRAN_Target_Cell_t)
 
 static const
 CSN_DESCR_BEGIN(UTRAN_CSG_Target_Cell_t)
-  M_UINT       (UTRAN_CSG_Target_Cell_t, UTRAN_CI,  28, &hf_utran_csg_target_cell_ci),
+  M_UINT       (UTRAN_CSG_Target_Cell_t, UTRAN_CI,  28),
   M_NEXT_EXIST (UTRAN_CSG_Target_Cell_t, Exist_PLMN_ID, 1),
   M_TYPE       (UTRAN_CSG_Target_Cell_t, PLMN_ID, PLMN_t),
 CSN_DESCR_END  (UTRAN_CSG_Target_Cell_t)
 
 static const
 CSN_DESCR_BEGIN(EUTRAN_CSG_Target_Cell_t)
-  M_UINT       (EUTRAN_CSG_Target_Cell_t, EUTRAN_CI,  28, &hf_eutran_csg_target_cell_ci),
-  M_UINT       (EUTRAN_CSG_Target_Cell_t, Tracking_Area_Code,  16, &hf_eutran_csg_target_cell_tac),
+  M_UINT       (EUTRAN_CSG_Target_Cell_t, EUTRAN_CI,  28),
+  M_UINT       (EUTRAN_CSG_Target_Cell_t, Tracking_Area_Code,  16),
   M_NEXT_EXIST (EUTRAN_CSG_Target_Cell_t, Exist_PLMN_ID, 1),
   M_TYPE       (EUTRAN_CSG_Target_Cell_t, PLMN_ID, PLMN_t),
 CSN_DESCR_END  (EUTRAN_CSG_Target_Cell_t)
@@ -2513,7 +1328,7 @@ CSN_DESCR_END  (PCCF_AdditionsR8_t)
 static const
 CSN_DESCR_BEGIN(PCCF_AdditionsR5_t)
   M_NEXT_EXIST (PCCF_AdditionsR5_t, Exist_G_RNTI_extention, 1),
-  M_UINT       (PCCF_AdditionsR5_t,  G_RNTI_extention,  4, &hf_pmo_additionsr5_grnti),
+  M_UINT       (PCCF_AdditionsR5_t,  G_RNTI_extention,  4),
   M_NEXT_EXIST_OR_NULL(PCCF_AdditionsR5_t, Exist_AdditionsR8, 1),
   M_TYPE       (PCCF_AdditionsR5_t, AdditionsR8, PCCF_AdditionsR8_t),
 CSN_DESCR_END  (PCCF_AdditionsR5_t)
@@ -2532,16 +1347,16 @@ CSN_DESCR_END  (PCCF_AdditionsR99_t)
 static const
 CSN_DESCR_BEGIN(Packet_Cell_Change_Failure_t)
   /* Mac header */
-  M_UINT               (Packet_Cell_Change_Failure_t,  PayloadType,  2, &hf_packet_cell_change_failure_payloadtype),
-  M_UINT               (Packet_Cell_Change_Failure_t,  spare,  5, &hf_packet_cell_change_failure_spare),
-  M_UINT               (Packet_Cell_Change_Failure_t,  R,  1, &hf_packet_cell_change_failure_r),
-  M_UINT               (Packet_Cell_Change_Failure_t,  MESSAGE_TYPE,  6, &hf_packet_cell_change_failure_message_type),
+  M_UINT               (Packet_Cell_Change_Failure_t,  PayloadType,  2),
+  M_UINT               (Packet_Cell_Change_Failure_t,  spare,  5),
+  M_UINT               (Packet_Cell_Change_Failure_t,  R,  1),
+  M_UINT               (Packet_Cell_Change_Failure_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
-  M_UINT               (Packet_Cell_Change_Failure_t,  TLLI,  32, &hf_packet_cell_change_failure_tlli),
-  M_UINT               (Packet_Cell_Change_Failure_t,  ARFCN,  10, &hf_packet_cell_change_failure_arfcn),
-  M_UINT               (Packet_Cell_Change_Failure_t,  BSIC,  6, &hf_packet_cell_change_failure_bsic),
-  M_UINT               (Packet_Cell_Change_Failure_t,  CAUSE,  4, &hf_packet_cell_change_failure_cause),
+  M_UINT               (Packet_Cell_Change_Failure_t,  TLLI,  32),
+  M_UINT               (Packet_Cell_Change_Failure_t,  ARFCN,  10),
+  M_UINT               (Packet_Cell_Change_Failure_t,  BSIC,  6),
+  M_UINT               (Packet_Cell_Change_Failure_t,  CAUSE,  4),
 
   M_NEXT_EXIST_OR_NULL (Packet_Cell_Change_Failure_t, Exist_AdditionsR99, 1),
   M_TYPE               (Packet_Cell_Change_Failure_t, AdditionsR99, PCCF_AdditionsR99_t),
@@ -2550,48 +1365,48 @@ CSN_DESCR_END          (Packet_Cell_Change_Failure_t)
 /*< Packet Uplink Ack/Nack message content > */
 static const
 CSN_DESCR_BEGIN(Power_Control_Parameters_t)
-  M_UINT       (Power_Control_Parameters_t,  ALPHA,  4, &hf_power_control_parameters_alpha),
+  M_UINT       (Power_Control_Parameters_t,  ALPHA,  4),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[0].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[0].GAMMA_TN,  5, &hf_power_control_parameters_slot0_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[0].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[1].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[1].GAMMA_TN,  5, &hf_power_control_parameters_slot1_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[1].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[2].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[2].GAMMA_TN,  5, &hf_power_control_parameters_slot2_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[2].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[3].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[3].GAMMA_TN,  5, &hf_power_control_parameters_slot3_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[3].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[4].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[4].GAMMA_TN,  5, &hf_power_control_parameters_slot4_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[4].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[5].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[5].GAMMA_TN,  5, &hf_power_control_parameters_slot5_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[5].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[6].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[6].GAMMA_TN,  5, &hf_power_control_parameters_slot6_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[6].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Power_Control_Parameters_t, Slot[7].Exist, 1),
-  M_UINT       (Power_Control_Parameters_t,  Slot[7].GAMMA_TN,  5, &hf_power_control_parameters_slot7_gamma_tn),
+  M_UINT       (Power_Control_Parameters_t,  Slot[7].GAMMA_TN,  5),
 CSN_DESCR_END  (Power_Control_Parameters_t)
 
 static const
 CSN_DESCR_BEGIN(PU_AckNack_GPRS_AdditionsR99_t)
   M_NEXT_EXIST (PU_AckNack_GPRS_AdditionsR99_t, Exist_PacketExtendedTimingAdvance, 1),
-  M_UINT       (PU_AckNack_GPRS_AdditionsR99_t,  PacketExtendedTimingAdvance,  2, &hf_pu_acknack_gprs_additionsr99_packetextendedtimingadvance),
+  M_UINT       (PU_AckNack_GPRS_AdditionsR99_t,  PacketExtendedTimingAdvance,  2),
 
-  M_UINT       (PU_AckNack_GPRS_AdditionsR99_t,  TBF_EST,  1, &hf_pu_acknack_gprs_additionsr99_tbf_est),
+  M_UINT       (PU_AckNack_GPRS_AdditionsR99_t,  TBF_EST,  1),
 CSN_DESCR_END  (PU_AckNack_GPRS_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN       (PU_AckNack_GPRS_t)
-  M_UINT              (PU_AckNack_GPRS_t,  CHANNEL_CODING_COMMAND,  2, &hf_pu_acknack_gprs_channel_coding_command),
+  M_UINT              (PU_AckNack_GPRS_t,  CHANNEL_CODING_COMMAND,  2),
   M_TYPE              (PU_AckNack_GPRS_t, Ack_Nack_Description, Ack_Nack_Description_t),
 
   M_NEXT_EXIST        (PU_AckNack_GPRS_t, Common_Uplink_Ack_Nack_Data.Exist_CONTENTION_RESOLUTION_TLLI, 1),
-  M_UINT              (PU_AckNack_GPRS_t,  Common_Uplink_Ack_Nack_Data.CONTENTION_RESOLUTION_TLLI,  32, &hf_pu_acknack_gprs_common_uplink_ack_nack_data_contention_resolution_tlli),
+  M_UINT              (PU_AckNack_GPRS_t,  Common_Uplink_Ack_Nack_Data.CONTENTION_RESOLUTION_TLLI,  32),
 
   M_NEXT_EXIST        (PU_AckNack_GPRS_t, Common_Uplink_Ack_Nack_Data.Exist_Packet_Timing_Advance, 1),
   M_TYPE              (PU_AckNack_GPRS_t, Common_Uplink_Ack_Nack_Data.Packet_Timing_Advance, Packet_Timing_Advance_t),
@@ -2603,7 +1418,7 @@ CSN_DESCR_BEGIN       (PU_AckNack_GPRS_t)
   M_TYPE              (PU_AckNack_GPRS_t, Common_Uplink_Ack_Nack_Data.Extension_Bits, Extension_Bits_t),
 
   M_UNION             (PU_AckNack_GPRS_t, 2), /* Fixed Allocation was removed */
-  M_UINT              (PU_AckNack_GPRS_t,  u.FixedAllocationDummy,  1, &hf_pu_acknack_gprs_fixedallocationdummy),
+  M_UINT              (PU_AckNack_GPRS_t,  u.FixedAllocationDummy,  1),
   CSN_ERROR           (PU_AckNack_GPRS_t, "01 <Fixed Allocation>", CSN_ERROR_STREAM_NOT_SUPPORTED),
 
   M_NEXT_EXIST_OR_NULL(PU_AckNack_GPRS_t, Exist_AdditionsR99, 1),
@@ -2612,22 +1427,22 @@ CSN_DESCR_END         (PU_AckNack_GPRS_t)
 
 static const
 CSN_DESCR_BEGIN(PU_AckNack_EGPRS_00_t)
-  M_UINT       (PU_AckNack_EGPRS_00_t,  EGPRS_ChannelCodingCommand,  4, &hf_pu_acknack_egprs_00_egprs_channelcodingcommand),
-  M_UINT       (PU_AckNack_EGPRS_00_t,  RESEGMENT,  1, &hf_pu_acknack_egprs_00_resegment),
-  M_UINT       (PU_AckNack_EGPRS_00_t,  PRE_EMPTIVE_TRANSMISSION,  1, &hf_pu_acknack_egprs_00_pre_emptive_transmission),
-  M_UINT       (PU_AckNack_EGPRS_00_t,  PRR_RETRANSMISSION_REQUEST,  1, &hf_pu_acknack_egprs_00_prr_retransmission_request),
-  M_UINT       (PU_AckNack_EGPRS_00_t,  ARAC_RETRANSMISSION_REQUEST,  1, &hf_pu_acknack_egprs_00_arac_retransmission_request),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  EGPRS_ChannelCodingCommand,  4),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  RESEGMENT,  1),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  PRE_EMPTIVE_TRANSMISSION,  1),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  PRR_RETRANSMISSION_REQUEST,  1),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  ARAC_RETRANSMISSION_REQUEST,  1),
 
   M_NEXT_EXIST (PU_AckNack_EGPRS_00_t, Common_Uplink_Ack_Nack_Data.Exist_CONTENTION_RESOLUTION_TLLI, 1),
-  M_UINT       (PU_AckNack_EGPRS_00_t,  Common_Uplink_Ack_Nack_Data.CONTENTION_RESOLUTION_TLLI,  32, &hf_pu_acknack_egprs_00_common_uplink_ack_nack_data_contention_resolution_tlli),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  Common_Uplink_Ack_Nack_Data.CONTENTION_RESOLUTION_TLLI,  32),
 
-  M_UINT       (PU_AckNack_EGPRS_00_t,  TBF_EST,  1, &hf_pu_acknack_egprs_00_tbf_est),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  TBF_EST,  1),
 
   M_NEXT_EXIST (PU_AckNack_EGPRS_00_t, Common_Uplink_Ack_Nack_Data.Exist_Packet_Timing_Advance, 1),
   M_TYPE       (PU_AckNack_EGPRS_00_t, Common_Uplink_Ack_Nack_Data.Packet_Timing_Advance, Packet_Timing_Advance_t),
 
   M_NEXT_EXIST (PU_AckNack_EGPRS_00_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (PU_AckNack_EGPRS_00_t,  Packet_Extended_Timing_Advance,  2, &hf_pu_acknack_egprs_00_packet_extended_timing_advance),
+  M_UINT       (PU_AckNack_EGPRS_00_t,  Packet_Extended_Timing_Advance,  2),
 
   M_NEXT_EXIST (PU_AckNack_EGPRS_00_t, Common_Uplink_Ack_Nack_Data.Exist_Power_Control_Parameters, 1),
   M_TYPE       (PU_AckNack_EGPRS_00_t, Common_Uplink_Ack_Nack_Data.Power_Control_Parameters, Power_Control_Parameters_t),
@@ -2652,10 +1467,10 @@ CSN_DESCR_END  (PU_AckNack_EGPRS_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Uplink_Ack_Nack_t)
-  M_UINT       (Packet_Uplink_Ack_Nack_t,  MESSAGE_TYPE,  6, &hf_packet_uplink_ack_nack_message_type),
-  M_UINT       (Packet_Uplink_Ack_Nack_t,  PAGE_MODE,  2, &hf_packet_uplink_ack_nack_page_mode),
+  M_UINT       (Packet_Uplink_Ack_Nack_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Uplink_Ack_Nack_t,  PAGE_MODE,  2),
   M_FIXED      (Packet_Uplink_Ack_Nack_t, 2, 0x00),
-  M_UINT       (Packet_Uplink_Ack_Nack_t,  UPLINK_TFI,  5, &hf_packet_uplink_ack_nack_uplink_tfi),
+  M_UINT       (Packet_Uplink_Ack_Nack_t,  UPLINK_TFI,  5),
 
   M_UNION      (Packet_Uplink_Ack_Nack_t, 2),
   M_TYPE       (Packet_Uplink_Ack_Nack_t, u.PU_AckNack_GPRS_Struct, PU_AckNack_GPRS_t),
@@ -2665,16 +1480,16 @@ CSN_DESCR_END  (Packet_Uplink_Ack_Nack_t)
 /*< Packet Uplink Assignment message content > */
 static const
 CSN_DESCR_BEGIN(CHANGE_MARK_t)
-  M_UINT       (CHANGE_MARK_t,  CHANGE_MARK_1,  2, &hf_change_mark_change_mark_1),
+  M_UINT       (CHANGE_MARK_t,  CHANGE_MARK_1,  2),
 
   M_NEXT_EXIST (CHANGE_MARK_t, Exist_CHANGE_MARK_2, 1),
-  M_UINT       (CHANGE_MARK_t,  CHANGE_MARK_2,  2, &hf_change_mark_change_mark_2),
+  M_UINT       (CHANGE_MARK_t,  CHANGE_MARK_2,  2),
 CSN_DESCR_END  (CHANGE_MARK_t)
 
 static const
 CSN_DESCR_BEGIN(Indirect_encoding_t)
-  M_UINT       (Indirect_encoding_t,  MAIO,  6, &hf_indirect_encoding_maio),
-  M_UINT       (Indirect_encoding_t,  MA_NUMBER,  4, &hf_indirect_encoding_ma_number),
+  M_UINT       (Indirect_encoding_t,  MAIO,  6),
+  M_UINT       (Indirect_encoding_t,  MA_NUMBER,  4),
 
   M_NEXT_EXIST (Indirect_encoding_t, Exist_CHANGE_MARK, 1),
   M_TYPE       (Indirect_encoding_t, CHANGE_MARK, CHANGE_MARK_t),
@@ -2682,24 +1497,24 @@ CSN_DESCR_END  (Indirect_encoding_t)
 
 static const
 CSN_DESCR_BEGIN(Direct_encoding_1_t)
-  M_UINT       (Direct_encoding_1_t,  MAIO,  6, &hf_direct_encoding_1_maio),
+  M_UINT       (Direct_encoding_1_t,  MAIO,  6),
   M_TYPE       (Direct_encoding_1_t, GPRS_Mobile_Allocation, GPRS_Mobile_Allocation_t),
 CSN_DESCR_END  (Direct_encoding_1_t)
 
 static const
 CSN_DESCR_BEGIN(Direct_encoding_2_t)
-  M_UINT       (Direct_encoding_2_t,  MAIO,  6, &hf_direct_encoding_2_maio),
-  M_UINT       (Direct_encoding_2_t,  HSN,  6, &hf_direct_encoding_2_hsn),
+  M_UINT       (Direct_encoding_2_t,  MAIO,  6),
+  M_UINT       (Direct_encoding_2_t,  HSN,  6),
   M_UINT_OFFSET(Direct_encoding_2_t, Length_of_MA_Frequency_List, 4, 3),
   M_VAR_ARRAY  (Direct_encoding_2_t, MA_Frequency_List, Length_of_MA_Frequency_List, 0),
 CSN_DESCR_END  (Direct_encoding_2_t)
 
 static const
 CSN_DESCR_BEGIN(Frequency_Parameters_t)
-  M_UINT       (Frequency_Parameters_t,  TSC,  3, &hf_frequency_parameters_tsc),
+  M_UINT       (Frequency_Parameters_t,  TSC,  3),
 
   M_UNION      (Frequency_Parameters_t, 4),
-  M_UINT       (Frequency_Parameters_t,  u.ARFCN,  10, &hf_frequency_parameters_arfcn),
+  M_UINT       (Frequency_Parameters_t,  u.ARFCN,  10),
   M_TYPE       (Frequency_Parameters_t, u.Indirect_encoding, Indirect_encoding_t),
   M_TYPE       (Frequency_Parameters_t, u.Direct_encoding_1, Direct_encoding_1_t),
   M_TYPE       (Frequency_Parameters_t, u.Direct_encoding_2, Direct_encoding_2_t),
@@ -2707,69 +1522,69 @@ CSN_DESCR_END  (Frequency_Parameters_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Request_Reference_t)
-  M_UINT       (Packet_Request_Reference_t,  RANDOM_ACCESS_INFORMATION,  11, &hf_packet_request_reference_random_access_information),
+  M_UINT       (Packet_Request_Reference_t,  RANDOM_ACCESS_INFORMATION,  11),
   M_UINT_ARRAY (Packet_Request_Reference_t, FRAME_NUMBER, 8, 2),
 CSN_DESCR_END  (Packet_Request_Reference_t)
 
 static const
 CSN_DESCR_BEGIN(Timeslot_Allocation_t)
   M_NEXT_EXIST (Timeslot_Allocation_t, Exist, 1),
-  M_UINT       (Timeslot_Allocation_t,  USF_TN,  3, &hf_timeslot_allocation_usf_tn),
+  M_UINT       (Timeslot_Allocation_t,  USF_TN,  3),
 CSN_DESCR_END  (Timeslot_Allocation_t)
 
 static const
 CSN_DESCR_BEGIN(Timeslot_Allocation_Power_Ctrl_Param_t)
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  ALPHA,  4, &hf_timeslot_allocation_power_ctrl_param_alpha),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  ALPHA,  4),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[0].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[0].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot0_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[0].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot0_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[0].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[0].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[1].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[1].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot1_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[1].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot1_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[1].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[1].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[2].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[2].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot2_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[2].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot2_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[2].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[2].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[3].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[3].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot3_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[3].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot3_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[3].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[3].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[4].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[4].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot4_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[4].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot4_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[4].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[4].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[5].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[5].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot5_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[5].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot5_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[5].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[5].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[6].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[6].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot6_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[6].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot6_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[6].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[6].GAMMA_TN,  5),
 
   M_NEXT_EXIST (Timeslot_Allocation_Power_Ctrl_Param_t, Slot[7].Exist, 2),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[7].USF_TN,  3, &hf_timeslot_allocation_power_ctrl_param_slot7_usf_tn),
-  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[7].GAMMA_TN,  5, &hf_timeslot_allocation_power_ctrl_param_slot7_gamma_tn),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[7].USF_TN,  3),
+  M_UINT       (Timeslot_Allocation_Power_Ctrl_Param_t,  Slot[7].GAMMA_TN,  5),
 CSN_DESCR_END  (Timeslot_Allocation_Power_Ctrl_Param_t)
 
 /* USED in <Packet Uplink Assignment message content> */
 static const
 CSN_DESCR_BEGIN(Dynamic_Allocation_t)
-  M_UINT       (Dynamic_Allocation_t,  Extended_Dynamic_Allocation,  1, &hf_dynamic_allocation_extended_dynamic_allocation),
+  M_UINT       (Dynamic_Allocation_t,  Extended_Dynamic_Allocation,  1),
 
   M_NEXT_EXIST (Dynamic_Allocation_t, Exist_P0, 2),
-  M_UINT       (Dynamic_Allocation_t,  P0,  4, &hf_dynamic_allocation_p0),
-  M_UINT       (Dynamic_Allocation_t,  PR_MODE,  1, &hf_dynamic_allocation_pr_mode),
+  M_UINT       (Dynamic_Allocation_t,  P0,  4),
+  M_UINT       (Dynamic_Allocation_t,  PR_MODE,  1),
 
-  M_UINT       (Dynamic_Allocation_t,  USF_GRANULARITY,  1, &hf_dynamic_allocation_usf_granularity),
+  M_UINT       (Dynamic_Allocation_t,  USF_GRANULARITY,  1),
 
   M_NEXT_EXIST (Dynamic_Allocation_t, Exist_UPLINK_TFI_ASSIGNMENT, 1),
-  M_UINT       (Dynamic_Allocation_t,  UPLINK_TFI_ASSIGNMENT,  5, &hf_dynamic_allocation_uplink_tfi_assignment),
+  M_UINT       (Dynamic_Allocation_t,  UPLINK_TFI_ASSIGNMENT,  5),
 
   M_NEXT_EXIST (Dynamic_Allocation_t, Exist_RLC_DATA_BLOCKS_GRANTED, 1),
-  M_UINT       (Dynamic_Allocation_t,  RLC_DATA_BLOCKS_GRANTED,  8, &hf_dynamic_allocation_rlc_data_blocks_granted),
+  M_UINT       (Dynamic_Allocation_t,  RLC_DATA_BLOCKS_GRANTED,  8),
 
   M_NEXT_EXIST (Dynamic_Allocation_t, Exist_TBF_Starting_Time, 1),
   M_TYPE       (Dynamic_Allocation_t, TBF_Starting_Time, Starting_Frame_Number_t),
@@ -2781,35 +1596,35 @@ CSN_DESCR_END  (Dynamic_Allocation_t)
 
 static const
 CSN_DESCR_BEGIN(Single_Block_Allocation_t)
-  M_UINT       (Single_Block_Allocation_t,  TIMESLOT_NUMBER,  3, &hf_single_block_allocation_timeslot_number),
+  M_UINT       (Single_Block_Allocation_t,  TIMESLOT_NUMBER,  3),
 
   M_NEXT_EXIST (Single_Block_Allocation_t, Exist_ALPHA_and_GAMMA_TN, 2),
-  M_UINT       (Single_Block_Allocation_t,  ALPHA,  4, &hf_single_block_allocation_alpha),
-  M_UINT       (Single_Block_Allocation_t,  GAMMA_TN,  5, &hf_single_block_allocation_gamma_tn),
+  M_UINT       (Single_Block_Allocation_t,  ALPHA,  4),
+  M_UINT       (Single_Block_Allocation_t,  GAMMA_TN,  5),
 
   M_NEXT_EXIST (Single_Block_Allocation_t, Exist_P0, 3),
-  M_UINT       (Single_Block_Allocation_t,  P0,  4, &hf_single_block_allocation_p0),
-  M_UINT       (Single_Block_Allocation_t,  BTS_PWR_CTRL_MODE,  1, &hf_single_block_allocation_bts_pwr_ctrl_mode),
-  M_UINT       (Single_Block_Allocation_t,  PR_MODE,  1, &hf_single_block_allocation_pr_mode),
+  M_UINT       (Single_Block_Allocation_t,  P0,  4),
+  M_UINT       (Single_Block_Allocation_t,  BTS_PWR_CTRL_MODE,  1),
+  M_UINT       (Single_Block_Allocation_t,  PR_MODE,  1),
 
   M_TYPE       (Single_Block_Allocation_t, TBF_Starting_Time, Starting_Frame_Number_t),
 CSN_DESCR_END  (Single_Block_Allocation_t)
 
 static const
 CSN_DESCR_BEGIN(DTM_Dynamic_Allocation_t)
-  M_UINT       (DTM_Dynamic_Allocation_t,  Extended_Dynamic_Allocation,  1, &hf_dtm_dynamic_allocation_extended_dynamic_allocation),
+  M_UINT       (DTM_Dynamic_Allocation_t,  Extended_Dynamic_Allocation,  1),
 
   M_NEXT_EXIST (DTM_Dynamic_Allocation_t, Exist_P0, 2),
-  M_UINT       (DTM_Dynamic_Allocation_t,  P0,  4, &hf_dtm_dynamic_allocation_p0),
-  M_UINT       (DTM_Dynamic_Allocation_t,  PR_MODE,  1, &hf_dtm_dynamic_allocation_pr_mode),
+  M_UINT       (DTM_Dynamic_Allocation_t,  P0,  4),
+  M_UINT       (DTM_Dynamic_Allocation_t,  PR_MODE,  1),
 
-  M_UINT       (DTM_Dynamic_Allocation_t,  USF_GRANULARITY,  1, &hf_dtm_dynamic_allocation_usf_granularity),
+  M_UINT       (DTM_Dynamic_Allocation_t,  USF_GRANULARITY,  1),
 
   M_NEXT_EXIST (DTM_Dynamic_Allocation_t, Exist_UPLINK_TFI_ASSIGNMENT, 1),
-  M_UINT       (DTM_Dynamic_Allocation_t,  UPLINK_TFI_ASSIGNMENT,  5, &hf_dtm_dynamic_allocation_uplink_tfi_assignment),
+  M_UINT       (DTM_Dynamic_Allocation_t,  UPLINK_TFI_ASSIGNMENT,  5),
 
   M_NEXT_EXIST (DTM_Dynamic_Allocation_t, Exist_RLC_DATA_BLOCKS_GRANTED, 1),
-  M_UINT       (DTM_Dynamic_Allocation_t,  RLC_DATA_BLOCKS_GRANTED,  8, &hf_dtm_dynamic_allocation_rlc_data_blocks_granted),
+  M_UINT       (DTM_Dynamic_Allocation_t,  RLC_DATA_BLOCKS_GRANTED,  8),
 
   M_UNION      (DTM_Dynamic_Allocation_t, 2),
   M_TYPE_ARRAY (DTM_Dynamic_Allocation_t, u.Timeslot_Allocation, Timeslot_Allocation_t, 8),
@@ -2818,16 +1633,16 @@ CSN_DESCR_END  (DTM_Dynamic_Allocation_t)
 
 static const
 CSN_DESCR_BEGIN(DTM_Single_Block_Allocation_t)
-  M_UINT       (DTM_Single_Block_Allocation_t,  TIMESLOT_NUMBER,  3, &hf_dtm_single_block_allocation_timeslot_number),
+  M_UINT       (DTM_Single_Block_Allocation_t,  TIMESLOT_NUMBER,  3),
 
   M_NEXT_EXIST (DTM_Single_Block_Allocation_t, Exist_ALPHA_and_GAMMA_TN, 2),
-  M_UINT       (DTM_Single_Block_Allocation_t,  ALPHA,  4, &hf_dtm_single_block_allocation_alpha),
-  M_UINT       (DTM_Single_Block_Allocation_t,  GAMMA_TN,  5, &hf_dtm_single_block_allocation_gamma_tn),
+  M_UINT       (DTM_Single_Block_Allocation_t,  ALPHA,  4),
+  M_UINT       (DTM_Single_Block_Allocation_t,  GAMMA_TN,  5),
 
   M_NEXT_EXIST (DTM_Single_Block_Allocation_t, Exist_P0, 3),
-  M_UINT       (DTM_Single_Block_Allocation_t,  P0,  4, &hf_dtm_single_block_allocation_p0),
-  M_UINT       (DTM_Single_Block_Allocation_t,  BTS_PWR_CTRL_MODE,  1, &hf_dtm_single_block_allocation_bts_pwr_ctrl_mode),
-  M_UINT       (DTM_Single_Block_Allocation_t,  PR_MODE,  1, &hf_dtm_single_block_allocation_pr_mode),
+  M_UINT       (DTM_Single_Block_Allocation_t,  P0,  4),
+  M_UINT       (DTM_Single_Block_Allocation_t,  BTS_PWR_CTRL_MODE,  1),
+  M_UINT       (DTM_Single_Block_Allocation_t,  PR_MODE,  1),
 CSN_DESCR_END  (DTM_Single_Block_Allocation_t)
 
 
@@ -2851,7 +1666,7 @@ typedef struct
 static const
 CSN_DESCR_BEGIN(h10_TLLI_t)
   M_FIXED      (h10_TLLI_t, 2, 0x02),
-  M_UINT       (h10_TLLI_t,  TLLI,  32, &hf_h10lli_t_tlli),
+  M_UINT       (h10_TLLI_t,  TLLI,  32),
 CSN_DESCR_END (h10_TLLI_t)
 
 typedef struct
@@ -2862,7 +1677,7 @@ typedef struct
 static const
 CSN_DESCR_BEGIN(h110_TQI_t)
   M_FIXED      (h110_TQI_t, 3, 0x06),
-  M_UINT       (h110_TQI_t,  TQI,  16, &hf_h110qi_t_tqi),
+  M_UINT       (h110_TQI_t,  TQI,  16),
 CSN_DESCR_END  (h110_TQI_t)
 
 typedef struct
@@ -2880,8 +1695,8 @@ static const
 CSN_ChoiceElement_t PacketUplinkID[] =
 {
   {1, 0 ,    M_TYPE(PacketUplinkID_t, u.Global_TFI, Global_TFI_t)},
-  {2, 0x02 , M_UINT(PacketUplinkID_t, u.TLLI, 32, &hf_packetuplinkid_tlli)},
-  {3, 0x06 , M_UINT(PacketUplinkID_t, u.TQI, 16, &hf_packetuplinkid_tqi)},
+  {2, 0x02 , M_UINT(PacketUplinkID_t, u.TLLI, 32)},
+  {3, 0x06 , M_UINT(PacketUplinkID_t, u.TQI, 16)},
   {3, 0x07 , M_TYPE(PacketUplinkID_t, u.Packet_Request_Reference, Packet_Request_Reference_t)},
 };
 
@@ -2893,13 +1708,13 @@ CSN_DESCR_END  (PacketUplinkID_t)
 static const
 CSN_DESCR_BEGIN(PUA_GPRS_AdditionsR99_t)
   M_NEXT_EXIST (PUA_GPRS_AdditionsR99_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (PUA_GPRS_AdditionsR99_t,  Packet_Extended_Timing_Advance,  2, &hf_pua_gprs_additionsr99_packet_extended_timing_advance),
+  M_UINT       (PUA_GPRS_AdditionsR99_t,  Packet_Extended_Timing_Advance,  2),
 CSN_DESCR_END  (PUA_GPRS_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN       (PUA_GPRS_t)
-  M_UINT              (PUA_GPRS_t,  CHANNEL_CODING_COMMAND,  2, &hf_pua_gprs_channel_coding_command),
-  M_BIT               (PUA_GPRS_t,  TLLI_BLOCK_CHANNEL_CODING, &hf_pua_gprs_tlli_block_channel_coding),
+  M_UINT              (PUA_GPRS_t,  CHANNEL_CODING_COMMAND,  2),
+  M_BIT               (PUA_GPRS_t,  TLLI_BLOCK_CHANNEL_CODING),
   M_TYPE              (PUA_GPRS_t, Packet_Timing_Advance, Packet_Timing_Advance_t),
 
   M_NEXT_EXIST        (PUA_GPRS_t, Exist_Frequency_Parameters, 1),
@@ -2917,54 +1732,54 @@ CSN_DESCR_END         (PUA_GPRS_t)
 
 static const
 CSN_DESCR_BEGIN(COMPACT_ReducedMA_t)
-  M_UINT       (COMPACT_ReducedMA_t,  BitmapLength,  7, &hf_compact_reducedma_bitmaplength),
+  M_UINT       (COMPACT_ReducedMA_t,  BitmapLength,  7),
   M_VAR_BITMAP (COMPACT_ReducedMA_t, ReducedMA_Bitmap, BitmapLength, 0),
 
   M_NEXT_EXIST (COMPACT_ReducedMA_t, Exist_MAIO_2, 1),
-  M_UINT       (COMPACT_ReducedMA_t,  MAIO_2,  6, &hf_compact_reducedma_maio_2),
+  M_UINT       (COMPACT_ReducedMA_t,  MAIO_2,  6),
 CSN_DESCR_END  (COMPACT_TeducedMA_t)
 
 static const
 CSN_DESCR_BEGIN(MultiBlock_Allocation_t)
-  M_UINT       (MultiBlock_Allocation_t,  TIMESLOT_NUMBER,  3, &hf_multiblock_allocation_timeslot_number),
+  M_UINT       (MultiBlock_Allocation_t,  TIMESLOT_NUMBER,  3),
 
   M_NEXT_EXIST (MultiBlock_Allocation_t, Exist_ALPHA_GAMMA_TN, 2),
-  M_UINT       (MultiBlock_Allocation_t,  ALPHA,  4, &hf_multiblock_allocation_alpha),
-  M_UINT       (MultiBlock_Allocation_t,  GAMMA_TN,  5, &hf_multiblock_allocation_gamma_tn),
+  M_UINT       (MultiBlock_Allocation_t,  ALPHA,  4),
+  M_UINT       (MultiBlock_Allocation_t,  GAMMA_TN,  5),
 
   M_NEXT_EXIST (MultiBlock_Allocation_t, Exist_P0_BTS_PWR_CTRL_PR_MODE, 3),
-  M_UINT       (MultiBlock_Allocation_t,  P0,  4, &hf_multiblock_allocation_p0),
-  M_UINT       (MultiBlock_Allocation_t,  BTS_PWR_CTRL_MODE,  1, &hf_multiblock_allocation_bts_pwr_ctrl_mode),
-  M_UINT       (MultiBlock_Allocation_t,  PR_MODE,  1, &hf_multiblock_allocation_pr_mode),
+  M_UINT       (MultiBlock_Allocation_t,  P0,  4),
+  M_UINT       (MultiBlock_Allocation_t,  BTS_PWR_CTRL_MODE,  1),
+  M_UINT       (MultiBlock_Allocation_t,  PR_MODE,  1),
 
   M_TYPE       (MultiBlock_Allocation_t, TBF_Starting_Time, Starting_Frame_Number_t),
-  M_UINT       (MultiBlock_Allocation_t,  NUMBER_OF_RADIO_BLOCKS_ALLOCATED,  2, &hf_multiblock_allocation_number_of_radio_blocks_allocated),
+  M_UINT       (MultiBlock_Allocation_t,  NUMBER_OF_RADIO_BLOCKS_ALLOCATED,  2),
 CSN_DESCR_END  (MultiBlock_Allocation_t)
 
 static const
 CSN_DESCR_BEGIN (PUA_EGPRS_00_t)
   M_NEXT_EXIST  (PUA_EGPRS_00_t, Exist_CONTENTION_RESOLUTION_TLLI, 1),
-  M_UINT        (PUA_EGPRS_00_t,  CONTENTION_RESOLUTION_TLLI,  32, &hf_pua_egprs_00_contention_resolution_tlli),
+  M_UINT        (PUA_EGPRS_00_t,  CONTENTION_RESOLUTION_TLLI,  32),
 
   M_NEXT_EXIST  (PUA_EGPRS_00_t, Exist_COMPACT_ReducedMA, 1),
   M_TYPE        (PUA_EGPRS_00_t, COMPACT_ReducedMA, COMPACT_ReducedMA_t),
 
-  M_UINT        (PUA_EGPRS_00_t,  EGPRS_CHANNEL_CODING_COMMAND,  4, &hf_pua_egprs_00_egprs_channel_coding_command),
-  M_UINT        (PUA_EGPRS_00_t,  RESEGMENT,  1, &hf_pua_egprs_00_resegment),
-  M_UINT        (PUA_EGPRS_00_t,  EGPRS_WindowSize,  5, &hf_pua_egprs_00_egprs_windowsize),
+  M_UINT        (PUA_EGPRS_00_t,  EGPRS_CHANNEL_CODING_COMMAND,  4),
+  M_UINT        (PUA_EGPRS_00_t,  RESEGMENT,  1),
+  M_UINT        (PUA_EGPRS_00_t,  EGPRS_WindowSize,  5),
 
   M_REC_ARRAY   (PUA_EGPRS_00_t, AccessTechnologyType, NrOfAccessTechnologies, 4),
 
-  M_UINT        (PUA_EGPRS_00_t,  ARAC_RETRANSMISSION_REQUEST,  1, &hf_pua_egprs_00_arac_retransmission_request),
-  M_UINT        (PUA_EGPRS_00_t,  TLLI_BLOCK_CHANNEL_CODING,  1, &hf_pua_egprs_00_tlli_block_channel_coding),
+  M_UINT        (PUA_EGPRS_00_t,  ARAC_RETRANSMISSION_REQUEST,  1),
+  M_UINT        (PUA_EGPRS_00_t,  TLLI_BLOCK_CHANNEL_CODING,  1),
 
   M_NEXT_EXIST  (PUA_EGPRS_00_t, Exist_BEP_PERIOD2, 1),
-  M_UINT        (PUA_EGPRS_00_t,  BEP_PERIOD2,  4, &hf_pua_egprs_00_bep_period2),
+  M_UINT        (PUA_EGPRS_00_t,  BEP_PERIOD2,  4),
 
   M_TYPE        (PUA_EGPRS_00_t, PacketTimingAdvance, Packet_Timing_Advance_t),
 
   M_NEXT_EXIST  (PUA_EGPRS_00_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT        (PUA_EGPRS_00_t,  Packet_Extended_Timing_Advance,  2, &hf_pua_egprs_00_packet_extended_timing_advance),
+  M_UINT        (PUA_EGPRS_00_t,  Packet_Extended_Timing_Advance,  2),
 
   M_NEXT_EXIST  (PUA_EGPRS_00_t, Exist_Frequency_Parameters, 1),
   M_TYPE        (PUA_EGPRS_00_t, Frequency_Parameters, Frequency_Parameters_t),
@@ -2987,8 +1802,8 @@ CSN_DESCR_END  (PUA_EGPRS_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Uplink_Assignment_t)
-  M_UINT       (Packet_Uplink_Assignment_t,  MESSAGE_TYPE,  6, &hf_packet_uplink_assignment_message_type),
-  M_UINT       (Packet_Uplink_Assignment_t,  PAGE_MODE,  2, &hf_packet_uplink_assignment_page_mode),
+  M_UINT       (Packet_Uplink_Assignment_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Uplink_Assignment_t,  PAGE_MODE,  2),
 
   M_NEXT_EXIST (Packet_Uplink_Assignment_t, Exist_PERSISTENCE_LEVEL, 1),
   M_UINT_ARRAY (Packet_Uplink_Assignment_t, PERSISTENCE_LEVEL, 4, 4),
@@ -3004,15 +1819,15 @@ CSN_DESCR_END  (Packet_Uplink_Assignment_t)
 static const
 CSN_DESCR_BEGIN(Measurement_Mapping_struct_t)
   M_TYPE       (Measurement_Mapping_struct_t, Measurement_Starting_Time, Starting_Frame_Number_t),
-  M_UINT       (Measurement_Mapping_struct_t,  MEASUREMENT_INTERVAL,  5, &hf_measurement_mapping_struct_measurement_interval),
-  M_UINT       (Measurement_Mapping_struct_t,  MEASUREMENT_BITMAP,  8, &hf_measurement_mapping_struct_measurement_bitmap),
+  M_UINT       (Measurement_Mapping_struct_t,  MEASUREMENT_INTERVAL,  5),
+  M_UINT       (Measurement_Mapping_struct_t,  MEASUREMENT_BITMAP,  8),
 CSN_DESCR_END  (Measurement_Mapping_struct_t)
 
 static const
 CSN_ChoiceElement_t PacketDownlinkID[] =
 {
   {1,    0, M_TYPE(PacketDownlinkID_t, u.Global_TFI, Global_TFI_t)},
-  {2, 0x02, M_UINT(PacketDownlinkID_t, u.TLLI, 32, &hf_packetdownlinkid_tlli)},
+  {2, 0x02, M_UINT(PacketDownlinkID_t, u.TLLI, 32)},
 };
 
 static const
@@ -3023,13 +1838,13 @@ CSN_DESCR_END  (PacketDownlinkID_t)
 static const
 CSN_DESCR_BEGIN(PDA_AdditionsR99_t)
   M_NEXT_EXIST (PDA_AdditionsR99_t, Exist_EGPRS_Params, 4), /*if Exist_EGPRS_Params == FALSE then none of the following 4 vars exist */
-  M_UINT       (PDA_AdditionsR99_t,  EGPRS_WindowSize,  5, &hf_pda_additionsr99_egprs_windowsize),
-  M_UINT       (PDA_AdditionsR99_t,  LINK_QUALITY_MEASUREMENT_MODE,  2, &hf_pda_additionsr99_link_quality_measurement_mode),
+  M_UINT       (PDA_AdditionsR99_t,  EGPRS_WindowSize,  5),
+  M_UINT       (PDA_AdditionsR99_t,  LINK_QUALITY_MEASUREMENT_MODE,  2),
   M_NEXT_EXIST (PDA_AdditionsR99_t, Exist_BEP_PERIOD2, 1),
-  M_UINT       (PDA_AdditionsR99_t,  BEP_PERIOD2,  4, &hf_pda_additionsr99_bep_period2),
+  M_UINT       (PDA_AdditionsR99_t,  BEP_PERIOD2,  4),
 
   M_NEXT_EXIST (PDA_AdditionsR99_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (PDA_AdditionsR99_t,  Packet_Extended_Timing_Advance,  2, &hf_pda_additionsr99_packet_extended_timing_advance),
+  M_UINT       (PDA_AdditionsR99_t,  Packet_Extended_Timing_Advance,  2),
 
   M_NEXT_EXIST (PDA_AdditionsR99_t, Exist_COMPACT_ReducedMA, 1),
   M_TYPE       (PDA_AdditionsR99_t, COMPACT_ReducedMA, COMPACT_ReducedMA_t),
@@ -3037,8 +1852,8 @@ CSN_DESCR_END  (PDA_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN       (Packet_Downlink_Assignment_t)
-  M_UINT              (Packet_Downlink_Assignment_t,  MESSAGE_TYPE,  6, &hf_packet_downlink_assignment_message_type),
-  M_UINT              (Packet_Downlink_Assignment_t,  PAGE_MODE,  2, &hf_packet_downlink_assignment_page_mode),
+  M_UINT              (Packet_Downlink_Assignment_t,  MESSAGE_TYPE,  6),
+  M_UINT              (Packet_Downlink_Assignment_t,  PAGE_MODE,  2),
 
   M_NEXT_EXIST        (Packet_Downlink_Assignment_t, Exist_PERSISTENCE_LEVEL, 1),
   M_UINT_ARRAY        (Packet_Downlink_Assignment_t, PERSISTENCE_LEVEL, 4, 4),
@@ -3047,22 +1862,22 @@ CSN_DESCR_BEGIN       (Packet_Downlink_Assignment_t)
 
   M_FIXED             (Packet_Downlink_Assignment_t, 1, 0x00),/*-- Message escape */
 
-  M_UINT              (Packet_Downlink_Assignment_t,  MAC_MODE,  2, &hf_packet_downlink_assignment_mac_mode),
-  M_BIT               (Packet_Downlink_Assignment_t,  RLC_MODE, &hf_packet_downlink_assignment_rlc_mode),
-  M_BIT               (Packet_Downlink_Assignment_t,  CONTROL_ACK, &hf_packet_downlink_assignment_control_ack),
-  M_UINT              (Packet_Downlink_Assignment_t,  TIMESLOT_ALLOCATION,  8, &hf_packet_downlink_assignment_timeslot_allocation),
+  M_UINT              (Packet_Downlink_Assignment_t,  MAC_MODE,  2),
+  M_BIT               (Packet_Downlink_Assignment_t,  RLC_MODE),
+  M_BIT               (Packet_Downlink_Assignment_t,  CONTROL_ACK),
+  M_UINT              (Packet_Downlink_Assignment_t,  TIMESLOT_ALLOCATION,  8),
   M_TYPE              (Packet_Downlink_Assignment_t, Packet_Timing_Advance, Packet_Timing_Advance_t),
 
   M_NEXT_EXIST        (Packet_Downlink_Assignment_t, Exist_P0_and_BTS_PWR_CTRL_MODE, 3),
-  M_UINT              (Packet_Downlink_Assignment_t,  P0,  4, &hf_packet_downlink_assignment_p0),
-  M_BIT               (Packet_Downlink_Assignment_t,  BTS_PWR_CTRL_MODE, &hf_packet_downlink_assignment_bts_pwr_ctrl_mode),
-  M_UINT              (Packet_Downlink_Assignment_t,  PR_MODE,  1, &hf_packet_downlink_assignment_pr_mode),
+  M_UINT              (Packet_Downlink_Assignment_t,  P0,  4),
+  M_BIT               (Packet_Downlink_Assignment_t,  BTS_PWR_CTRL_MODE),
+  M_UINT              (Packet_Downlink_Assignment_t,  PR_MODE,  1),
 
   M_NEXT_EXIST        (Packet_Downlink_Assignment_t, Exist_Frequency_Parameters, 1),
   M_TYPE              (Packet_Downlink_Assignment_t, Frequency_Parameters, Frequency_Parameters_t),
 
   M_NEXT_EXIST        (Packet_Downlink_Assignment_t, Exist_DOWNLINK_TFI_ASSIGNMENT, 1),
-  M_UINT              (Packet_Downlink_Assignment_t,  DOWNLINK_TFI_ASSIGNMENT,  5, &hf_packet_downlink_assignment_downlink_tfi_assignment),
+  M_UINT              (Packet_Downlink_Assignment_t,  DOWNLINK_TFI_ASSIGNMENT,  5),
 
   M_NEXT_EXIST        (Packet_Downlink_Assignment_t, Exist_Power_Control_Parameters, 1),
   M_TYPE              (Packet_Downlink_Assignment_t, Power_Control_Parameters, Power_Control_Parameters_t),
@@ -3081,8 +1896,8 @@ typedef Packet_Downlink_Assignment_t pdlaCheck_t;
 
 static const
 CSN_DESCR_BEGIN(pdlaCheck_t)
-  M_UINT       (pdlaCheck_t,  MESSAGE_TYPE,  6, &hf_pdlacheck_message_type),
-  M_UINT       (pdlaCheck_t,  PAGE_MODE,  2, &hf_pdlacheck_page_mode),
+  M_UINT       (pdlaCheck_t,  MESSAGE_TYPE,  6),
+  M_UINT       (pdlaCheck_t,  PAGE_MODE,  2),
 
   M_NEXT_EXIST (pdlaCheck_t, Exist_PERSISTENCE_LEVEL, 1),
   M_UINT_ARRAY (pdlaCheck_t, PERSISTENCE_LEVEL, 4, 4),
@@ -3093,8 +1908,8 @@ CSN_DESCR_END  (pdlaCheck_t)
 /* DTM Packet UL Assignment */
 static const
 CSN_DESCR_BEGIN(DTM_Packet_Uplink_Assignment_t)
-  M_UINT       (DTM_Packet_Uplink_Assignment_t,  CHANNEL_CODING_COMMAND,  2, &hf_dtm_packet_uplink_assignment_channel_coding_command),
-  M_BIT        (DTM_Packet_Uplink_Assignment_t,  TLLI_BLOCK_CHANNEL_CODING, &hf_dtm_packet_uplink_assignment_tlli_block_channel_coding),
+  M_UINT       (DTM_Packet_Uplink_Assignment_t,  CHANNEL_CODING_COMMAND,  2),
+  M_BIT        (DTM_Packet_Uplink_Assignment_t,  TLLI_BLOCK_CHANNEL_CODING),
   M_TYPE       (DTM_Packet_Uplink_Assignment_t, Packet_Timing_Advance, Packet_Timing_Advance_t),
 
   M_UNION      (DTM_Packet_Uplink_Assignment_t, 3),
@@ -3102,11 +1917,11 @@ CSN_DESCR_BEGIN(DTM_Packet_Uplink_Assignment_t)
   M_TYPE       (DTM_Packet_Uplink_Assignment_t, u.DTM_Dynamic_Allocation, DTM_Dynamic_Allocation_t),
   M_TYPE       (DTM_Packet_Uplink_Assignment_t, u.DTM_Single_Block_Allocation, DTM_Single_Block_Allocation_t),
   M_NEXT_EXIST_OR_NULL  (DTM_Packet_Uplink_Assignment_t, Exist_EGPRS_Parameters, 3),
-  M_UINT       (DTM_Packet_Uplink_Assignment_t,  EGPRS_CHANNEL_CODING_COMMAND,  4, &hf_dtm_packet_uplink_assignment_egprs_channel_coding_command),
-  M_UINT       (DTM_Packet_Uplink_Assignment_t,  RESEGMENT,  1, &hf_dtm_packet_uplink_assignment_resegment),
-  M_UINT       (DTM_Packet_Uplink_Assignment_t,  EGPRS_WindowSize,  5, &hf_dtm_packet_uplink_assignment_egprs_windowsize),
+  M_UINT       (DTM_Packet_Uplink_Assignment_t,  EGPRS_CHANNEL_CODING_COMMAND,  4),
+  M_UINT       (DTM_Packet_Uplink_Assignment_t,  RESEGMENT,  1),
+  M_UINT       (DTM_Packet_Uplink_Assignment_t,  EGPRS_WindowSize,  5),
   M_NEXT_EXIST (DTM_Packet_Uplink_Assignment_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (DTM_Packet_Uplink_Assignment_t,  Packet_Extended_Timing_Advance,  2, &hf_dtm_packet_uplink_assignment_packet_extended_timing_advance),
+  M_UINT       (DTM_Packet_Uplink_Assignment_t,  Packet_Extended_Timing_Advance,  2),
 CSN_DESCR_END(DTM_Packet_Uplink_Assignment_t)
 
 static const
@@ -3117,29 +1932,29 @@ CSN_DESCR_END(DTM_UL_t)
 /* DTM Packet DL Assignment */
 static const
 CSN_DESCR_BEGIN(DTM_Packet_Downlink_Assignment_t)
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  MAC_MODE,  2, &hf_dtm_packet_downlink_assignment_mac_mode),
-  M_BIT        (DTM_Packet_Downlink_Assignment_t,  RLC_MODE, &hf_dtm_packet_downlink_assignment_rlc_mode),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  TIMESLOT_ALLOCATION,  8, &hf_dtm_packet_downlink_assignment_timeslot_allocation),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  MAC_MODE,  2),
+  M_BIT        (DTM_Packet_Downlink_Assignment_t,  RLC_MODE),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  TIMESLOT_ALLOCATION,  8),
   M_TYPE       (DTM_Packet_Downlink_Assignment_t, Packet_Timing_Advance, Packet_Timing_Advance_t),
 
   M_NEXT_EXIST (DTM_Packet_Downlink_Assignment_t, Exist_P0_and_BTS_PWR_CTRL_MODE, 3),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  P0,  4, &hf_dtm_packet_downlink_assignment_p0),
-  M_BIT        (DTM_Packet_Downlink_Assignment_t,  BTS_PWR_CTRL_MODE, &hf_dtm_packet_downlink_assignment_bts_pwr_ctrl_mode),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  PR_MODE,  1, &hf_dtm_packet_downlink_assignment_pr_mode),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  P0,  4),
+  M_BIT        (DTM_Packet_Downlink_Assignment_t,  BTS_PWR_CTRL_MODE),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  PR_MODE,  1),
 
   M_NEXT_EXIST (DTM_Packet_Downlink_Assignment_t, Exist_Power_Control_Parameters, 1),
   M_TYPE       (DTM_Packet_Downlink_Assignment_t, Power_Control_Parameters, Power_Control_Parameters_t),
 
   M_NEXT_EXIST (DTM_Packet_Downlink_Assignment_t, Exist_DOWNLINK_TFI_ASSIGNMENT, 1),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  DOWNLINK_TFI_ASSIGNMENT,  5, &hf_dtm_packet_downlink_assignment_downlink_tfi_assignment),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  DOWNLINK_TFI_ASSIGNMENT,  5),
 
   M_NEXT_EXIST (DTM_Packet_Downlink_Assignment_t, Exist_Measurement_Mapping, 1),
   M_TYPE       (DTM_Packet_Downlink_Assignment_t, Measurement_Mapping, Measurement_Mapping_struct_t),
   M_NEXT_EXIST_OR_NULL  (DTM_Packet_Downlink_Assignment_t, EGPRS_Mode, 2),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  EGPRS_WindowSize,  5, &hf_dtm_packet_downlink_assignment_egprs_windowsize),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  LINK_QUALITY_MEASUREMENT_MODE,  2, &hf_dtm_packet_downlink_assignment_link_quality_measurement_mode),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  EGPRS_WindowSize,  5),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  LINK_QUALITY_MEASUREMENT_MODE,  2),
   M_NEXT_EXIST (DTM_Packet_Downlink_Assignment_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (DTM_Packet_Downlink_Assignment_t,  Packet_Extended_Timing_Advance,  2, &hf_dtm_packet_downlink_assignment_packet_extended_timing_advance),
+  M_UINT       (DTM_Packet_Downlink_Assignment_t,  Packet_Extended_Timing_Advance,  2),
 CSN_DESCR_END(DTM_Packet_Downlink_Assignment_t)
 
 static const
@@ -3161,10 +1976,10 @@ CSN_DESCR_END(DTM_GPRS_B_t)
 
 static const
 CSN_DESCR_BEGIN(DTM_Channel_Request_Description_t)
-  M_UINT       (DTM_Channel_Request_Description_t,  DTM_Pkt_Est_Cause,  2, &hf_dtm_channel_request_description_dtm_pkt_est_cause),
+  M_UINT       (DTM_Channel_Request_Description_t,  DTM_Pkt_Est_Cause,  2),
   M_TYPE       (DTM_Channel_Request_Description_t, Channel_Request_Description, Channel_Request_Description_t),
   M_NEXT_EXIST (DTM_Channel_Request_Description_t, Exist_PFI, 1),
-  M_UINT       (DTM_Channel_Request_Description_t,  PFI,  7, &hf_dtm_channel_request_description_pfi),
+  M_UINT       (DTM_Channel_Request_Description_t,  PFI,  7),
 CSN_DESCR_END(DTM_Channel_Request_Description_t)
 /* DTM  */
 
@@ -3177,7 +1992,7 @@ typedef struct
 
 static const
 CSN_DESCR_BEGIN(Mobile_Identity_t)
-  M_UINT       (Mobile_Identity_t,  Length_of_Mobile_Identity_contents,  4, &hf_mobile_identity_length_of_mobile_identity_contents),
+  M_UINT       (Mobile_Identity_t,  Length_of_Mobile_Identity_contents,  4),
   M_VAR_ARRAY  (Mobile_Identity_t, Mobile_Identity, Length_of_Mobile_Identity_contents, 0),
 CSN_DESCR_END  (Mobile_Identity_t)
 
@@ -3194,10 +2009,10 @@ CSN_DESCR_BEGIN(Page_request_for_RR_conn_t)
   M_UINT_ARRAY (Page_request_for_RR_conn_t, u.TMSI, 8, 4),/* bit (32) == 8*4 */
   M_TYPE       (Page_request_for_RR_conn_t, u.Mobile_Identity, Mobile_Identity_t),
 
-  M_UINT       (Page_request_for_RR_conn_t,  CHANNEL_NEEDED,  2, &hf_page_request_for_rr_conn_channel_needed),
+  M_UINT       (Page_request_for_RR_conn_t,  CHANNEL_NEEDED,  2),
 
   M_NEXT_EXIST (Page_request_for_RR_conn_t, Exist_eMLPP_PRIORITY, 1),
-  M_UINT       (Page_request_for_RR_conn_t,  eMLPP_PRIORITY,  3, &hf_page_request_for_rr_conn_emlpp_priority),
+  M_UINT       (Page_request_for_RR_conn_t,  eMLPP_PRIORITY,  3),
 CSN_DESCR_END  (Page_request_for_RR_conn_t)
 
 static const
@@ -3209,25 +2024,25 @@ CSN_DESCR_END  (Repeated_Page_info_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Paging_Request_t)
-  M_UINT       (Packet_Paging_Request_t,  MESSAGE_TYPE,  6, &hf_packet_paging_request_message_type),
-  M_UINT       (Packet_Paging_Request_t,  PAGE_MODE,  2, &hf_packet_paging_request_page_mode),
+  M_UINT       (Packet_Paging_Request_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Paging_Request_t,  PAGE_MODE,  2),
 
   M_NEXT_EXIST (Packet_Paging_Request_t, Exist_PERSISTENCE_LEVEL, 1),
   M_UINT_ARRAY (Packet_Paging_Request_t, PERSISTENCE_LEVEL, 4, 4), /* 4bit*4 */
 
   M_NEXT_EXIST (Packet_Paging_Request_t, Exist_NLN, 1),
-  M_UINT       (Packet_Paging_Request_t,  NLN,  2, &hf_packet_paging_request_nln),
+  M_UINT       (Packet_Paging_Request_t,  NLN,  2),
 
   M_REC_TARRAY (Packet_Paging_Request_t, Repeated_Page_info, Repeated_Page_info_t, Count_Repeated_Page_info),
 CSN_DESCR_END  (Packet_Paging_Request_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_PDCH_Release_t)
-  M_UINT       (Packet_PDCH_Release_t,  MESSAGE_TYPE,  6, &hf_packet_pdch_release_message_type),
-  M_UINT       (Packet_PDCH_Release_t,  PAGE_MODE,  2, &hf_packet_pdch_release_page_mode),
+  M_UINT       (Packet_PDCH_Release_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_PDCH_Release_t,  PAGE_MODE,  2),
 
   M_FIXED      (Packet_PDCH_Release_t, 1, 0x01),
-  M_UINT       (Packet_PDCH_Release_t,  TIMESLOTS_AVAILABLE,  8, &hf_packet_pdch_release_timeslots_available),
+  M_UINT       (Packet_PDCH_Release_t,  TIMESLOTS_AVAILABLE,  8),
 CSN_DESCR_END  (Packet_PDCH_Release_t)
 
 /*< Packet Power Control/Timing Advance message content >*/
@@ -3248,7 +2063,7 @@ static const
 CSN_ChoiceElement_t PacketPowerControlTimingAdvanceID[] =
 {
   {1, 0,    M_TYPE(PacketPowerControlTimingAdvanceID_t, u.Global_TFI, Global_TFI_t)},
-  {3, 0x06, M_UINT(PacketPowerControlTimingAdvanceID_t, u.TQI, 16, &hf_packetpowercontroltimingadvanceid_tqi)},
+  {3, 0x06, M_UINT(PacketPowerControlTimingAdvanceID_t, u.TQI, 16)},
   {3, 0x07, M_TYPE(PacketPowerControlTimingAdvanceID_t, u.Packet_Request_Reference, Packet_Request_Reference_t)},
 };
 
@@ -3259,8 +2074,8 @@ CSN_DESCR_END  (PacketPowerControlTimingAdvanceID_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Power_Control_Timing_Advance_t)
-  M_UINT       (Packet_Power_Control_Timing_Advance_t,  MESSAGE_TYPE,  6, &hf_packet_power_control_timing_advance_message_type),
-  M_UINT       (Packet_Power_Control_Timing_Advance_t,  PAGE_MODE,  2, &hf_packet_power_control_timing_advance_page_mode),
+  M_UINT       (Packet_Power_Control_Timing_Advance_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Power_Control_Timing_Advance_t,  PAGE_MODE,  2),
 
   M_TYPE       (Packet_Power_Control_Timing_Advance_t, ID, PacketPowerControlTimingAdvanceID_t),
 
@@ -3278,13 +2093,13 @@ CSN_DESCR_END  (Packet_Power_Control_Timing_Advance_t)
 /*< Packet Queueing Notification message content > */
 static const
 CSN_DESCR_BEGIN(Packet_Queueing_Notification_t)
-  M_UINT       (Packet_Queueing_Notification_t,  MESSAGE_TYPE,  6, &hf_packet_queueing_notification_message_type),
-  M_UINT       (Packet_Queueing_Notification_t,  PAGE_MODE,  2, &hf_packet_queueing_notification_page_mode),
+  M_UINT       (Packet_Queueing_Notification_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Queueing_Notification_t,  PAGE_MODE,  2),
 
   M_FIXED      (Packet_Queueing_Notification_t, 3, 0x07),/* 111 Fixed */
   M_TYPE       (Packet_Queueing_Notification_t, Packet_Request_Reference, Packet_Request_Reference_t),
 
-  M_UINT       (Packet_Queueing_Notification_t,  TQI,  16, &hf_packet_queueing_notification_tqi),
+  M_UINT       (Packet_Queueing_Notification_t,  TQI,  16),
 CSN_DESCR_END  (Packet_Queueing_Notification_t)
 
 /* USED in Packet Timeslot Reconfigure message content
@@ -3293,16 +2108,16 @@ CSN_DESCR_END  (Packet_Queueing_Notification_t)
  */
 static const
 CSN_DESCR_BEGIN(TRDynamic_Allocation_t)
-  M_UINT       (TRDynamic_Allocation_t,  Extended_Dynamic_Allocation,  1, &hf_trdynamic_allocation_extended_dynamic_allocation),
+  M_UINT       (TRDynamic_Allocation_t,  Extended_Dynamic_Allocation,  1),
 
   M_NEXT_EXIST (TRDynamic_Allocation_t, Exist_P0, 2),
-  M_UINT       (TRDynamic_Allocation_t,  P0,  4, &hf_trdynamic_allocation_p0),
-  M_UINT       (TRDynamic_Allocation_t,  PR_MODE,  1, &hf_trdynamic_allocation_pr_mode),
+  M_UINT       (TRDynamic_Allocation_t,  P0,  4),
+  M_UINT       (TRDynamic_Allocation_t,  PR_MODE,  1),
 
-  M_UINT       (TRDynamic_Allocation_t,  USF_GRANULARITY,  1, &hf_trdynamic_allocation_usf_granularity),
+  M_UINT       (TRDynamic_Allocation_t,  USF_GRANULARITY,  1),
 
   M_NEXT_EXIST (TRDynamic_Allocation_t, Exist_RLC_DATA_BLOCKS_GRANTED, 1),
-  M_UINT       (TRDynamic_Allocation_t,  RLC_DATA_BLOCKS_GRANTED,  8, &hf_trdynamic_allocation_rlc_data_blocks_granted),
+  M_UINT       (TRDynamic_Allocation_t,  RLC_DATA_BLOCKS_GRANTED,  8),
 
   M_NEXT_EXIST (TRDynamic_Allocation_t, Exist_TBF_Starting_Time, 1),
   M_TYPE       (TRDynamic_Allocation_t, TBF_Starting_Time, Starting_Frame_Number_t),
@@ -3316,23 +2131,23 @@ CSN_DESCR_END  (TRDynamic_Allocation_t)
 static const
 CSN_DESCR_BEGIN(PTR_GPRS_AdditionsR99_t)
   M_NEXT_EXIST (PTR_GPRS_AdditionsR99_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (PTR_GPRS_AdditionsR99_t,  Packet_Extended_Timing_Advance,  2, &hf_ptr_gprs_additionsr99_packet_extended_timing_advance),
+  M_UINT       (PTR_GPRS_AdditionsR99_t,  Packet_Extended_Timing_Advance,  2),
 CSN_DESCR_END  (PTR_GPRS_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN       (PTR_GPRS_t)
-  M_UINT              (PTR_GPRS_t,  CHANNEL_CODING_COMMAND,  2, &hf_ptr_gprs_channel_coding_command),
+  M_UINT              (PTR_GPRS_t,  CHANNEL_CODING_COMMAND,  2),
   M_TYPE              (PTR_GPRS_t, Common_Timeslot_Reconfigure_Data.Global_Packet_Timing_Advance, Global_Packet_Timing_Advance_t),
-  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_RLC_MODE,  1, &hf_ptr_gprs_common_timeslot_reconfigure_data_downlink_rlc_mode),
-  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.CONTROL_ACK,  1, &hf_ptr_gprs_common_timeslot_reconfigure_data_control_ack),
+  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_RLC_MODE,  1),
+  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.CONTROL_ACK,  1),
 
   M_NEXT_EXIST        (PTR_GPRS_t, Common_Timeslot_Reconfigure_Data.Exist_DOWNLINK_TFI_ASSIGNMENT, 1),
-  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TFI_ASSIGNMENT,  5, &hf_ptr_gprs_common_timeslot_reconfigure_data_downlink_tfi_assignment),
+  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TFI_ASSIGNMENT,  5),
 
   M_NEXT_EXIST        (PTR_GPRS_t, Common_Timeslot_Reconfigure_Data.Exist_UPLINK_TFI_ASSIGNMENT, 1),
-  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.UPLINK_TFI_ASSIGNMENT,  5, &hf_ptr_gprs_common_timeslot_reconfigure_data_uplink_tfi_assignment),
+  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.UPLINK_TFI_ASSIGNMENT,  5),
 
-  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TIMESLOT_ALLOCATION,  8, &hf_ptr_gprs_common_timeslot_reconfigure_data_downlink_timeslot_allocation),
+  M_UINT              (PTR_GPRS_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TIMESLOT_ALLOCATION,  8),
 
   M_NEXT_EXIST        (PTR_GPRS_t, Common_Timeslot_Reconfigure_Data.Exist_Frequency_Parameters, 1),
   M_TYPE              (PTR_GPRS_t, Common_Timeslot_Reconfigure_Data.Frequency_Parameters, Frequency_Parameters_t),
@@ -3350,32 +2165,32 @@ CSN_DESCR_BEGIN(PTR_EGPRS_00_t)
   M_NEXT_EXIST (PTR_EGPRS_00_t, Exist_COMPACT_ReducedMA, 1),
   M_TYPE       (PTR_EGPRS_00_t, COMPACT_ReducedMA, COMPACT_ReducedMA_t),
 
-  M_UINT       (PTR_EGPRS_00_t,  EGPRS_ChannelCodingCommand,  4, &hf_ptr_egprs_00_egprs_channelcodingcommand),
-  M_UINT       (PTR_EGPRS_00_t,  RESEGMENT,  1, &hf_ptr_egprs_00_resegment),
+  M_UINT       (PTR_EGPRS_00_t,  EGPRS_ChannelCodingCommand,  4),
+  M_UINT       (PTR_EGPRS_00_t,  RESEGMENT,  1),
 
   M_NEXT_EXIST (PTR_EGPRS_00_t, Exist_DOWNLINK_EGPRS_WindowSize, 1),
-  M_UINT       (PTR_EGPRS_00_t,  DOWNLINK_EGPRS_WindowSize,  5, &hf_ptr_egprs_00_downlink_egprs_windowsize),
+  M_UINT       (PTR_EGPRS_00_t,  DOWNLINK_EGPRS_WindowSize,  5),
 
   M_NEXT_EXIST (PTR_EGPRS_00_t, Exist_UPLINK_EGPRS_WindowSize, 1),
-  M_UINT       (PTR_EGPRS_00_t,  UPLINK_EGPRS_WindowSize,  5, &hf_ptr_egprs_00_uplink_egprs_windowsize),
+  M_UINT       (PTR_EGPRS_00_t,  UPLINK_EGPRS_WindowSize,  5),
 
-  M_UINT       (PTR_EGPRS_00_t,  LINK_QUALITY_MEASUREMENT_MODE,  2, &hf_ptr_egprs_00_link_quality_measurement_mode),
+  M_UINT       (PTR_EGPRS_00_t,  LINK_QUALITY_MEASUREMENT_MODE,  2),
 
   M_TYPE       (PTR_EGPRS_00_t, Common_Timeslot_Reconfigure_Data.Global_Packet_Timing_Advance, Global_Packet_Timing_Advance_t),
 
   M_NEXT_EXIST (PTR_EGPRS_00_t, Exist_Packet_Extended_Timing_Advance, 1),
-  M_UINT       (PTR_EGPRS_00_t,  Packet_Extended_Timing_Advance,  2, &hf_ptr_egprs_00_packet_extended_timing_advance),
+  M_UINT       (PTR_EGPRS_00_t,  Packet_Extended_Timing_Advance,  2),
 
-  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_RLC_MODE,  1, &hf_ptr_egprs_00_common_timeslot_reconfigure_data_downlink_rlc_mode),
-  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.CONTROL_ACK,  1, &hf_ptr_egprs_00_common_timeslot_reconfigure_data_control_ack),
+  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_RLC_MODE,  1),
+  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.CONTROL_ACK,  1),
 
   M_NEXT_EXIST (PTR_EGPRS_00_t, Common_Timeslot_Reconfigure_Data.Exist_DOWNLINK_TFI_ASSIGNMENT, 1),
-  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TFI_ASSIGNMENT,  5, &hf_ptr_egprs_00_common_timeslot_reconfigure_data_downlink_tfi_assignment),
+  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TFI_ASSIGNMENT,  5),
 
   M_NEXT_EXIST (PTR_EGPRS_00_t, Common_Timeslot_Reconfigure_Data.Exist_UPLINK_TFI_ASSIGNMENT, 1),
-  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.UPLINK_TFI_ASSIGNMENT,  5, &hf_ptr_egprs_00_common_timeslot_reconfigure_data_uplink_tfi_assignment),
+  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.UPLINK_TFI_ASSIGNMENT,  5),
 
-  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TIMESLOT_ALLOCATION,  8, &hf_ptr_egprs_00_common_timeslot_reconfigure_data_downlink_timeslot_allocation),
+  M_UINT       (PTR_EGPRS_00_t,  Common_Timeslot_Reconfigure_Data.DOWNLINK_TIMESLOT_ALLOCATION,  8),
 
   M_NEXT_EXIST (PTR_EGPRS_00_t, Common_Timeslot_Reconfigure_Data.Exist_Frequency_Parameters, 1),
   M_TYPE       (PTR_EGPRS_00_t, Common_Timeslot_Reconfigure_Data.Frequency_Parameters, Frequency_Parameters_t),
@@ -3396,8 +2211,8 @@ CSN_DESCR_END  (PTR_EGPRS_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Timeslot_Reconfigure_t)
-  M_UINT       (Packet_Timeslot_Reconfigure_t,  MESSAGE_TYPE,  6, &hf_packetimeslot_reconfigure_t_message_type),
-  M_UINT       (Packet_Timeslot_Reconfigure_t,  PAGE_MODE,  2, &hf_packetimeslot_reconfigure_t_page_mode),
+  M_UINT       (Packet_Timeslot_Reconfigure_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Timeslot_Reconfigure_t,  PAGE_MODE,  2),
 
   M_FIXED      (Packet_Timeslot_Reconfigure_t, 1, 0x00),
   M_TYPE       (Packet_Timeslot_Reconfigure_t, Global_TFI, Global_TFI_t),
@@ -3411,8 +2226,8 @@ typedef Packet_Timeslot_Reconfigure_t PTRCheck_t;
 
 static const
 CSN_DESCR_BEGIN(PTRCheck_t)
-  M_UINT       (PTRCheck_t,  MESSAGE_TYPE,  6, &hf_ptrcheck_message_type),
-  M_UINT       (PTRCheck_t,  PAGE_MODE,  2, &hf_ptrcheck_page_mode),
+  M_UINT       (PTRCheck_t,  MESSAGE_TYPE,  6),
+  M_UINT       (PTRCheck_t,  PAGE_MODE,  2),
   M_FIXED      (PTRCheck_t, 1, 0x00),/* 0 fixed */
   M_TYPE       (PTRCheck_t, Global_TFI, Global_TFI_t),
 CSN_DESCR_END  (PTRCheck_t)
@@ -3422,8 +2237,8 @@ static const
 CSN_DESCR_BEGIN(PRACH_Control_t)
   M_UINT_ARRAY (PRACH_Control_t, ACC_CONTR_CLASS, 8, 2), /* bit (16) == 8bit*2 */
   M_UINT_ARRAY (PRACH_Control_t, MAX_RETRANS, 2, 4), /* bit (2) * 4 */
-  M_UINT       (PRACH_Control_t,  S,  4, &hf_prach_control_s),
-  M_UINT       (PRACH_Control_t,  TX_INT,  4, &hf_prach_control_tx_int),
+  M_UINT       (PRACH_Control_t,  S,  4),
+  M_UINT       (PRACH_Control_t,  TX_INT,  4),
   M_NEXT_EXIST (PRACH_Control_t, Exist_PERSISTENCE_LEVEL, 1),
   M_UINT_ARRAY (PRACH_Control_t, PERSISTENCE_LEVEL, 4, 4),
 CSN_DESCR_END  (PRACH_Control_t)
@@ -3435,37 +2250,37 @@ CSN_DESCR_END  (Cell_Allocation_t)
 
 static const
 CSN_DESCR_BEGIN(HCS_t)
-  M_UINT       (HCS_t,  PRIORITY_CLASS,  3, &hf_hcs_priority_class),
-  M_UINT       (HCS_t,  HCS_THR,  5, &hf_hcs_hcs_thr),
+  M_UINT       (HCS_t,  PRIORITY_CLASS,  3),
+  M_UINT       (HCS_t,  HCS_THR,  5),
 CSN_DESCR_END  (HCS_t)
 
 static const
 CSN_DESCR_BEGIN(Location_Repeat_t)
-  M_UINT       (Location_Repeat_t,  PBCCH_LOCATION,  2, &hf_location_repeat_pbcch_location),
-  M_UINT       (Location_Repeat_t,  PSI1_REPEAT_PERIOD,  4, &hf_location_repeat_psi1_repeat_period),
+  M_UINT       (Location_Repeat_t,  PBCCH_LOCATION,  2),
+  M_UINT       (Location_Repeat_t,  PSI1_REPEAT_PERIOD,  4),
 CSN_DESCR_END  (Location_Repeat_t)
 
 static const
 CSN_DESCR_BEGIN(SI13_PBCCH_Location_t)
   M_UNION      (SI13_PBCCH_Location_t, 2),
-  M_UINT       (SI13_PBCCH_Location_t,  u.SI13_LOCATION,  1, &hf_si13_pbcch_location_si13_location),
+  M_UINT       (SI13_PBCCH_Location_t,  u.SI13_LOCATION,  1),
   M_TYPE       (SI13_PBCCH_Location_t, u.lr, Location_Repeat_t),
 CSN_DESCR_END  (SI13_PBCCH_Location_t)
 
 static const
 CSN_DESCR_BEGIN(Cell_Selection_t)
-  M_UINT       (Cell_Selection_t,  BSIC,  6, &hf_cell_selection_bsic),
-  M_UINT       (Cell_Selection_t,  CELL_BAR_ACCESS_2,  1, &hf_cell_selection_cell_bar_access_2),
-  M_UINT       (Cell_Selection_t,  EXC_ACC,  1, &hf_cell_selection_exc_acc),
-  M_UINT       (Cell_Selection_t,  SAME_RA_AS_SERVING_CELL,  1, &hf_cell_selection_same_ra_as_serving_cell),
+  M_UINT       (Cell_Selection_t,  BSIC,  6),
+  M_UINT       (Cell_Selection_t,  CELL_BAR_ACCESS_2,  1),
+  M_UINT       (Cell_Selection_t,  EXC_ACC,  1),
+  M_UINT       (Cell_Selection_t,  SAME_RA_AS_SERVING_CELL,  1),
   M_NEXT_EXIST (Cell_Selection_t, Exist_RXLEV_and_TXPWR, 2),
-  M_UINT       (Cell_Selection_t,  GPRS_RXLEV_ACCESS_MIN,  6, &hf_cell_selection_gprs_rxlev_access_min),
-  M_UINT       (Cell_Selection_t,  GPRS_MS_TXPWR_MAX_CCH,  5, &hf_cell_selection_gprs_ms_txpwr_max_cch),
+  M_UINT       (Cell_Selection_t,  GPRS_RXLEV_ACCESS_MIN,  6),
+  M_UINT       (Cell_Selection_t,  GPRS_MS_TXPWR_MAX_CCH,  5),
   M_NEXT_EXIST (Cell_Selection_t, Exist_OFFSET_and_TIME, 2),
-  M_UINT       (Cell_Selection_t,  GPRS_TEMPORARY_OFFSET,  3, &hf_cell_selection_gprs_temporary_offset),
-  M_UINT       (Cell_Selection_t,  GPRS_PENALTY_TIME,  5, &hf_cell_selection_gprs_penalty_time),
+  M_UINT       (Cell_Selection_t,  GPRS_TEMPORARY_OFFSET,  3),
+  M_UINT       (Cell_Selection_t,  GPRS_PENALTY_TIME,  5),
   M_NEXT_EXIST (Cell_Selection_t, Exist_GPRS_RESELECT_OFFSET, 1),
-  M_UINT       (Cell_Selection_t,  GPRS_RESELECT_OFFSET,  5, &hf_cell_selection_gprs_reselect_offset),
+  M_UINT       (Cell_Selection_t,  GPRS_RESELECT_OFFSET,  5),
   M_NEXT_EXIST (Cell_Selection_t, Exist_HCS, 1),
   M_TYPE       (Cell_Selection_t, HCS, HCS_t),
   M_NEXT_EXIST (Cell_Selection_t, Exist_SI13_PBCCH_Location, 1),
@@ -3480,9 +2295,9 @@ CSN_DESCR_END  (Cell_Selection_Params_With_FreqDiff_t)
 
 static const
 CSN_DESCR_BEGIN(NeighbourCellParameters_t)
-  M_UINT       (NeighbourCellParameters_t,  START_FREQUENCY,  10, &hf_neighbourcellparameters_start_frequency),
+  M_UINT       (NeighbourCellParameters_t,  START_FREQUENCY,  10),
   M_TYPE       (NeighbourCellParameters_t, Cell_Selection, Cell_Selection_t),
-  M_UINT       (NeighbourCellParameters_t,  NR_OF_REMAINING_CELLS,  4, &hf_neighbourcellparameters_nr_of_remaining_cells),
+  M_UINT       (NeighbourCellParameters_t,  NR_OF_REMAINING_CELLS,  4),
   M_UINT_OFFSET(NeighbourCellParameters_t, FREQ_DIFF_LENGTH, 3, 1),/* offset 1 */
   M_VAR_TARRAY (NeighbourCellParameters_t, Cell_Selection_Params_With_FreqDiff, Cell_Selection_Params_With_FreqDiff_t, NR_OF_REMAINING_CELLS),
 CSN_DESCR_END  (NeighbourCellParameters_t)
@@ -3494,17 +2309,17 @@ CSN_DESCR_END  (NeighbourCellList_t)
 
 static const
 CSN_DESCR_BEGIN(Cell_Selection_2_t)
-  M_UINT       (Cell_Selection_2_t,  CELL_BAR_ACCESS_2,  1, &hf_cell_selection_2_cell_bar_access_2),
-  M_UINT       (Cell_Selection_2_t,  EXC_ACC,  1, &hf_cell_selection_2_exc_acc),
-  M_UINT       (Cell_Selection_2_t,  SAME_RA_AS_SERVING_CELL,  1, &hf_cell_selection_2_same_ra_as_serving_cell),
+  M_UINT       (Cell_Selection_2_t,  CELL_BAR_ACCESS_2,  1),
+  M_UINT       (Cell_Selection_2_t,  EXC_ACC,  1),
+  M_UINT       (Cell_Selection_2_t,  SAME_RA_AS_SERVING_CELL,  1),
   M_NEXT_EXIST (Cell_Selection_2_t, Exist_RXLEV_and_TXPWR, 2),
-  M_UINT       (Cell_Selection_2_t,  GPRS_RXLEV_ACCESS_MIN,  6, &hf_cell_selection_2_gprs_rxlev_access_min),
-  M_UINT       (Cell_Selection_2_t,  GPRS_MS_TXPWR_MAX_CCH,  5, &hf_cell_selection_2_gprs_ms_txpwr_max_cch),
+  M_UINT       (Cell_Selection_2_t,  GPRS_RXLEV_ACCESS_MIN,  6),
+  M_UINT       (Cell_Selection_2_t,  GPRS_MS_TXPWR_MAX_CCH,  5),
   M_NEXT_EXIST (Cell_Selection_2_t, Exist_OFFSET_and_TIME, 2),
-  M_UINT       (Cell_Selection_2_t,  GPRS_TEMPORARY_OFFSET,  3, &hf_cell_selection_2_gprs_temporary_offset),
-  M_UINT       (Cell_Selection_2_t,  GPRS_PENALTY_TIME,  5, &hf_cell_selection_2_gprs_penalty_time),
+  M_UINT       (Cell_Selection_2_t,  GPRS_TEMPORARY_OFFSET,  3),
+  M_UINT       (Cell_Selection_2_t,  GPRS_PENALTY_TIME,  5),
   M_NEXT_EXIST (Cell_Selection_2_t, Exist_GPRS_RESELECT_OFFSET, 1),
-  M_UINT       (Cell_Selection_2_t,  GPRS_RESELECT_OFFSET,  5, &hf_cell_selection_2_gprs_reselect_offset),
+  M_UINT       (Cell_Selection_2_t,  GPRS_RESELECT_OFFSET,  5),
   M_NEXT_EXIST (Cell_Selection_2_t, Exist_HCS, 1),
   M_TYPE       (Cell_Selection_2_t, HCS, HCS_t),
   M_NEXT_EXIST (Cell_Selection_2_t, Exist_SI13_PBCCH_Location, 1),
@@ -3513,8 +2328,8 @@ CSN_DESCR_END  (Cell_Selection_2_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_PRACH_Parameters_t)
-  M_UINT       (Packet_PRACH_Parameters_t,  MESSAGE_TYPE,  6, &hf_packet_prach_parameters_message_type),
-  M_UINT       (Packet_PRACH_Parameters_t,  PAGE_MODE,  2, &hf_packet_prach_parameters_page_mode),
+  M_UINT       (Packet_PRACH_Parameters_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_PRACH_Parameters_t,  PAGE_MODE,  2),
 
   M_TYPE       (Packet_PRACH_Parameters_t, PRACH_Control, PRACH_Control_t),
 CSN_DESCR_END  (Packet_PRACH_Parameters_t)
@@ -3523,7 +2338,7 @@ CSN_DESCR_END  (Packet_PRACH_Parameters_t)
 static const
 CSN_ChoiceElement_t RejectID[] =
 {
-  {1, 0x00, M_UINT(RejectID_t, u.TLLI, 32, &hf_rejectid_tlli)},
+  {1, 0x00, M_UINT(RejectID_t, u.TLLI, 32)},
   {2, 0x02, M_TYPE(RejectID_t, u.Packet_Request_Reference, Packet_Request_Reference_t)},
   {2, 0x03, M_TYPE(RejectID_t, u.Global_TFI, Global_TFI_t)},
 };
@@ -3538,14 +2353,14 @@ CSN_DESCR_BEGIN(Reject_t)
   M_TYPE       (Reject_t, ID, RejectID_t),
 
   M_NEXT_EXIST (Reject_t, Exist_Wait, 2),
-  M_UINT       (Reject_t,  WAIT_INDICATION,  8, &hf_reject_wait_indication),
-  M_UINT       (Reject_t,  WAIT_INDICATION_SIZE,  1, &hf_reject_wait_indication_size),
+  M_UINT       (Reject_t,  WAIT_INDICATION,  8),
+  M_UINT       (Reject_t,  WAIT_INDICATION_SIZE,  1),
 CSN_DESCR_END  (Reject_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Access_Reject_t)
-  M_UINT       (Packet_Access_Reject_t,  MESSAGE_TYPE,  6, &hf_packet_access_reject_message_type),
-  M_UINT       (Packet_Access_Reject_t,  PAGE_MODE,  2, &hf_packet_access_reject_page_mode),
+  M_UINT       (Packet_Access_Reject_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Access_Reject_t,  PAGE_MODE,  2),
 
   M_TYPE       (Packet_Access_Reject_t, Reject, Reject_t),
   M_REC_TARRAY (Packet_Access_Reject_t, Reject[1], Reject_t, Count_Reject),
@@ -3556,7 +2371,7 @@ static const
 CSN_ChoiceElement_t PacketCellChangeOrderID[] =
 {
   {1, 0,    M_TYPE(PacketCellChangeOrderID_t, u.Global_TFI, Global_TFI_t)},
-  {2, 0x02, M_UINT(PacketCellChangeOrderID_t, u.TLLI, 32, &hf_packetcellchangeorderid_tlli)},
+  {2, 0x02, M_UINT(PacketCellChangeOrderID_t, u.TLLI, 32)},
 };
 /* PacketCellChangeOrderID_t; */
 
@@ -3567,34 +2382,34 @@ CSN_DESCR_END  (PacketCellChangeOrderID_t)
 
 static const
 CSN_DESCR_BEGIN(h_FreqBsicCell_t)
-  M_UINT       (h_FreqBsicCell_t,  BSIC,  6, &hf_h_freqbsiccell_bsic),
+  M_UINT       (h_FreqBsicCell_t,  BSIC,  6),
   M_TYPE       (h_FreqBsicCell_t, Cell_Selection, Cell_Selection_t),
 CSN_DESCR_END  (h_FreqBsicCell_t)
 
 static const CSN_DESCR_BEGIN(CellSelectionParamsWithFreqDiff_t)
   /*FREQUENCY_DIFF is really an integer but the number of bits to decode it are stored in FREQ_DIFF_LENGTH*/
   M_VAR_BITMAP (CellSelectionParamsWithFreqDiff_t, FREQUENCY_DIFF, FREQ_DIFF_LENGTH, 0),
-  M_UINT       (CellSelectionParamsWithFreqDiff_t,  BSIC,  6, &hf_cellselectionparamswithfreqdiff_bsic),
+  M_UINT       (CellSelectionParamsWithFreqDiff_t,  BSIC,  6),
   M_NEXT_EXIST (CellSelectionParamsWithFreqDiff_t, Exist_CellSelectionParams, 1),
   M_TYPE       (CellSelectionParamsWithFreqDiff_t, CellSelectionParams, Cell_Selection_2_t),
 CSN_DESCR_END  (CellSelectionParamsWithFreqDiff_t)
 
 static const
 CSN_DESCR_BEGIN(Add_Frequency_list_t)
-  M_UINT       (Add_Frequency_list_t,  START_FREQUENCY,  10, &hf_add_frequency_list_start_frequency),
-  M_UINT       (Add_Frequency_list_t,  BSIC,  6, &hf_add_frequency_list_bsic),
+  M_UINT       (Add_Frequency_list_t,  START_FREQUENCY,  10),
+  M_UINT       (Add_Frequency_list_t,  BSIC,  6),
 
   M_NEXT_EXIST (Add_Frequency_list_t, Exist_Cell_Selection, 1),
   M_TYPE       (Add_Frequency_list_t, Cell_Selection, Cell_Selection_2_t),
 
-  M_UINT       (Add_Frequency_list_t,  NR_OF_FREQUENCIES,  5, &hf_add_frequency_list_nr_of_frequencies),
+  M_UINT       (Add_Frequency_list_t,  NR_OF_FREQUENCIES,  5),
   M_UINT_OFFSET(Add_Frequency_list_t, FREQ_DIFF_LENGTH, 3, 1),/*offset 1*/
 
   M_VAR_TARRAY (Add_Frequency_list_t, CellSelectionParamsWithFreqDiff, CellSelectionParamsWithFreqDiff_t, NR_OF_FREQUENCIES),
 CSN_DESCR_END  (Add_Frequency_list_t)
 
 static const CSN_DESCR_BEGIN(Removed_Freq_Index_t)
-  M_UINT(Removed_Freq_Index_t, REMOVED_FREQ_INDEX, 6, &hf_removed_freq_index_removed_freq_index),
+  M_UINT(Removed_Freq_Index_t, REMOVED_FREQ_INDEX, 6),
 CSN_DESCR_END(Removed_Freq_Index_t)
 
 static const
@@ -3607,22 +2422,22 @@ CSN_DESCR_END  (NC_Frequency_list_t)
 
 static const
 CSN_DESCR_BEGIN(NC_Measurement_Parameters_t)
-  M_UINT       (NC_Measurement_Parameters_t,  NETWORK_CONTROL_ORDER,  2, &hf_nc_measurement_parameters_network_control_order),
+  M_UINT       (NC_Measurement_Parameters_t,  NETWORK_CONTROL_ORDER,  2),
 
   M_NEXT_EXIST (NC_Measurement_Parameters_t, Exist_NC, 3),
-  M_UINT       (NC_Measurement_Parameters_t,  NC_NON_DRX_PERIOD,  3, &hf_nc_measurement_parameters_nc_non_drx_period),
-  M_UINT       (NC_Measurement_Parameters_t,  NC_REPORTING_PERIOD_I,  3, &hf_nc_measurement_parameters_nc_reporting_period_i),
-  M_UINT       (NC_Measurement_Parameters_t,  NC_REPORTING_PERIOD_T,  3, &hf_nc_measurement_parameters_nc_reporting_period_t),
+  M_UINT       (NC_Measurement_Parameters_t,  NC_NON_DRX_PERIOD,  3),
+  M_UINT       (NC_Measurement_Parameters_t,  NC_REPORTING_PERIOD_I,  3),
+  M_UINT       (NC_Measurement_Parameters_t,  NC_REPORTING_PERIOD_T,  3),
 CSN_DESCR_END  (NC_Measurement_Parameters_t)
 
 static const
 CSN_DESCR_BEGIN(NC_Measurement_Parameters_with_Frequency_List_t)
-  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NETWORK_CONTROL_ORDER,  2, &hf_nc_measurement_parameters_with_frequency_list_network_control_order),
+  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NETWORK_CONTROL_ORDER,  2),
 
   M_NEXT_EXIST (NC_Measurement_Parameters_with_Frequency_List_t, Exist_NC, 3),
-  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NC_NON_DRX_PERIOD,  3, &hf_nc_measurement_parameters_with_frequency_list_nc_non_drx_period),
-  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NC_REPORTING_PERIOD_I,  3, &hf_nc_measurement_parameters_with_frequency_list_nc_reporting_period_i),
-  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NC_REPORTING_PERIOD_T,  3, &hf_nc_measurement_parameters_with_frequency_list_nc_reporting_period_t),
+  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NC_NON_DRX_PERIOD,  3),
+  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NC_REPORTING_PERIOD_I,  3),
+  M_UINT       (NC_Measurement_Parameters_with_Frequency_List_t,  NC_REPORTING_PERIOD_T,  3),
 
   M_NEXT_EXIST (NC_Measurement_Parameters_with_Frequency_List_t, Exist_NC_FREQUENCY_LIST, 1),
   M_TYPE       (NC_Measurement_Parameters_with_Frequency_List_t, NC_Frequency_list, NC_Frequency_list_t),
@@ -3631,31 +2446,31 @@ CSN_DESCR_END  (NC_Measurement_Parameters_with_Frequency_List_t)
 /*< Packet Cell Change Order message contents >*/
 static const
 CSN_DESCR_BEGIN(BA_IND_t)
-  M_UINT       (BA_IND_t,  BA_IND,  1, &hf_ba_ind_ba_ind),
-  M_UINT       (BA_IND_t,  BA_IND_3G,  1, &hf_ba_ind_ba_ind_3g),
+  M_UINT       (BA_IND_t,  BA_IND,  1),
+  M_UINT       (BA_IND_t,  BA_IND_3G,  1),
 CSN_DESCR_END  (BA_IND_t)
 
 static const
 CSN_DESCR_BEGIN(GPRSReportPriority_t)
-  M_UINT       (GPRSReportPriority_t,  NUMBER_CELLS,  7, &hf_gprsreportpriority_number_cells),
+  M_UINT       (GPRSReportPriority_t,  NUMBER_CELLS,  7),
   M_VAR_BITMAP (GPRSReportPriority_t, REPORT_PRIORITY, NUMBER_CELLS, 0),
 CSN_DESCR_END  (GPRSReportPriority_t)
 
 static const
 CSN_DESCR_BEGIN(OffsetThreshold_t)
-  M_UINT       (OffsetThreshold_t,  REPORTING_OFFSET,  3, &hf_offsetthreshold_reporting_offset),
-  M_UINT       (OffsetThreshold_t,  REPORTING_THRESHOLD,  3, &hf_offsetthreshold_reporting_threshold),
+  M_UINT       (OffsetThreshold_t,  REPORTING_OFFSET,  3),
+  M_UINT       (OffsetThreshold_t,  REPORTING_THRESHOLD,  3),
 CSN_DESCR_END  (OffsetThreshold_t)
 
 static const
 CSN_DESCR_BEGIN(GPRSMeasurementParams_PMO_PCCO_t)
   M_NEXT_EXIST (GPRSMeasurementParams_PMO_PCCO_t, Exist_MULTI_BAND_REPORTING, 1),
-  M_UINT       (GPRSMeasurementParams_PMO_PCCO_t,  MULTI_BAND_REPORTING,  2, &hf_gprsmeasurementparams_pmo_pcco_multi_band_reporting),
+  M_UINT       (GPRSMeasurementParams_PMO_PCCO_t,  MULTI_BAND_REPORTING,  2),
 
   M_NEXT_EXIST (GPRSMeasurementParams_PMO_PCCO_t, Exist_SERVING_BAND_REPORTING, 1),
-  M_UINT       (GPRSMeasurementParams_PMO_PCCO_t,  SERVING_BAND_REPORTING,  2, &hf_gprsmeasurementparams_pmo_pcco_serving_band_reporting),
+  M_UINT       (GPRSMeasurementParams_PMO_PCCO_t,  SERVING_BAND_REPORTING,  2),
 
-  M_UINT       (GPRSMeasurementParams_PMO_PCCO_t,  SCALE_ORD,  2, &hf_gprsmeasurementparams_pmo_pcco_scale_ord),
+  M_UINT       (GPRSMeasurementParams_PMO_PCCO_t,  SCALE_ORD,  2),
 
   M_NEXT_EXIST (GPRSMeasurementParams_PMO_PCCO_t, Exist_OffsetThreshold900, 1),
   M_TYPE       (GPRSMeasurementParams_PMO_PCCO_t, OffsetThreshold900, OffsetThreshold_t),
@@ -3675,29 +2490,29 @@ CSN_DESCR_END  (GPRSMeasurementParams_PMO_PCCO_t)
 
 static const
 CSN_DESCR_BEGIN(GPRSMeasurementParams3G_t)
-  M_UINT       (GPRSMeasurementParams3G_t,  Qsearch_p,  4, &hf_gprsmeasurementparams3g_qsearch_p),
-  M_UINT       (GPRSMeasurementParams3G_t,  SearchPrio3G,  1, &hf_gprsmeasurementparams3g_searchprio3g),
+  M_UINT       (GPRSMeasurementParams3G_t,  Qsearch_p,  4),
+  M_UINT       (GPRSMeasurementParams3G_t,  SearchPrio3G,  1),
 
   M_NEXT_EXIST (GPRSMeasurementParams3G_t, existRepParamsFDD, 2),
-  M_UINT       (GPRSMeasurementParams3G_t,  RepQuantFDD,  1, &hf_gprsmeasurementparams3g_repquantfdd),
-  M_UINT       (GPRSMeasurementParams3G_t,  MultiratReportingFDD,  2, &hf_gprsmeasurementparams3g_multiratreportingfdd),
+  M_UINT       (GPRSMeasurementParams3G_t,  RepQuantFDD,  1),
+  M_UINT       (GPRSMeasurementParams3G_t,  MultiratReportingFDD,  2),
 
   M_NEXT_EXIST (GPRSMeasurementParams3G_t, existReportingParamsFDD, 2),
-  M_UINT       (GPRSMeasurementParams3G_t,  ReportingOffsetFDD,  3, &hf_gprsmeasurementparams3g_reportingoffsetfdd),
-  M_UINT       (GPRSMeasurementParams3G_t,  ReportingThresholdFDD,  3, &hf_gprsmeasurementparams3g_reportingthresholdfdd),
+  M_UINT       (GPRSMeasurementParams3G_t,  ReportingOffsetFDD,  3),
+  M_UINT       (GPRSMeasurementParams3G_t,  ReportingThresholdFDD,  3),
 
   M_NEXT_EXIST (GPRSMeasurementParams3G_t, existMultiratReportingTDD, 1),
-  M_UINT       (GPRSMeasurementParams3G_t,  MultiratReportingTDD,  2, &hf_gprsmeasurementparams3g_multiratreportingtdd),
+  M_UINT       (GPRSMeasurementParams3G_t,  MultiratReportingTDD,  2),
 
   M_NEXT_EXIST (GPRSMeasurementParams3G_t, existOffsetThresholdTDD, 2),
-  M_UINT       (GPRSMeasurementParams3G_t,  ReportingOffsetTDD,  3, &hf_gprsmeasurementparams3g_reportingoffsettdd),
-  M_UINT       (GPRSMeasurementParams3G_t,  ReportingThresholdTDD,  3, &hf_gprsmeasurementparams3g_reportingthresholdtdd),
+  M_UINT       (GPRSMeasurementParams3G_t,  ReportingOffsetTDD,  3),
+  M_UINT       (GPRSMeasurementParams3G_t,  ReportingThresholdTDD,  3),
 CSN_DESCR_END  (GPRSMeasurementParams3G_t)
 
 static const
 CSN_DESCR_BEGIN(MultiratParams3G_t)
   M_NEXT_EXIST (MultiratParams3G_t, existMultiratReporting, 1),
-  M_UINT       (MultiratParams3G_t,  MultiratReporting,  2, &hf_multiratparams3g_multiratreporting),
+  M_UINT       (MultiratParams3G_t,  MultiratReporting,  2),
 
   M_NEXT_EXIST (MultiratParams3G_t, existOffsetThreshold, 1),
   M_TYPE       (MultiratParams3G_t, OffsetThreshold, OffsetThreshold_t),
@@ -3705,12 +2520,12 @@ CSN_DESCR_END  (MultiratParams3G_t)
 
 static const
 CSN_DESCR_BEGIN(ENH_GPRSMeasurementParams3G_PMO_t)
-  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  Qsearch_P,  4, &hf_enh_gprsmeasurementparams3g_pmo_qsearch_p),
-  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  SearchPrio3G,  1, &hf_enh_gprsmeasurementparams3g_pmo_searchprio3g),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  Qsearch_P,  4),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  SearchPrio3G,  1),
 
   M_NEXT_EXIST (ENH_GPRSMeasurementParams3G_PMO_t, existRepParamsFDD, 2),
-  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  RepQuantFDD,  1, &hf_enh_gprsmeasurementparams3g_pmo_repquantfdd),
-  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  MultiratReportingFDD,  2, &hf_enh_gprsmeasurementparams3g_pmo_multiratreportingfdd),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  RepQuantFDD,  1),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PMO_t,  MultiratReportingFDD,  2),
 
   M_NEXT_EXIST (ENH_GPRSMeasurementParams3G_PMO_t, existOffsetThreshold, 1),
   M_TYPE       (ENH_GPRSMeasurementParams3G_PMO_t, OffsetThreshold, OffsetThreshold_t),
@@ -3721,12 +2536,12 @@ CSN_DESCR_END  (ENH_GPRSMeasurementParams3G_PMO_t)
 
 static const
 CSN_DESCR_BEGIN(ENH_GPRSMeasurementParams3G_PCCO_t)
-  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  Qsearch_P,  4, &hf_enh_gprsmeasurementparams3g_pcco_qsearch_p),
-  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  SearchPrio3G,  1, &hf_enh_gprsmeasurementparams3g_pcco_searchprio3g),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  Qsearch_P,  4),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  SearchPrio3G,  1),
 
   M_NEXT_EXIST (ENH_GPRSMeasurementParams3G_PCCO_t, existRepParamsFDD, 2),
-  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  RepQuantFDD,  1, &hf_enh_gprsmeasurementparams3g_pcco_repquantfdd),
-  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  MultiratReportingFDD,  2, &hf_enh_gprsmeasurementparams3g_pcco_multiratreportingfdd),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  RepQuantFDD,  1),
+  M_UINT       (ENH_GPRSMeasurementParams3G_PCCO_t,  MultiratReportingFDD,  2),
 
   M_NEXT_EXIST (ENH_GPRSMeasurementParams3G_PCCO_t, existOffsetThreshold, 1),
   M_TYPE       (ENH_GPRSMeasurementParams3G_PCCO_t, OffsetThreshold, OffsetThreshold_t),
@@ -3736,8 +2551,8 @@ CSN_DESCR_END  (ENH_GPRSMeasurementParams3G_PCCO_t)
 
 static const
 CSN_DESCR_BEGIN(N2_t)
-  M_UINT       (N2_t,  REMOVED_3GCELL_INDEX,  7, &hf_n2_removed_3gcell_index),
-  M_UINT       (N2_t,  CELL_DIFF_LENGTH_3G,  3, &hf_n2_cell_diff_length_3g),
+  M_UINT       (N2_t,  REMOVED_3GCELL_INDEX,  7),
+  M_UINT       (N2_t,  CELL_DIFF_LENGTH_3G,  3),
   M_VAR_BITMAP (N2_t, CELL_DIFF_3G, CELL_DIFF_LENGTH_3G, 0),
 CSN_DESCR_END  (N2_t)
 
@@ -3755,16 +2570,16 @@ CSN_DESCR_END   (Removed3GCellDescription_t)
 
 static const
 CSN_DESCR_BEGIN(CDMA2000_Description_t)
-  M_UINT       (CDMA2000_Description_t,  Complete_This,  1, &hf_cdma2000_description_complete_this),
+  M_UINT       (CDMA2000_Description_t,  Complete_This,  1),
   CSN_ERROR    (CDMA2000_Description_t, "Not Implemented", CSN_ERROR_STREAM_NOT_SUPPORTED),
 CSN_DESCR_END  (CDMA2000_Description_t)
 
 static const
 CSN_DESCR_BEGIN(UTRAN_FDD_NeighbourCells_t)
-  M_UINT       (UTRAN_FDD_NeighbourCells_t,  ZERO,      1, &hf_utran_fdd_neighbourcells_zero),
-  M_UINT       (UTRAN_FDD_NeighbourCells_t,  UARFCN,   14, &hf_utran_fdd_neighbourcells_uarfcn),
-  M_UINT       (UTRAN_FDD_NeighbourCells_t,  Indic0,      1, &hf_utran_fdd_neighbourcells_indic0),
-  M_UINT       (UTRAN_FDD_NeighbourCells_t,  NrOfCells,   5, &hf_utran_fdd_neighbourcells_nrofcells),
+  M_UINT       (UTRAN_FDD_NeighbourCells_t,  ZERO,      1),
+  M_UINT       (UTRAN_FDD_NeighbourCells_t,  UARFCN,   14),
+  M_UINT       (UTRAN_FDD_NeighbourCells_t,  Indic0,      1),
+  M_UINT       (UTRAN_FDD_NeighbourCells_t,  NrOfCells,   5),
 /*  M_CALLBACK   (UTRAN_FDD_NeighbourCells_t, (void*) 14, NrOfCells, BitsInCellInfo), */
   M_VAR_BITMAP (UTRAN_FDD_NeighbourCells_t, CellInfo,  BitsInCellInfo, 0),
 CSN_DESCR_END  (UTRAN_FDD_NeighbourCells_t)
@@ -3772,16 +2587,16 @@ CSN_DESCR_END  (UTRAN_FDD_NeighbourCells_t)
 static const
 CSN_DESCR_BEGIN(UTRAN_FDD_Description_t)
   M_NEXT_EXIST (UTRAN_FDD_Description_t, existBandwidth, 1),
-  M_UINT       (UTRAN_FDD_Description_t,  Bandwidth,       3, &hf_utran_fdd_description_bandwidth),
+  M_UINT       (UTRAN_FDD_Description_t,  Bandwidth,       3),
   M_REC_TARRAY (UTRAN_FDD_Description_t, CellParams, UTRAN_FDD_NeighbourCells_t, NrOfFrequencies),
 CSN_DESCR_END  (UTRAN_FDD_Description_t)
 
 static const
 CSN_DESCR_BEGIN(UTRAN_TDD_NeighbourCells_t)
-  M_UINT       (UTRAN_TDD_NeighbourCells_t,  ZERO,      1, &hf_utran_tdd_neighbourcells_zero),
-  M_UINT       (UTRAN_TDD_NeighbourCells_t,  UARFCN,   14, &hf_utran_tdd_neighbourcells_uarfcn),
-  M_UINT       (UTRAN_TDD_NeighbourCells_t,  Indic0,      1, &hf_utran_tdd_neighbourcells_indic0),
-  M_UINT       (UTRAN_TDD_NeighbourCells_t,  NrOfCells,   5, &hf_utran_tdd_neighbourcells_nrofcells),
+  M_UINT       (UTRAN_TDD_NeighbourCells_t,  ZERO,      1),
+  M_UINT       (UTRAN_TDD_NeighbourCells_t,  UARFCN,   14),
+  M_UINT       (UTRAN_TDD_NeighbourCells_t,  Indic0,      1),
+  M_UINT       (UTRAN_TDD_NeighbourCells_t,  NrOfCells,   5),
 /*  M_CALLBACK   (UTRAN_TDD_NeighbourCells_t, (void*) 23, NrOfCells, BitsInCellInfo), */
   M_VAR_BITMAP (UTRAN_TDD_NeighbourCells_t, CellInfo,  BitsInCellInfo, 0),
 CSN_DESCR_END  (UTRAN_TDD_NeighbourCells_t)
@@ -3789,16 +2604,16 @@ CSN_DESCR_END  (UTRAN_TDD_NeighbourCells_t)
 static const
 CSN_DESCR_BEGIN(UTRAN_TDD_Description_t)
   M_NEXT_EXIST (UTRAN_TDD_Description_t, existBandwidth, 1),
-  M_UINT       (UTRAN_TDD_Description_t,  Bandwidth,       3, &hf_utran_tdd_description_bandwidth),
+  M_UINT       (UTRAN_TDD_Description_t,  Bandwidth,       3),
   M_REC_TARRAY (UTRAN_TDD_Description_t, CellParams, UTRAN_TDD_NeighbourCells_t, NrOfFrequencies),
 CSN_DESCR_END  (UTRAN_TDD_Description_t)
 
 static const
 CSN_DESCR_BEGIN(NeighbourCellDescription3G_PMO_t)
   M_NEXT_EXIST (NeighbourCellDescription3G_PMO_t, Exist_Index_Start_3G, 1),
-  M_UINT       (NeighbourCellDescription3G_PMO_t,  Index_Start_3G,  7, &hf_neighbourcelldescription3g_pmo_index_start_3g),
+  M_UINT       (NeighbourCellDescription3G_PMO_t,  Index_Start_3G,  7),
   M_NEXT_EXIST (NeighbourCellDescription3G_PMO_t, Exist_Absolute_Index_Start_EMR, 1),
-  M_UINT       (NeighbourCellDescription3G_PMO_t,  Absolute_Index_Start_EMR,  7, &hf_neighbourcelldescription3g_pmo_absolute_index_start_emr),
+  M_UINT       (NeighbourCellDescription3G_PMO_t,  Absolute_Index_Start_EMR,  7),
   M_NEXT_EXIST (NeighbourCellDescription3G_PMO_t, Exist_UTRAN_FDD_Description, 1),
   M_TYPE       (NeighbourCellDescription3G_PMO_t, UTRAN_FDD_Description, UTRAN_FDD_Description_t),
   M_NEXT_EXIST (NeighbourCellDescription3G_PMO_t, Exist_UTRAN_TDD_Description, 1),
@@ -3812,9 +2627,9 @@ CSN_DESCR_END  (NeighbourCellDescription3G_PMO_t)
 static const
 CSN_DESCR_BEGIN(NeighbourCellDescription3G_PCCO_t)
   M_NEXT_EXIST (NeighbourCellDescription3G_PCCO_t, Exist_Index_Start_3G, 1),
-  M_UINT       (NeighbourCellDescription3G_PCCO_t,  Index_Start_3G,  7, &hf_neighbourcelldescription3g_pcco_index_start_3g),
+  M_UINT       (NeighbourCellDescription3G_PCCO_t,  Index_Start_3G,  7),
   M_NEXT_EXIST (NeighbourCellDescription3G_PCCO_t, Exist_Absolute_Index_Start_EMR, 1),
-  M_UINT       (NeighbourCellDescription3G_PCCO_t,  Absolute_Index_Start_EMR,  7, &hf_neighbourcelldescription3g_pcco_absolute_index_start_emr),
+  M_UINT       (NeighbourCellDescription3G_PCCO_t,  Absolute_Index_Start_EMR,  7),
   M_NEXT_EXIST (NeighbourCellDescription3G_PCCO_t, Exist_UTRAN_FDD_Description, 1),
   M_TYPE       (NeighbourCellDescription3G_PCCO_t, UTRAN_FDD_Description, UTRAN_FDD_Description_t),
   M_NEXT_EXIST (NeighbourCellDescription3G_PCCO_t, Exist_UTRAN_TDD_Description, 1),
@@ -3827,12 +2642,12 @@ static const
 CSN_DESCR_BEGIN(ENH_Measurement_Parameters_PMO_t)
   M_UNION      (ENH_Measurement_Parameters_PMO_t, 2),
   M_TYPE       (ENH_Measurement_Parameters_PMO_t, u.BA_IND, BA_IND_t),
-  M_UINT       (ENH_Measurement_Parameters_PMO_t,  u.PSI3_CHANGE_MARK,  2, &hf_enh_measurement_parameters_pmo_psi3_change_mark),
-  M_UINT       (ENH_Measurement_Parameters_PMO_t,  PMO_IND,  1, &hf_enh_measurement_parameters_pmo_pmo_ind),
+  M_UINT       (ENH_Measurement_Parameters_PMO_t,  u.PSI3_CHANGE_MARK,  2),
+  M_UINT       (ENH_Measurement_Parameters_PMO_t,  PMO_IND,  1),
 
-  M_UINT       (ENH_Measurement_Parameters_PMO_t,  REPORT_TYPE,  1, &hf_enh_measurement_parameters_pmo_report_type),
-  M_UINT       (ENH_Measurement_Parameters_PMO_t,  REPORTING_RATE,  1, &hf_enh_measurement_parameters_pmo_reporting_rate),
-  M_UINT       (ENH_Measurement_Parameters_PMO_t,  INVALID_BSIC_REPORTING,  1, &hf_enh_measurement_parameters_pmo_invalid_bsic_reporting),
+  M_UINT       (ENH_Measurement_Parameters_PMO_t,  REPORT_TYPE,  1),
+  M_UINT       (ENH_Measurement_Parameters_PMO_t,  REPORTING_RATE,  1),
+  M_UINT       (ENH_Measurement_Parameters_PMO_t,  INVALID_BSIC_REPORTING,  1),
 
   M_NEXT_EXIST (ENH_Measurement_Parameters_PMO_t, Exist_NeighbourCellDescription3G, 1),
   M_TYPE       (ENH_Measurement_Parameters_PMO_t, NeighbourCellDescription3G, NeighbourCellDescription3G_PMO_t),
@@ -3851,12 +2666,12 @@ static const
 CSN_DESCR_BEGIN(ENH_Measurement_Parameters_PCCO_t)
   M_UNION      (ENH_Measurement_Parameters_PCCO_t, 2),
   M_TYPE       (ENH_Measurement_Parameters_PCCO_t, u.BA_IND, BA_IND_t),
-  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  u.PSI3_CHANGE_MARK,  2, &hf_enh_measurement_parameters_pcco_psi3_change_mark),
-  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  PMO_IND,  1, &hf_enh_measurement_parameters_pcco_pmo_ind),
+  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  u.PSI3_CHANGE_MARK,  2),
+  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  PMO_IND,  1),
 
-  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  REPORT_TYPE,  1, &hf_enh_measurement_parameters_pcco_report_type),
-  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  REPORTING_RATE,  1, &hf_enh_measurement_parameters_pcco_reporting_rate),
-  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  INVALID_BSIC_REPORTING,  1, &hf_enh_measurement_parameters_pcco_invalid_bsic_reporting),
+  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  REPORT_TYPE,  1),
+  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  REPORTING_RATE,  1),
+  M_UINT       (ENH_Measurement_Parameters_PCCO_t,  INVALID_BSIC_REPORTING,  1),
 
   M_NEXT_EXIST (ENH_Measurement_Parameters_PCCO_t, Exist_NeighbourCellDescription3G, 1),
   M_TYPE       (ENH_Measurement_Parameters_PCCO_t, NeighbourCellDescription3G, NeighbourCellDescription3G_PCCO_t),
@@ -3873,13 +2688,13 @@ CSN_DESCR_END  (ENH_Measurement_Parameters_PCCO_t)
 
 static const
 CSN_DESCR_BEGIN(CCN_Support_Description_t)
-  M_UINT       (CCN_Support_Description_t,  NUMBER_CELLS,  7, &hf_ccn_support_description_number_cells),
+  M_UINT       (CCN_Support_Description_t,  NUMBER_CELLS,  7),
   M_VAR_BITMAP (CCN_Support_Description_t, CCN_SUPPORTED, NUMBER_CELLS, 0),
 CSN_DESCR_END  (CCN_Support_Description_t)
 
 static const
 CSN_DESCR_BEGIN(lu_ModeCellSelectionParameters_t)
-  M_UINT       (lu_ModeCellSelectionParameters_t,  CELL_BAR_QUALIFY_3,  2, &hf_lu_modecellselectionparameters_cell_bar_qualify_3),
+  M_UINT       (lu_ModeCellSelectionParameters_t,  CELL_BAR_QUALIFY_3,  2),
   M_NEXT_EXIST (lu_ModeCellSelectionParameters_t, Exist_SI13_Alt_PBCCH_Location, 1),
   M_TYPE       (lu_ModeCellSelectionParameters_t, SI13_Alt_PBCCH_Location, SI13_PBCCH_Location_t),
 CSN_DESCR_END  (lu_ModeCellSelectionParameters_t)
@@ -3893,25 +2708,25 @@ CSN_DESCR_END  (lu_ModeCellSelectionParams_t)
 static const
 CSN_DESCR_BEGIN(lu_ModeNeighbourCellParams_t)
   M_TYPE       (lu_ModeNeighbourCellParams_t, lu_ModeCellSelectionParameters, lu_ModeCellSelectionParams_t),
-  M_UINT       (lu_ModeNeighbourCellParams_t,  NR_OF_FREQUENCIES,  5, &hf_lu_modeneighbourcellparams_nr_of_frequencies),
+  M_UINT       (lu_ModeNeighbourCellParams_t,  NR_OF_FREQUENCIES,  5),
   M_VAR_TARRAY (lu_ModeNeighbourCellParams_t, lu_ModeCellSelectionParams, lu_ModeCellSelectionParams_t, NR_OF_FREQUENCIES),
 CSN_DESCR_END  (lu_ModeNeighbourCellParams_t)
 
 static const
 CSN_DESCR_BEGIN(lu_ModeOnlyCellSelection_t)
-  M_UINT       (lu_ModeOnlyCellSelection_t,  CELL_BAR_QUALIFY_3,  2, &hf_lu_modeonlycellselection_cell_bar_qualify_3),
-  M_UINT       (lu_ModeOnlyCellSelection_t,  SAME_RA_AS_SERVING_CELL,  1, &hf_lu_modeonlycellselection_same_ra_as_serving_cell),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  CELL_BAR_QUALIFY_3,  2),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  SAME_RA_AS_SERVING_CELL,  1),
 
   M_NEXT_EXIST (lu_ModeOnlyCellSelection_t, Exist_RXLEV_and_TXPWR, 2),
-  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_RXLEV_ACCESS_MIN,  6, &hf_lu_modeonlycellselection_gprs_rxlev_access_min),
-  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_MS_TXPWR_MAX_CCH,  5, &hf_lu_modeonlycellselection_gprs_ms_txpwr_max_cch),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_RXLEV_ACCESS_MIN,  6),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_MS_TXPWR_MAX_CCH,  5),
 
   M_NEXT_EXIST (lu_ModeOnlyCellSelection_t, Exist_OFFSET_and_TIME, 2),
-  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_TEMPORARY_OFFSET,  3, &hf_lu_modeonlycellselection_gprs_temporary_offset),
-  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_PENALTY_TIME,  5, &hf_lu_modeonlycellselection_gprs_penalty_time),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_TEMPORARY_OFFSET,  3),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_PENALTY_TIME,  5),
 
   M_NEXT_EXIST (lu_ModeOnlyCellSelection_t, Exist_GPRS_RESELECT_OFFSET, 1),
-  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_RESELECT_OFFSET,  5, &hf_lu_modeonlycellselection_gprs_reselect_offset),
+  M_UINT       (lu_ModeOnlyCellSelection_t,  GPRS_RESELECT_OFFSET,  5),
 
   M_NEXT_EXIST (lu_ModeOnlyCellSelection_t, Exist_HCS, 1),
   M_TYPE       (lu_ModeOnlyCellSelection_t, HCS, HCS_t),
@@ -3924,21 +2739,21 @@ static const
 CSN_DESCR_BEGIN(lu_ModeOnlyCellSelectionParamsWithFreqDiff_t)
   /*FREQUENCY_DIFF is really an integer but the number of bits to decode it are stored in FREQ_DIFF_LENGTH*/
   M_VAR_BITMAP (lu_ModeOnlyCellSelectionParamsWithFreqDiff_t, FREQUENCY_DIFF, FREQ_DIFF_LENGTH, 0),
-  M_UINT       (lu_ModeOnlyCellSelectionParamsWithFreqDiff_t,  BSIC,  6, &hf_lu_modeonlycellselectionparamswithfreqdiff_bsic),
+  M_UINT       (lu_ModeOnlyCellSelectionParamsWithFreqDiff_t,  BSIC,  6),
   M_NEXT_EXIST (lu_ModeOnlyCellSelectionParamsWithFreqDiff_t, Exist_lu_ModeOnlyCellSelectionParams, 1),
   M_TYPE       (lu_ModeOnlyCellSelectionParamsWithFreqDiff_t, lu_ModeOnlyCellSelectionParams, lu_ModeOnlyCellSelection_t),
 CSN_DESCR_END  (lu_ModeOnlyCellSelectionParamsWithFreqDiff_t)
 
 static const
 CSN_DESCR_BEGIN(Add_lu_ModeOnlyFrequencyList_t)
-  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  START_FREQUENCY,  10, &hf_add_lu_modeonlyfrequencylist_start_frequency),
-  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  BSIC,  6, &hf_add_lu_modeonlyfrequencylist_bsic),
+  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  START_FREQUENCY,  10),
+  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  BSIC,  6),
 
   M_NEXT_EXIST (Add_lu_ModeOnlyFrequencyList_t, Exist_lu_ModeCellSelection, 1),
   M_TYPE       (Add_lu_ModeOnlyFrequencyList_t, lu_ModeOnlyCellSelection, lu_ModeOnlyCellSelection_t),
 
-  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  NR_OF_FREQUENCIES,  5, &hf_add_lu_modeonlyfrequencylist_nr_of_frequencies),
-  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  FREQ_DIFF_LENGTH,  3, &hf_add_lu_modeonlyfrequencylist_freq_diff_length),
+  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  NR_OF_FREQUENCIES,  5),
+  M_UINT       (Add_lu_ModeOnlyFrequencyList_t,  FREQ_DIFF_LENGTH,  3),
 
   M_VAR_TARRAY (Add_lu_ModeOnlyFrequencyList_t, lu_ModeOnlyCellSelectionParamsWithFreqDiff, lu_ModeOnlyCellSelectionParamsWithFreqDiff_t, NR_OF_FREQUENCIES),
 CSN_DESCR_END  (Add_lu_ModeOnlyFrequencyList_t)
@@ -3951,16 +2766,16 @@ CSN_DESCR_END  (NC_lu_ModeOnlyCapableCellList_t)
 static const
 CSN_DESCR_BEGIN(GPRS_AdditionalMeasurementParams3G_t)
   M_NEXT_EXIST (GPRS_AdditionalMeasurementParams3G_t, Exist_FDD_REPORTING_THRESHOLD_2, 1),
-  M_UINT       (GPRS_AdditionalMeasurementParams3G_t,  FDD_REPORTING_THRESHOLD_2,  6, &hf_gprs_additionalmeasurementparams3g_fdd_reporting_threshold_2),
+  M_UINT       (GPRS_AdditionalMeasurementParams3G_t,  FDD_REPORTING_THRESHOLD_2,  6),
 CSN_DESCR_END  (GPRS_AdditionalMeasurementParams3G_t)
 
 static const
 CSN_DESCR_BEGIN(ServingCellPriorityParametersDescription_t)
-  M_UINT       (ServingCellPriorityParametersDescription_t,  GERAN_PRIORITY,  3, &hf_servingcellpriorityparametersdescription_geran_priority),
-  M_UINT       (ServingCellPriorityParametersDescription_t,  THRESH_Priority_Search,  4, &hf_servingcellpriorityparametersdescription_thresh_priority_search),
-  M_UINT       (ServingCellPriorityParametersDescription_t,  THRESH_GSM_low,  4, &hf_servingcellpriorityparametersdescription_thresh_gsm_low),
-  M_UINT       (ServingCellPriorityParametersDescription_t,  H_PRIO,  2, &hf_servingcellpriorityparametersdescription_h_prio),
-  M_UINT       (ServingCellPriorityParametersDescription_t,  T_Reselection,  2, &hf_servingcellpriorityparametersdescription_t_reselection),
+  M_UINT       (ServingCellPriorityParametersDescription_t,  GERAN_PRIORITY,  3),
+  M_UINT       (ServingCellPriorityParametersDescription_t,  THRESH_Priority_Search,  4),
+  M_UINT       (ServingCellPriorityParametersDescription_t,  THRESH_GSM_low,  4),
+  M_UINT       (ServingCellPriorityParametersDescription_t,  H_PRIO,  2),
+  M_UINT       (ServingCellPriorityParametersDescription_t,  T_Reselection,  2),
 CSN_DESCR_END  (ServingCellPriorityParametersDescription_t)
 
 static const
@@ -3968,24 +2783,24 @@ CSN_DESCR_BEGIN(RepeatedUTRAN_PriorityParameters_t)
   M_REC_ARRAY  (RepeatedUTRAN_PriorityParameters_t, UTRAN_FREQUENCY_INDEX_a, NumberOfFrequencyIndexes, 5),
 
   M_NEXT_EXIST (RepeatedUTRAN_PriorityParameters_t, existUTRAN_PRIORITY, 1),
-  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  UTRAN_PRIORITY,  3, &hf_repeatedutran_priorityparameters_utran_priority),
+  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  UTRAN_PRIORITY,  3),
 
-  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  THRESH_UTRAN_high,  5, &hf_repeatedutran_priorityparameters_thresh_utran_high),
+  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  THRESH_UTRAN_high,  5),
 
   M_NEXT_EXIST (RepeatedUTRAN_PriorityParameters_t, existTHRESH_UTRAN_low, 1),
-  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  THRESH_UTRAN_low,  5, &hf_repeatedutran_priorityparameters_thresh_utran_low),
+  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  THRESH_UTRAN_low,  5),
 
   M_NEXT_EXIST (RepeatedUTRAN_PriorityParameters_t, existUTRAN_QRXLEVMIN, 1),
-  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  UTRAN_QRXLEVMIN,  5, &hf_repeatedutran_priorityparameters_utran_qrxlevmin),
+  M_UINT       (RepeatedUTRAN_PriorityParameters_t,  UTRAN_QRXLEVMIN,  5),
 CSN_DESCR_END  (RepeatedUTRAN_PriorityParameters_t)
 
 static const
 CSN_DESCR_BEGIN(PriorityParametersDescription3G_PMO_t)
 
   M_NEXT_EXIST (PriorityParametersDescription3G_PMO_t, existDEFAULT_UTRAN_Parameters, 3),
-  M_UINT       (PriorityParametersDescription3G_PMO_t,  DEFAULT_UTRAN_PRIORITY,  3, &hf_priorityparametersdescription3g_pmo_default_utran_priority),
-  M_UINT       (PriorityParametersDescription3G_PMO_t,  DEFAULT_THRESH_UTRAN,  5, &hf_priorityparametersdescription3g_pmo_default_thresh_utran),
-  M_UINT       (PriorityParametersDescription3G_PMO_t,  DEFAULT_UTRAN_QRXLEVMIN,  5, &hf_priorityparametersdescription3g_pmo_default_utran_qrxlevmin),
+  M_UINT       (PriorityParametersDescription3G_PMO_t,  DEFAULT_UTRAN_PRIORITY,  3),
+  M_UINT       (PriorityParametersDescription3G_PMO_t,  DEFAULT_THRESH_UTRAN,  5),
+  M_UINT       (PriorityParametersDescription3G_PMO_t,  DEFAULT_UTRAN_QRXLEVMIN,  5),
 
   M_REC_TARRAY (PriorityParametersDescription3G_PMO_t, RepeatedUTRAN_PriorityParameters_a, RepeatedUTRAN_PriorityParameters_t, NumberOfPriorityParameters),
 CSN_DESCR_END  (PriorityParametersDescription3G_PMO_t)
@@ -3993,33 +2808,33 @@ CSN_DESCR_END  (PriorityParametersDescription3G_PMO_t)
 static const
 CSN_DESCR_BEGIN(EUTRAN_REPORTING_THRESHOLD_OFFSET_t)
   M_NEXT_EXIST (EUTRAN_REPORTING_THRESHOLD_OFFSET_t, existEUTRAN_FDD_REPORTING_THRESHOLD_OFFSET, 5),
-  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_FDD_REPORTING_THRESHOLD,  3, &hf_eutran_reportinghreshold_offset_t_eutran_fdd_reporting_threshold),
+  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_FDD_REPORTING_THRESHOLD,  3),
   M_NEXT_EXIST (EUTRAN_REPORTING_THRESHOLD_OFFSET_t, existEUTRAN_FDD_REPORTING_THRESHOLD_2, 1),
-  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_FDD_REPORTING_THRESHOLD_2,  6, &hf_eutran_reportinghreshold_offset_t_eutran_fdd_reporting_threshold_2),
+  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_FDD_REPORTING_THRESHOLD_2,  6),
   M_NEXT_EXIST (EUTRAN_REPORTING_THRESHOLD_OFFSET_t, existEUTRAN_FDD_REPORTING_OFFSET, 1),
-  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_FDD_REPORTING_OFFSET,  3, &hf_eutran_reportinghreshold_offset_t_eutran_fdd_reporting_offset),
+  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_FDD_REPORTING_OFFSET,  3),
 
   M_NEXT_EXIST (EUTRAN_REPORTING_THRESHOLD_OFFSET_t, existEUTRAN_TDD_REPORTING_THRESHOLD_OFFSET, 5),
-  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_TDD_REPORTING_THRESHOLD,  3, &hf_eutran_reportinghreshold_offset_t_eutran_tdd_reporting_threshold),
+  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_TDD_REPORTING_THRESHOLD,  3),
   M_NEXT_EXIST (EUTRAN_REPORTING_THRESHOLD_OFFSET_t, existEUTRAN_TDD_REPORTING_THRESHOLD_2, 1),
-  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_TDD_REPORTING_THRESHOLD_2,  6, &hf_eutran_reportinghreshold_offset_t_eutran_tdd_reporting_threshold_2),
+  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_TDD_REPORTING_THRESHOLD_2,  6),
   M_NEXT_EXIST (EUTRAN_REPORTING_THRESHOLD_OFFSET_t, existEUTRAN_TDD_REPORTING_OFFSET, 1),
-  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_TDD_REPORTING_OFFSET,  3, &hf_eutran_reportinghreshold_offset_t_eutran_tdd_reporting_offset),
+  M_UINT       (EUTRAN_REPORTING_THRESHOLD_OFFSET_t,  EUTRAN_TDD_REPORTING_OFFSET,  3),
 CSN_DESCR_END  (EUTRAN_REPORTING_THRESHOLD_OFFSET_t)
 
 static const
 CSN_DESCR_BEGIN(GPRS_EUTRAN_MeasurementParametersDescription_t)
-  M_UINT       (GPRS_EUTRAN_MeasurementParametersDescription_t,  Qsearch_P_EUTRAN,  4, &hf_gprs_eutran_measurementparametersdescription_qsearch_p_eutran),
-  M_BIT        (GPRS_EUTRAN_MeasurementParametersDescription_t,  EUTRAN_REP_QUANT, &hf_gprs_eutran_measurementparametersdescription_eutran_rep_quant),
-  M_UINT       (GPRS_EUTRAN_MeasurementParametersDescription_t,  EUTRAN_MULTIRAT_REPORTING,  2, &hf_gprs_eutran_measurementparametersdescription_eutran_multirat_reporting),
+  M_UINT       (GPRS_EUTRAN_MeasurementParametersDescription_t,  Qsearch_P_EUTRAN,  4),
+  M_BIT        (GPRS_EUTRAN_MeasurementParametersDescription_t,  EUTRAN_REP_QUANT),
+  M_UINT       (GPRS_EUTRAN_MeasurementParametersDescription_t,  EUTRAN_MULTIRAT_REPORTING,  2),
   M_TYPE       (GPRS_EUTRAN_MeasurementParametersDescription_t, EUTRAN_REPORTING_THRESHOLD_OFFSET, EUTRAN_REPORTING_THRESHOLD_OFFSET_t),
 CSN_DESCR_END  (GPRS_EUTRAN_MeasurementParametersDescription_t)
 
 static const
 CSN_DESCR_BEGIN(RepeatedEUTRAN_Cells_t)
-  M_UINT       (RepeatedEUTRAN_Cells_t,  EARFCN,  16, &hf_repeatedeutran_cells_earfcn),
+  M_UINT       (RepeatedEUTRAN_Cells_t,  EARFCN,  16),
   M_NEXT_EXIST (RepeatedEUTRAN_Cells_t, existMeasurementBandwidth, 1),
-  M_UINT       (RepeatedEUTRAN_Cells_t,  MeasurementBandwidth,  3, &hf_repeatedeutran_cells_measurementbandwidth),
+  M_UINT       (RepeatedEUTRAN_Cells_t,  MeasurementBandwidth,  3),
 CSN_DESCR_END  (RepeatedEUTRAN_Cells_t)
 
 static const
@@ -4027,22 +2842,22 @@ CSN_DESCR_BEGIN(RepeatedEUTRAN_NeighbourCells_t)
   M_REC_TARRAY (RepeatedEUTRAN_NeighbourCells_t, EUTRAN_Cells_a, RepeatedEUTRAN_Cells_t, nbrOfEUTRAN_Cells),
 
   M_NEXT_EXIST (RepeatedEUTRAN_NeighbourCells_t, existEUTRAN_PRIORITY, 1),
-  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  EUTRAN_PRIORITY,  3, &hf_repeatedeutran_neighbourcells_eutran_priority),
+  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  EUTRAN_PRIORITY,  3),
 
-  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  THRESH_EUTRAN_high,  5, &hf_repeatedeutran_neighbourcells_thresh_eutran_high),
+  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  THRESH_EUTRAN_high,  5),
 
   M_NEXT_EXIST (RepeatedEUTRAN_NeighbourCells_t, existTHRESH_EUTRAN_low, 1),
-  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  THRESH_EUTRAN_low,  5, &hf_repeatedeutran_neighbourcells_thresh_eutran_low),
+  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  THRESH_EUTRAN_low,  5),
 
   M_NEXT_EXIST (RepeatedEUTRAN_NeighbourCells_t, existEUTRAN_QRXLEVMIN, 1),
-  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  EUTRAN_QRXLEVMIN,  5, &hf_repeatedeutran_neighbourcells_eutran_qrxlevmin),
+  M_UINT       (RepeatedEUTRAN_NeighbourCells_t,  EUTRAN_QRXLEVMIN,  5),
 CSN_DESCR_END  (RepeatedEUTRAN_NeighbourCells_t)
 
 static const
 CSN_DESCR_BEGIN(PCID_Pattern_t)
-  M_UINT       (PCID_Pattern_t,  PCID_Pattern_length,  3, &hf_pcid_pattern_pcid_pattern_length),
+  M_UINT       (PCID_Pattern_t,  PCID_Pattern_length,  3),
   M_VAR_BITMAP (PCID_Pattern_t, PCID_Pattern, PCID_Pattern_length, 1), /* offset 1, 44.060 12.57 */
-  M_UINT       (PCID_Pattern_t,  PCID_Pattern_sense,  1, &hf_pcid_pattern_pcid_pattern_sense),
+  M_UINT       (PCID_Pattern_t,  PCID_Pattern_sense,  1),
 CSN_DESCR_END  (PCID_Pattern_t)
 
 static const
@@ -4051,14 +2866,14 @@ CSN_DESCR_BEGIN(PCID_Group_IE_t)
   M_REC_ARRAY  (PCID_Group_IE_t, PCID_a, NumberOfPCIDs, 9),
 
   M_NEXT_EXIST (PCID_Group_IE_t, existPCID_BITMAP_GROUP, 1),
-  M_UINT       (PCID_Group_IE_t,  PCID_BITMAP_GROUP,  6, &hf_pcid_group_ie_pcid_bitmap_group),
+  M_UINT       (PCID_Group_IE_t,  PCID_BITMAP_GROUP,  6),
 
   M_REC_TARRAY (PCID_Group_IE_t, PCID_Pattern_a, PCID_Pattern_t, NumberOfPCID_Patterns),
 CSN_DESCR_END  (PCID_Group_IE_t)
 
 static const
 CSN_DESCR_BEGIN(EUTRAN_FREQUENCY_INDEX_t)
-  M_UINT       (EUTRAN_FREQUENCY_INDEX_t,  EUTRAN_FREQUENCY_INDEX,  3, &hf_eutran_frequency_index_eutran_frequency_index),
+  M_UINT       (EUTRAN_FREQUENCY_INDEX_t,  EUTRAN_FREQUENCY_INDEX,  3),
 CSN_DESCR_END  (EUTRAN_FREQUENCY_INDEX_t)
 
 static const
@@ -4076,7 +2891,7 @@ CSN_DESCR_END  (RepeatedEUTRAN_PCID_to_TA_mapping_t)
 
 static const
 CSN_DESCR_BEGIN(EUTRAN_ParametersDescription_PMO_t)
-  M_BIT        (EUTRAN_ParametersDescription_PMO_t,  EUTRAN_CCN_ACTIVE, &hf_eutran_parametersdescription_pmo_eutran_ccn_active),
+  M_BIT        (EUTRAN_ParametersDescription_PMO_t,  EUTRAN_CCN_ACTIVE),
 
   M_NEXT_EXIST (EUTRAN_ParametersDescription_PMO_t, existGPRS_EUTRAN_MeasurementParametersDescription, 1),
   M_TYPE       (EUTRAN_ParametersDescription_PMO_t, GPRS_EUTRAN_MeasurementParametersDescription, GPRS_EUTRAN_MeasurementParametersDescription_t),
@@ -4088,9 +2903,9 @@ CSN_DESCR_END  (EUTRAN_ParametersDescription_PMO_t)
 
 static const
 CSN_DESCR_BEGIN(PSC_Pattern_t)
-  M_UINT       (PSC_Pattern_t,  PSC_Pattern_length,  3, &hf_psc_pattern_length),
+  M_UINT       (PSC_Pattern_t,  PSC_Pattern_length,  3),
   M_VAR_BITMAP (PSC_Pattern_t,  PSC_Pattern, PSC_Pattern_length, 1),
-  M_BIT        (PSC_Pattern_t,  PSC_Pattern_sense, &hf_psc_pattern_sense),
+  M_BIT        (PSC_Pattern_t,  PSC_Pattern_sense),
 CSN_DESCR_END  (PSC_Pattern_t)
 
 static const
@@ -4124,31 +2939,31 @@ CSN_DESCR_END  (EUTRAN_CSG_Description_t)
 static const
 CSN_DESCR_BEGIN(Meas_Ctrl_Param_Desp_t)
   M_NEXT_EXIST (Meas_Ctrl_Param_Desp_t, existMeasurement_Control_EUTRAN, 3),
-  M_BIT        (Meas_Ctrl_Param_Desp_t,  Measurement_Control_EUTRAN, &hf_meas_ctrl_param_meas_ctrl_eutran),
-  M_UINT       (Meas_Ctrl_Param_Desp_t,  EUTRAN_FREQUENCY_INDEX_top,  3, &hf_meas_ctrl_param_eutran_freq_idx),
+  M_BIT        (Meas_Ctrl_Param_Desp_t,  Measurement_Control_EUTRAN),
+  M_UINT       (Meas_Ctrl_Param_Desp_t,  EUTRAN_FREQUENCY_INDEX_top,  3),
   M_REC_ARRAY  (Meas_Ctrl_Param_Desp_t,  EUTRAN_FREQUENCY_INDEX, Count_EUTRAN_FREQUENCY_INDEX, 3),
   M_NEXT_EXIST (Meas_Ctrl_Param_Desp_t, existMeasurement_Control_UTRAN, 1),
-  M_BIT        (Meas_Ctrl_Param_Desp_t,  Measurement_Control_UTRAN, &hf_meas_ctrl_param_meas_ctrl_utran),
-  M_UINT       (Meas_Ctrl_Param_Desp_t,  UTRAN_FREQUENCY_INDEX_top,  5, &hf_meas_ctrl_param_utran_freq_idx),
+  M_BIT        (Meas_Ctrl_Param_Desp_t,  Measurement_Control_UTRAN),
+  M_UINT       (Meas_Ctrl_Param_Desp_t,  UTRAN_FREQUENCY_INDEX_top,  5),
   M_REC_ARRAY  (Meas_Ctrl_Param_Desp_t,  UTRAN_FREQUENCY_INDEX, Count_UTRAN_FREQUENCY_INDEX, 5),
 CSN_DESCR_END  (Meas_Ctrl_Param_Desp_t)
 
 static const
 CSN_DESCR_BEGIN(Reselection_Based_On_RSRQ_t)
-  M_UINT       (Reselection_Based_On_RSRQ_t,  THRESH_EUTRAN_high_Q,  5, &hf_rept_eutran_enh_cell_resel_param_thresh_eutran_high_q),
+  M_UINT       (Reselection_Based_On_RSRQ_t,  THRESH_EUTRAN_high_Q,  5),
   M_NEXT_EXIST (Reselection_Based_On_RSRQ_t, existTHRESH_EUTRAN_low_Q, 1),
-  M_UINT       (Reselection_Based_On_RSRQ_t,  THRESH_EUTRAN_low_Q,  5, &hf_rept_eutran_enh_cell_resel_param_thresh_eutran_low_q),
+  M_UINT       (Reselection_Based_On_RSRQ_t,  THRESH_EUTRAN_low_Q,  5),
   M_NEXT_EXIST (Reselection_Based_On_RSRQ_t, existEUTRAN_QQUALMIN, 1),
-  M_UINT       (Reselection_Based_On_RSRQ_t,  EUTRAN_QQUALMIN,  4, &hf_rept_eutran_enh_cell_resel_param_thresh_eutran_qqualmin),
+  M_UINT       (Reselection_Based_On_RSRQ_t,  EUTRAN_QQUALMIN,  4),
   M_NEXT_EXIST (Reselection_Based_On_RSRQ_t, existEUTRAN_RSRPmin, 1),
-  M_UINT       (Reselection_Based_On_RSRQ_t,  EUTRAN_RSRPmin,  5, &hf_rept_eutran_enh_cell_resel_param_thresh_eutran_rsrpmin),
+  M_UINT       (Reselection_Based_On_RSRQ_t,  EUTRAN_RSRPmin,  5),
 CSN_DESCR_END  (Reselection_Based_On_RSRQ_t)
 
 static const
 CSN_DESCR_BEGIN(Rept_EUTRAN_Enh_Cell_Resel_Param_t)
   M_REC_ARRAY  (Rept_EUTRAN_Enh_Cell_Resel_Param_t,  EUTRAN_FREQUENCY_INDEX, Count_EUTRAN_FREQUENCY_INDEX, 3),
   M_UNION      (Rept_EUTRAN_Enh_Cell_Resel_Param_t, 2),
-  M_UINT       (Rept_EUTRAN_Enh_Cell_Resel_Param_t,  u.EUTRAN_Qmin,  4, &hf_rept_eutran_enh_cell_resel_param_eutran_qmin),
+  M_UINT       (Rept_EUTRAN_Enh_Cell_Resel_Param_t,  u.EUTRAN_Qmin,  4),
   M_TYPE       (Rept_EUTRAN_Enh_Cell_Resel_Param_t,  u.Reselection_Based_On_RSRQ, Reselection_Based_On_RSRQ_t),
 CSN_DESCR_END  (Rept_EUTRAN_Enh_Cell_Resel_Param_t)
 
@@ -4160,20 +2975,20 @@ CSN_DESCR_END  (Enh_Cell_Reselect_Param_Desp_t)
 static const
 CSN_DESCR_BEGIN(UTRAN_CSG_Cells_Reporting_Desp_t)
   M_NEXT_EXIST (UTRAN_CSG_Cells_Reporting_Desp_t, existUTRAN_CSG_FDD_REPORTING_THRESHOLD, 2),
-  M_UINT       (UTRAN_CSG_Cells_Reporting_Desp_t, UTRAN_CSG_FDD_REPORTING_THRESHOLD, 3, &hf_utran_csg_fdd_reporting_threshold),
-  M_UINT       (UTRAN_CSG_Cells_Reporting_Desp_t, UTRAN_CSG_FDD_REPORTING_THRESHOLD_2, 6, &hf_utran_csg_fdd_reporting_threshold2),
+  M_UINT       (UTRAN_CSG_Cells_Reporting_Desp_t, UTRAN_CSG_FDD_REPORTING_THRESHOLD, 3),
+  M_UINT       (UTRAN_CSG_Cells_Reporting_Desp_t, UTRAN_CSG_FDD_REPORTING_THRESHOLD_2, 6),
   M_NEXT_EXIST (UTRAN_CSG_Cells_Reporting_Desp_t, existUTRAN_CSG_TDD_REPORTING_THRESHOLD, 1),
-  M_UINT       (UTRAN_CSG_Cells_Reporting_Desp_t, UTRAN_CSG_TDD_REPORTING_THRESHOLD, 3, &hf_utran_csg_tdd_reporting_threshold),
+  M_UINT       (UTRAN_CSG_Cells_Reporting_Desp_t, UTRAN_CSG_TDD_REPORTING_THRESHOLD, 3),
 CSN_DESCR_END  (UTRAN_CSG_Cells_Reporting_Desp_t)
 
 static const
 CSN_DESCR_BEGIN(EUTRAN_CSG_Cells_Reporting_Desp_t)
   M_NEXT_EXIST (EUTRAN_CSG_Cells_Reporting_Desp_t, existEUTRAN_CSG_FDD_REPORTING_THRESHOLD, 2),
-  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_FDD_REPORTING_THRESHOLD, 3, &hf_eutran_csg_fdd_reporting_threshold),
-  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_FDD_REPORTING_THRESHOLD_2, 6, &hf_eutran_csg_fdd_reporting_threshold2),
+  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_FDD_REPORTING_THRESHOLD, 3),
+  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_FDD_REPORTING_THRESHOLD_2, 6),
   M_NEXT_EXIST (EUTRAN_CSG_Cells_Reporting_Desp_t, existEUTRAN_CSG_TDD_REPORTING_THRESHOLD, 2),
-  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_TDD_REPORTING_THRESHOLD, 3, &hf_eutran_csg_tdd_reporting_threshold),
-  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_TDD_REPORTING_THRESHOLD_2, 6, &hf_eutran_csg_tdd_reporting_threshold2),
+  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_TDD_REPORTING_THRESHOLD, 3),
+  M_UINT       (EUTRAN_CSG_Cells_Reporting_Desp_t, EUTRAN_CSG_TDD_REPORTING_THRESHOLD_2, 6),
 CSN_DESCR_END  (EUTRAN_CSG_Cells_Reporting_Desp_t)
 
 
@@ -4216,38 +3031,38 @@ CSN_DESCR_BEGIN        (Repeated_Individual_UTRAN_Priority_Parameters_t)
   M_UNION              (Repeated_Individual_UTRAN_Priority_Parameters_t, 2),
   M_TYPE               (Repeated_Individual_UTRAN_Priority_Parameters_t, u.Individual_UTRAN_Priority_FDD, Individual_UTRAN_Priority_FDD_t),
   M_TYPE               (Repeated_Individual_UTRAN_Priority_Parameters_t, u.Individual_UTRAN_Priority_TDD, Individual_UTRAN_Priority_TDD_t),
-  M_UINT               (Repeated_Individual_UTRAN_Priority_Parameters_t,  UTRAN_PRIORITY,  3, &hf_idvd_utran_priority),
+  M_UINT               (Repeated_Individual_UTRAN_Priority_Parameters_t,  UTRAN_PRIORITY,  3),
 CSN_DESCR_END          (Repeated_Individual_UTRAN_Priority_Parameters_t)
 
 static const
 CSN_DESCR_BEGIN        (ThreeG_Individual_Priority_Parameters_Description_t)
   M_NEXT_EXIST         (ThreeG_Individual_Priority_Parameters_Description_t, Exist_DEFAULT_UTRAN_PRIORITY, 1),
-  M_UINT               (ThreeG_Individual_Priority_Parameters_Description_t,  DEFAULT_UTRAN_PRIORITY,  3, &hf_idvd_default_utran_priority),
+  M_UINT               (ThreeG_Individual_Priority_Parameters_Description_t,  DEFAULT_UTRAN_PRIORITY,  3),
   M_REC_TARRAY         (ThreeG_Individual_Priority_Parameters_Description_t, Repeated_Individual_UTRAN_Priority_Parameters, Repeated_Individual_UTRAN_Priority_Parameters_t, Repeated_Individual_UTRAN_Priority_Parameters_Count),
 CSN_DESCR_END          (ThreeG_Individual_Priority_Parameters_Description_t)
 
 static const
 CSN_DESCR_BEGIN        (Repeated_Individual_EUTRAN_Priority_Parameters_t)
   M_REC_ARRAY          (Repeated_Individual_EUTRAN_Priority_Parameters_t, EARFCN, Count, 16),
-  M_UINT               (Repeated_Individual_EUTRAN_Priority_Parameters_t,  EUTRAN_PRIORITY,  3, &hf_idvd_eutran_priority),
+  M_UINT               (Repeated_Individual_EUTRAN_Priority_Parameters_t,  EUTRAN_PRIORITY,  3),
 CSN_DESCR_END          (Repeated_Individual_EUTRAN_Priority_Parameters_t)
 
 static const
 CSN_DESCR_BEGIN        (EUTRAN_Individual_Priority_Parameters_Description_t)
   M_NEXT_EXIST         (EUTRAN_Individual_Priority_Parameters_Description_t, Exist_DEFAULT_EUTRAN_PRIORITY, 1),
-  M_UINT               (EUTRAN_Individual_Priority_Parameters_Description_t,  DEFAULT_EUTRAN_PRIORITY,  3, &hf_idvd_default_eutran_priority),
+  M_UINT               (EUTRAN_Individual_Priority_Parameters_Description_t,  DEFAULT_EUTRAN_PRIORITY,  3),
   M_REC_TARRAY         (EUTRAN_Individual_Priority_Parameters_Description_t, Repeated_Individual_EUTRAN_Priority_Parameters, Repeated_Individual_EUTRAN_Priority_Parameters_t, Count),
 CSN_DESCR_END          (EUTRAN_Individual_Priority_Parameters_Description_t)
 
 static const
 CSN_DESCR_BEGIN        (Provide_Individual_Priorities_t)
-  M_UINT               (Provide_Individual_Priorities_t,  GERAN_PRIORITY,  3, &hf_idvd_prio_geran_priority),
+  M_UINT               (Provide_Individual_Priorities_t,  GERAN_PRIORITY,  3),
   M_NEXT_EXIST         (Provide_Individual_Priorities_t, Exist_3G_Individual_Priority_Parameters_Description, 1),
   M_TYPE               (Provide_Individual_Priorities_t, ThreeG_Individual_Priority_Parameters_Description, ThreeG_Individual_Priority_Parameters_Description_t),
   M_NEXT_EXIST         (Provide_Individual_Priorities_t, Exist_EUTRAN_Individual_Priority_Parameters_Description, 1),
   M_TYPE               (Provide_Individual_Priorities_t, EUTRAN_Individual_Priority_Parameters_Description, EUTRAN_Individual_Priority_Parameters_Description_t),
   M_NEXT_EXIST         (Provide_Individual_Priorities_t, Exist_T3230_timeout_value, 1),
-  M_UINT               (Provide_Individual_Priorities_t,  T3230_timeout_value,  3, &hf_idvd_prio_t3230_timeout_value),
+  M_UINT               (Provide_Individual_Priorities_t,  T3230_timeout_value,  3),
 CSN_DESCR_END          (Provide_Individual_Priorities_t)
 
 static const
@@ -4268,8 +3083,8 @@ CSN_DESCR_END          (PMO_AdditionsR9_t)
 static const
 CSN_DESCR_BEGIN        (PMO_AdditionsR8_t)
   M_NEXT_EXIST         (PMO_AdditionsR8_t, existBA_IND_3G_PMO_IND, 2),
-  M_BIT                (PMO_AdditionsR8_t,  BA_IND_3G, &hf_pmo_additionsr8_ba_ind_3g),
-  M_BIT                (PMO_AdditionsR8_t,  PMO_IND, &hf_pmo_additionsr8_pmo_ind),
+  M_BIT                (PMO_AdditionsR8_t,  BA_IND_3G),
+  M_BIT                (PMO_AdditionsR8_t,  PMO_IND),
   M_NEXT_EXIST         (PMO_AdditionsR8_t, existPriorityAndEUTRAN_ParametersDescription_PMO, 1),
   M_TYPE               (PMO_AdditionsR8_t, PriorityAndEUTRAN_ParametersDescription_PMO, PriorityAndEUTRAN_ParametersDescription_PMO_t),
   M_NEXT_EXIST         (PMO_AdditionsR8_t, existIndividualPriorities_PMO, 1),
@@ -4287,12 +3102,12 @@ CSN_DESCR_END          (PMO_AdditionsR8_t)
 static const
 CSN_DESCR_BEGIN        (PMO_AdditionsR7_t)
   M_NEXT_EXIST         (PMO_AdditionsR7_t, existREPORTING_OFFSET_THRESHOLD_700, 2),
-  M_UINT               (PMO_AdditionsR7_t,  REPORTING_OFFSET_700,  3, &hf_pmo_additionsr7_reporting_offset_700),
-  M_UINT               (PMO_AdditionsR7_t,  REPORTING_THRESHOLD_700,  3, &hf_pmo_additionsr7_reporting_threshold_700),
+  M_UINT               (PMO_AdditionsR7_t,  REPORTING_OFFSET_700,  3),
+  M_UINT               (PMO_AdditionsR7_t,  REPORTING_THRESHOLD_700,  3),
 
   M_NEXT_EXIST         (PMO_AdditionsR7_t, existREPORTING_OFFSET_THRESHOLD_810, 2),
-  M_UINT               (PMO_AdditionsR7_t,  REPORTING_OFFSET_810,  3, &hf_pmo_additionsr7_reporting_offset_810),
-  M_UINT               (PMO_AdditionsR7_t,  REPORTING_THRESHOLD_810,  3, &hf_pmo_additionsr7_reporting_threshold_810),
+  M_UINT               (PMO_AdditionsR7_t,  REPORTING_OFFSET_810,  3),
+  M_UINT               (PMO_AdditionsR7_t,  REPORTING_THRESHOLD_810,  3),
 
   M_NEXT_EXIST_OR_NULL (PMO_AdditionsR7_t, existAdditionsR8, 1),
   M_TYPE               (PMO_AdditionsR7_t, additionsR8, PMO_AdditionsR8_t),
@@ -4300,20 +3115,20 @@ CSN_DESCR_END          (PMO_AdditionsR7_t)
 
 static const
 CSN_DESCR_BEGIN        (PMO_AdditionsR6_t)
-  M_UINT               (PMO_AdditionsR6_t,  CCN_ACTIVE_3G,  1, &hf_pmo_additionsr6_ccn_active_3g),
+  M_UINT               (PMO_AdditionsR6_t,  CCN_ACTIVE_3G,  1),
   M_NEXT_EXIST_OR_NULL (PMO_AdditionsR6_t, existAdditionsR7, 1),
   M_TYPE               (PMO_AdditionsR6_t, additionsR7, PMO_AdditionsR7_t),
 CSN_DESCR_END          (PMO_AdditionsR6_t)
 
 static const
 CSN_DESCR_BEGIN(PCCO_AdditionsR6_t)
-  M_UINT       (PCCO_AdditionsR6_t,  CCN_ACTIVE_3G,  1, &hf_pcco_additionsr6_ccn_active_3g),
+  M_UINT       (PCCO_AdditionsR6_t,  CCN_ACTIVE_3G,  1),
 CSN_DESCR_END  (PCCO_AdditionsR6_t)
 
 static const
 CSN_DESCR_BEGIN        (PMO_AdditionsR5_t)
   M_NEXT_EXIST         (PMO_AdditionsR5_t, existGRNTI_Extension, 1),
-  M_UINT               (PMO_AdditionsR5_t,  GRNTI,  4, &hf_pmo_additionsr5_grnti),
+  M_UINT               (PMO_AdditionsR5_t,  GRNTI,  4),
   M_NEXT_EXIST         (PMO_AdditionsR5_t, exist_lu_ModeNeighbourCellParams, 1),
   M_REC_TARRAY         (PMO_AdditionsR5_t, lu_ModeNeighbourCellParams, lu_ModeNeighbourCellParams_t, count_lu_ModeNeighbourCellParams),
   M_NEXT_EXIST         (PMO_AdditionsR5_t, existNC_lu_ModeOnlyCapableCellList, 1),
@@ -4327,7 +3142,7 @@ CSN_DESCR_END  (PMO_AdditionsR5_t)
 static const
 CSN_DESCR_BEGIN        (PCCO_AdditionsR5_t)
   M_NEXT_EXIST         (PCCO_AdditionsR5_t, existGRNTI_Extension, 1),
-  M_UINT               (PCCO_AdditionsR5_t,  GRNTI,  4, &hf_pcco_additionsr5_grnti),
+  M_UINT               (PCCO_AdditionsR5_t,  GRNTI,  4),
   M_NEXT_EXIST         (PCCO_AdditionsR5_t, exist_lu_ModeNeighbourCellParams, 1),
   M_REC_TARRAY         (PCCO_AdditionsR5_t, lu_ModeNeighbourCellParams, lu_ModeNeighbourCellParams_t, count_lu_ModeNeighbourCellParams),
   M_NEXT_EXIST         (PCCO_AdditionsR5_t, existNC_lu_ModeOnlyCapableCellList, 1),
@@ -4340,7 +3155,7 @@ CSN_DESCR_END  (PCCO_AdditionsR5_t)
 
 static const
 CSN_DESCR_BEGIN        (PMO_AdditionsR4_t)
-  M_UINT               (PMO_AdditionsR4_t,  CCN_ACTIVE,  1, &hf_pmo_additionsr4_ccn_active),
+  M_UINT               (PMO_AdditionsR4_t,  CCN_ACTIVE,  1),
   M_NEXT_EXIST         (PMO_AdditionsR4_t, Exist_CCN_Support_Description_ID, 1),
   M_TYPE               (PMO_AdditionsR4_t, CCN_Support_Description, CCN_Support_Description_t),
   M_NEXT_EXIST_OR_NULL (PMO_AdditionsR4_t, Exist_AdditionsR5, 1),
@@ -4357,9 +3172,9 @@ CSN_DESCR_END          (PMO_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN        (PCCO_AdditionsR4_t)
-  M_UINT               (PCCO_AdditionsR4_t,  CCN_ACTIVE,  1, &hf_pcco_additionsr4_ccn_active),
+  M_UINT               (PCCO_AdditionsR4_t,  CCN_ACTIVE,  1),
   M_NEXT_EXIST         (PCCO_AdditionsR4_t, Exist_Container_ID, 1),
-  M_UINT               (PCCO_AdditionsR4_t,  CONTAINER_ID,  2, &hf_pcco_additionsr4_container_id),
+  M_UINT               (PCCO_AdditionsR4_t,  CONTAINER_ID,  2),
   M_NEXT_EXIST         (PCCO_AdditionsR4_t, Exist_CCN_Support_Description_ID, 1),
   M_TYPE               (PCCO_AdditionsR4_t, CCN_Support_Description, CCN_Support_Description_t),
   M_NEXT_EXIST_OR_NULL (PCCO_AdditionsR4_t, Exist_AdditionsR5, 1),
@@ -4376,8 +3191,8 @@ CSN_DESCR_END          (PCCO_AdditionsR99_t)
 static const
 CSN_DESCR_BEGIN(LSA_ID_Info_Element_t)
   M_UNION      (LSA_ID_Info_Element_t, 2),
-  M_UINT       (LSA_ID_Info_Element_t,  u.LSA_ID,  24, &hf_lsa_id_info_element_lsa_id),
-  M_UINT       (LSA_ID_Info_Element_t,  u.ShortLSA_ID,  10, &hf_lsa_id_info_element_shortlsa_id),
+  M_UINT       (LSA_ID_Info_Element_t,  u.LSA_ID,  24),
+  M_UINT       (LSA_ID_Info_Element_t,  u.ShortLSA_ID,  10),
 CSN_DESCR_END  (LSA_ID_Info_Element_t)
 
 static const
@@ -4387,7 +3202,7 @@ CSN_DESCR_END  (LSA_ID_Info_t)
 
 static const
 CSN_DESCR_BEGIN(LSA_Parameters_t)
-  M_UINT       (LSA_Parameters_t,  NR_OF_FREQ_OR_CELLS,  5, &hf_lsa_parameters_nr_of_freq_or_cells),
+  M_UINT       (LSA_Parameters_t,  NR_OF_FREQ_OR_CELLS,  5),
   M_VAR_TARRAY (LSA_Parameters_t, LSA_ID_Info, LSA_ID_Info_t, NR_OF_FREQ_OR_CELLS),
 CSN_DESCR_END  (LSA_Parameters_t)
 
@@ -4411,9 +3226,9 @@ CSN_DESCR_END          (PCCO_AdditionsR98_t)
 
 static const
 CSN_DESCR_BEGIN        (Target_Cell_GSM_t)
-  M_UINT               (Target_Cell_GSM_t,  IMMEDIATE_REL,  1, &hf_target_cell_gsm_immediate_rel),
-  M_UINT               (Target_Cell_GSM_t,  ARFCN,  10, &hf_target_cell_gsm_arfcn),
-  M_UINT               (Target_Cell_GSM_t,  BSIC,  6, &hf_target_cell_gsm_bsic),
+  M_UINT               (Target_Cell_GSM_t,  IMMEDIATE_REL,  1),
+  M_UINT               (Target_Cell_GSM_t,  ARFCN,  10),
+  M_UINT               (Target_Cell_GSM_t,  BSIC,  6),
   M_TYPE               (Target_Cell_GSM_t, NC_Measurement_Parameters, NC_Measurement_Parameters_with_Frequency_List_t),
   M_NEXT_EXIST_OR_NULL (Target_Cell_GSM_t, Exist_AdditionsR98, 1),
   M_TYPE               (Target_Cell_GSM_t, AdditionsR98, PCCO_AdditionsR98_t),
@@ -4430,7 +3245,7 @@ CSN_DESCR_END          (Target_Cell_3G_AdditionsR8_t)
 static const
 CSN_DESCR_BEGIN        (Target_Cell_3G_AdditionsR5_t)
   M_NEXT_EXIST         (Target_Cell_3G_AdditionsR5_t, Exist_G_RNTI_Extention, 1),
-  M_UINT               (Target_Cell_3G_AdditionsR5_t,  G_RNTI_Extention,  4, &hf_target_cell_g_rnti_ext),
+  M_UINT               (Target_Cell_3G_AdditionsR5_t,  G_RNTI_Extention,  4),
   M_NEXT_EXIST_OR_NULL (Target_Cell_3G_AdditionsR5_t, Exist_AdditionsR8, 1),
   M_TYPE               (Target_Cell_3G_AdditionsR5_t, AdditionsR8, Target_Cell_3G_AdditionsR8_t),
 CSN_DESCR_END          (Target_Cell_3G_AdditionsR5_t)
@@ -4439,7 +3254,7 @@ static const
 CSN_DESCR_BEGIN(Target_Cell_3G_t)
   /* 00 -- Message escape */
   M_FIXED      (Target_Cell_3G_t, 2, 0x00),
-  M_UINT       (Target_Cell_3G_t,  IMMEDIATE_REL,  1, &hf_target_cell_3g_immediate_rel),
+  M_UINT       (Target_Cell_3G_t,  IMMEDIATE_REL,  1),
   M_NEXT_EXIST (Target_Cell_3G_t, Exist_FDD_Description, 1),
   M_TYPE       (Target_Cell_3G_t, FDD_Target_Cell, FDD_Target_Cell_t),
   M_NEXT_EXIST (Target_Cell_3G_t, Exist_TDD_Description, 1),
@@ -4450,8 +3265,8 @@ CSN_DESCR_END  (Target_Cell_3G_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Cell_Change_Order_t)
-  M_UINT       (Packet_Cell_Change_Order_t,  MESSAGE_TYPE,  6, &hf_packet_cell_change_order_message_type),
-  M_UINT       (Packet_Cell_Change_Order_t,  PAGE_MODE,  2, &hf_packet_cell_change_order_page_mode),
+  M_UINT       (Packet_Cell_Change_Order_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Cell_Change_Order_t,  PAGE_MODE,  2),
 
   M_TYPE       (Packet_Cell_Change_Order_t, ID, PacketCellChangeOrderID_t),
 
@@ -4463,55 +3278,55 @@ CSN_DESCR_END  (Packet_Cell_Change_Order_t)
 /*< Packet (Enhanced) Measurement Report message contents > */
 static const
 CSN_DESCR_BEGIN(BA_USED_t)
-  M_UINT       (BA_USED_t,  BA_USED,  1, &hf_ba_used_ba_used),
-  M_UINT       (BA_USED_t,  BA_USED_3G,  1, &hf_ba_used_ba_used_3g),
+  M_UINT       (BA_USED_t,  BA_USED,  1),
+  M_UINT       (BA_USED_t,  BA_USED_3G,  1),
 CSN_DESCR_END  (BA_USED_t)
 
 static const
 CSN_DESCR_BEGIN(Serving_Cell_Data_t)
-  M_UINT       (Serving_Cell_Data_t,  RXLEV_SERVING_CELL,  6, &hf_serving_cell_data_rxlev_serving_cell),
+  M_UINT       (Serving_Cell_Data_t,  RXLEV_SERVING_CELL,  6),
   M_FIXED      (Serving_Cell_Data_t, 1, 0),
 CSN_DESCR_END  (Serving_Cell_Data_t)
 
 static const
 CSN_DESCR_BEGIN(NC_Measurements_t)
-  M_UINT       (NC_Measurements_t,  FREQUENCY_N,  6, &hf_nc_measurements_frequency_n),
+  M_UINT       (NC_Measurements_t,  FREQUENCY_N,  6),
 
   M_NEXT_EXIST (NC_Measurements_t, Exist_BSIC_N, 1),
-  M_UINT       (NC_Measurements_t,  BSIC_N,  6, &hf_nc_measurements_bsic_n),
-  M_UINT       (NC_Measurements_t,  RXLEV_N,  6, &hf_nc_measurements_rxlev_n),
+  M_UINT       (NC_Measurements_t,  BSIC_N,  6),
+  M_UINT       (NC_Measurements_t,  RXLEV_N,  6),
 CSN_DESCR_END  (NC_Measurements_t)
 
 static const
 CSN_DESCR_BEGIN(RepeatedInvalid_BSIC_Info_t)
-  M_UINT       (RepeatedInvalid_BSIC_Info_t,  BCCH_FREQ_N,  5, &hf_repeatedinvalid_bsic_info_bcch_freq_n),
-  M_UINT       (RepeatedInvalid_BSIC_Info_t,  BSIC_N,  6, &hf_repeatedinvalid_bsic_info_bsic_n),
-  M_UINT       (RepeatedInvalid_BSIC_Info_t,  RXLEV_N,  6, &hf_repeatedinvalid_bsic_info_rxlev_n),
+  M_UINT       (RepeatedInvalid_BSIC_Info_t,  BCCH_FREQ_N,  5),
+  M_UINT       (RepeatedInvalid_BSIC_Info_t,  BSIC_N,  6),
+  M_UINT       (RepeatedInvalid_BSIC_Info_t,  RXLEV_N,  6),
 CSN_DESCR_END  (RepeatedInvalid_BSIC_Info_t)
 
 static const
 CSN_DESCR_BEGIN(REPORTING_QUANTITY_Instance_t)
   M_NEXT_EXIST (REPORTING_QUANTITY_Instance_t, Exist_REPORTING_QUANTITY, 1),
-  M_UINT       (REPORTING_QUANTITY_Instance_t,  REPORTING_QUANTITY,  6, &hf_reporting_quantity_instance_reporting_quantity),
+  M_UINT       (REPORTING_QUANTITY_Instance_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END  (REPORTING_QUANTITY_Instance_t)
 
 static const
 CSN_DESCR_BEGIN(NC_Measurement_Report_t)
-  M_UINT       (NC_Measurement_Report_t,  NC_MODE,  1, &hf_nc_measurement_report_nc_mode),
+  M_UINT       (NC_Measurement_Report_t,  NC_MODE,  1),
   M_TYPE       (NC_Measurement_Report_t, Serving_Cell_Data, Serving_Cell_Data_t),
-  M_UINT       (NC_Measurement_Report_t,  NUMBER_OF_NC_MEASUREMENTS,  3, &hf_nc_measurement_report_number_of_nc_measurements),
+  M_UINT       (NC_Measurement_Report_t,  NUMBER_OF_NC_MEASUREMENTS,  3),
   M_VAR_TARRAY (NC_Measurement_Report_t, NC_Measurements, NC_Measurements_t, NUMBER_OF_NC_MEASUREMENTS),
 CSN_DESCR_END  (NC_Measurement_Report_t)
 
 static const
 CSN_DESCR_BEGIN(ENH_NC_Measurement_Report_t)
-  M_UINT       (ENH_NC_Measurement_Report_t,  NC_MODE,  1, &hf_enh_nc_measurement_report_nc_mode),
+  M_UINT       (ENH_NC_Measurement_Report_t,  NC_MODE,  1),
   M_UNION      (ENH_NC_Measurement_Report_t, 2),
   M_TYPE       (ENH_NC_Measurement_Report_t, u.BA_USED, BA_USED_t),
-  M_UINT       (ENH_NC_Measurement_Report_t,  u.PSI3_CHANGE_MARK,  2, &hf_enh_nc_measurement_report_psi3_change_mark),
-  M_UINT       (ENH_NC_Measurement_Report_t,  PMO_USED,  1, &hf_enh_nc_measurement_report_pmo_used),
-  M_UINT       (ENH_NC_Measurement_Report_t,  BSIC_Seen,  1, &hf_enh_nc_measurement_report_bsic_seen),
-  M_UINT       (ENH_NC_Measurement_Report_t,  SCALE,  1, &hf_enh_nc_measurement_report_scale),
+  M_UINT       (ENH_NC_Measurement_Report_t,  u.PSI3_CHANGE_MARK,  2),
+  M_UINT       (ENH_NC_Measurement_Report_t,  PMO_USED,  1),
+  M_UINT       (ENH_NC_Measurement_Report_t,  BSIC_Seen,  1),
+  M_UINT       (ENH_NC_Measurement_Report_t,  SCALE,  1),
   M_NEXT_EXIST (ENH_NC_Measurement_Report_t, Exist_Serving_Cell_Data, 1),
   M_TYPE       (ENH_NC_Measurement_Report_t, Serving_Cell_Data, Serving_Cell_Data_t),
   M_REC_TARRAY (ENH_NC_Measurement_Report_t, RepeatedInvalid_BSIC_Info[0], RepeatedInvalid_BSIC_Info_t, Count_RepeatedInvalid_BSIC_Info),
@@ -4522,49 +3337,49 @@ CSN_DESCR_END  (ENH_NC_Measurement_Report_t)
 
 static const
 CSN_DESCR_BEGIN(EXT_Measurement_Report_t)
-  M_UINT       (EXT_Measurement_Report_t,  EXT_REPORTING_TYPE,  2, &hf_ext_measurement_report_ext_reporting_type),
+  M_UINT       (EXT_Measurement_Report_t,  EXT_REPORTING_TYPE,  2),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Exist_I_LEVEL, 1),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[0].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[0].I_LEVEL,  6, &hf_ext_measurement_report_slot0_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[0].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[1].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[1].I_LEVEL,  6, &hf_ext_measurement_report_slot1_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[1].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[2].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[2].I_LEVEL,  6, &hf_ext_measurement_report_slot2_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[2].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[3].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[3].I_LEVEL,  6, &hf_ext_measurement_report_slot3_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[3].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[4].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[4].I_LEVEL,  6, &hf_ext_measurement_report_slot4_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[4].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[5].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[5].I_LEVEL,  6, &hf_ext_measurement_report_slot5_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[5].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[6].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[6].I_LEVEL,  6, &hf_ext_measurement_report_slot6_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[6].I_LEVEL,  6),
 
   M_NEXT_EXIST (EXT_Measurement_Report_t, Slot[7].Exist, 1),
-  M_UINT       (EXT_Measurement_Report_t,  Slot[7].I_LEVEL,  6, &hf_ext_measurement_report_slot7_i_level),
+  M_UINT       (EXT_Measurement_Report_t,  Slot[7].I_LEVEL,  6),
 
-  M_UINT       (EXT_Measurement_Report_t,  NUMBER_OF_EXT_MEASUREMENTS,  5, &hf_ext_measurement_report_number_of_ext_measurements),
+  M_UINT       (EXT_Measurement_Report_t,  NUMBER_OF_EXT_MEASUREMENTS,  5),
   M_VAR_TARRAY (EXT_Measurement_Report_t, EXT_Measurements, NC_Measurements_t, NUMBER_OF_EXT_MEASUREMENTS),
 CSN_DESCR_END  (EXT_Measurement_Report_t)
 
 static const
 CSN_DESCR_BEGIN (Measurements_3G_t)
-  M_UINT          (Measurements_3G_t,  CELL_LIST_INDEX_3G,  7, &hf_measurements_3g_cell_list_index_3g),
-  M_UINT          (Measurements_3G_t,  REPORTING_QUANTITY,  6, &hf_measurements_3g_reporting_quantity),
+  M_UINT          (Measurements_3G_t,  CELL_LIST_INDEX_3G,  7),
+  M_UINT          (Measurements_3G_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END   (Measurements_3G_t)
 
 static const
 CSN_DESCR_BEGIN (EUTRAN_Measurement_Report_Body_t)
-  M_UINT        (EUTRAN_Measurement_Report_Body_t,  EUTRAN_FREQUENCY_INDEX,  3, &hf_pmr_eutran_meas_rpt_freq_idx),
-  M_UINT        (EUTRAN_Measurement_Report_Body_t,  CELL_IDENTITY,  9, &hf_pmr_eutran_meas_rpt_cell_id),
-  M_UINT        (EUTRAN_Measurement_Report_Body_t,  REPORTING_QUANTITY,  6, &hf_pmr_eutran_meas_rpt_quantity),
+  M_UINT        (EUTRAN_Measurement_Report_Body_t,  EUTRAN_FREQUENCY_INDEX,  3),
+  M_UINT        (EUTRAN_Measurement_Report_Body_t,  CELL_IDENTITY,  9),
+  M_UINT        (EUTRAN_Measurement_Report_Body_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END   (EUTRAN_Measurement_Report_Body_t)
 
 static const
@@ -4575,23 +3390,23 @@ CSN_DESCR_END   (EUTRAN_Measurement_Report_t)
 
 static const
 CSN_DESCR_BEGIN(UTRAN_CSG_Measurement_Report_t)
-  M_UINT       (UTRAN_CSG_Measurement_Report_t,  UTRAN_CGI,  28, &hf_utran_csg_meas_rpt_cgi),
+  M_UINT       (UTRAN_CSG_Measurement_Report_t,  UTRAN_CGI,  28),
   M_NEXT_EXIST (UTRAN_CSG_Measurement_Report_t, Exist_PLMN_ID, 1),
   M_TYPE       (UTRAN_CSG_Measurement_Report_t,  Plmn_ID, PLMN_t),
-  M_UINT       (UTRAN_CSG_Measurement_Report_t,  CSG_ID,  27, &hf_utran_csg_meas_rpt_csg_id),
-  M_BIT        (UTRAN_CSG_Measurement_Report_t,  Access_Mode, &hf_utran_csg_meas_rpt_access_mode),
-  M_UINT       (UTRAN_CSG_Measurement_Report_t,  REPORTING_QUANTITY,  6, &hf_utran_csg_meas_rpt_quantity),
+  M_UINT       (UTRAN_CSG_Measurement_Report_t,  CSG_ID,  27),
+  M_BIT        (UTRAN_CSG_Measurement_Report_t,  Access_Mode),
+  M_UINT       (UTRAN_CSG_Measurement_Report_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END  (UTRAN_CSG_Measurement_Report_t)
 
 static const
 CSN_DESCR_BEGIN(EUTRAN_CSG_Measurement_Report_t)
-  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  EUTRAN_CGI,  28, &hf_eutran_csg_meas_rpt_cgi),
-  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  Tracking_Area_Code,  16, &hf_eutran_csg_meas_rpt_ta),
+  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  EUTRAN_CGI,  28),
+  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  Tracking_Area_Code,  16),
   M_NEXT_EXIST (EUTRAN_CSG_Measurement_Report_t, Exist_PLMN_ID, 1),
   M_TYPE       (EUTRAN_CSG_Measurement_Report_t,  Plmn_ID, PLMN_t),
-  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  CSG_ID,  27, &hf_eutran_csg_meas_rpt_csg_id),
-  M_BIT        (EUTRAN_CSG_Measurement_Report_t,  Access_Mode, &hf_eutran_csg_meas_rpt_access_mode),
-  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  REPORTING_QUANTITY,  6, &hf_eutran_csg_meas_rpt_quantity),
+  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  CSG_ID,  27),
+  M_BIT        (EUTRAN_CSG_Measurement_Report_t,  Access_Mode),
+  M_UINT       (EUTRAN_CSG_Measurement_Report_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END  (EUTRAN_CSG_Measurement_Report_t)
 
 static const
@@ -4613,7 +3428,7 @@ CSN_DESCR_END   (PMR_AdditionsR8_t)
 static const
 CSN_DESCR_BEGIN (PMR_AdditionsR5_t)
   M_NEXT_EXIST  (PMR_AdditionsR5_t, Exist_GRNTI, 4),
-  M_UINT        (PMR_AdditionsR5_t,  GRNTI,  4, &hf_pmo_additionsr5_grnti),
+  M_UINT        (PMR_AdditionsR5_t,  GRNTI,  4),
   M_NEXT_EXIST_OR_NULL (PMR_AdditionsR5_t, Exist_AdditionsR8, 1),
   M_TYPE        (PMR_AdditionsR5_t, AdditionsR8, PMR_AdditionsR8_t),
 CSN_DESCR_END   (PMR_AdditionsR5_t)
@@ -4623,8 +3438,8 @@ CSN_DESCR_BEGIN (PMR_AdditionsR99_t)
   M_NEXT_EXIST  (PMR_AdditionsR99_t, Exist_Info3G, 4),
   M_UNION       (PMR_AdditionsR99_t, 2),
   M_TYPE        (PMR_AdditionsR99_t, u.BA_USED, BA_USED_t),
-  M_UINT        (PMR_AdditionsR99_t,  u.PSI3_CHANGE_MARK,  2, &hf_pmr_additionsr99_psi3_change_mark),
-  M_UINT        (PMR_AdditionsR99_t,  PMO_USED,  1, &hf_pmr_additionsr99_pmo_used),
+  M_UINT        (PMR_AdditionsR99_t,  u.PSI3_CHANGE_MARK,  2),
+  M_UINT        (PMR_AdditionsR99_t,  PMO_USED,  1),
 
   M_NEXT_EXIST  (PMR_AdditionsR99_t, Exist_MeasurementReport3G, 2),
   M_UINT_OFFSET (PMR_AdditionsR99_t, N_3G, 3, 1),   /* offset 1 */
@@ -4637,22 +3452,22 @@ CSN_DESCR_END   (PMR_AdditionsR99_t)
 static const
 CSN_DESCR_BEGIN(EMR_ServingCell_t)
   /*CSN_MEMBER_BIT (EMR_ServingCell_t, DTX_USED),*/
-  M_BIT          (EMR_ServingCell_t,  DTX_USED, &hf_emr_servingcell_dtx_used),
-  M_UINT         (EMR_ServingCell_t,  RXLEV_VAL,        6, &hf_emr_servingcell_rxlev_val),
-  M_UINT         (EMR_ServingCell_t,  RX_QUAL_FULL,     3, &hf_emr_servingcell_rx_qual_full),
-  M_UINT         (EMR_ServingCell_t,  MEAN_BEP,         5, &hf_emr_servingcell_mean_bep),
-  M_UINT         (EMR_ServingCell_t,  CV_BEP,           3, &hf_emr_servingcell_cv_bep),
-  M_UINT         (EMR_ServingCell_t,  NBR_RCVD_BLOCKS,  5, &hf_emr_servingcell_nbr_rcvd_blocks),
+  M_BIT          (EMR_ServingCell_t,  DTX_USED),
+  M_UINT         (EMR_ServingCell_t,  RXLEV_VAL,        6),
+  M_UINT         (EMR_ServingCell_t,  RX_QUAL_FULL,     3),
+  M_UINT         (EMR_ServingCell_t,  MEAN_BEP,         5),
+  M_UINT         (EMR_ServingCell_t,  CV_BEP,           3),
+  M_UINT         (EMR_ServingCell_t,  NBR_RCVD_BLOCKS,  5),
 CSN_DESCR_END(EMR_ServingCell_t)
 
 static const
 CSN_DESCR_BEGIN   (EnhancedMeasurementReport_t)
-  M_UINT          (EnhancedMeasurementReport_t,  RR_Short_PD,  1, &hf_enhancedmeasurementreport_rr_short_pd),
-  M_UINT          (EnhancedMeasurementReport_t,  MESSAGE_TYPE,  5, &hf_enhancedmeasurementreport_message_type),
-  M_UINT          (EnhancedMeasurementReport_t,  ShortLayer2_Header,  2, &hf_enhancedmeasurementreport_shortlayer2_header),
+  M_UINT          (EnhancedMeasurementReport_t,  RR_Short_PD,  1),
+  M_UINT          (EnhancedMeasurementReport_t,  MESSAGE_TYPE,  5),
+  M_UINT          (EnhancedMeasurementReport_t,  ShortLayer2_Header,  2),
   M_TYPE          (EnhancedMeasurementReport_t, BA_USED, BA_USED_t),
-  M_UINT          (EnhancedMeasurementReport_t,  BSIC_Seen,  1, &hf_enhancedmeasurementreport_bsic_seen),
-  M_UINT          (EnhancedMeasurementReport_t,  SCALE,  1, &hf_enhancedmeasurementreport_scale),
+  M_UINT          (EnhancedMeasurementReport_t,  BSIC_Seen,  1),
+  M_UINT          (EnhancedMeasurementReport_t,  SCALE,  1),
   M_NEXT_EXIST    (EnhancedMeasurementReport_t, Exist_ServingCellData, 1),
   M_TYPE          (EnhancedMeasurementReport_t, ServingCellData, EMR_ServingCell_t),
   M_REC_TARRAY    (EnhancedMeasurementReport_t, RepeatedInvalid_BSIC_Info[0], RepeatedInvalid_BSIC_Info_t,
@@ -4664,16 +3479,16 @@ CSN_DESCR_END     (EnhancedMeasurementReport_t)
 static const
 CSN_DESCR_BEGIN       (Packet_Measurement_Report_t)
   /* Mac header */
-  M_UINT              (Packet_Measurement_Report_t,  PayloadType,  2, &hf_packet_measurement_report_payloadtype),
-  M_UINT              (Packet_Measurement_Report_t,  spare,  5, &hf_packet_measurement_report_spare),
-  M_UINT              (Packet_Measurement_Report_t,  R,  1, &hf_packet_measurement_report_r),
-  M_UINT              (Packet_Measurement_Report_t,  MESSAGE_TYPE,  6, &hf_packet_measurement_report_message_type),
+  M_UINT              (Packet_Measurement_Report_t,  PayloadType,  2),
+  M_UINT              (Packet_Measurement_Report_t,  spare,  5),
+  M_UINT              (Packet_Measurement_Report_t,  R,  1),
+  M_UINT              (Packet_Measurement_Report_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
-  M_UINT              (Packet_Measurement_Report_t,  TLLI,  32, &hf_packet_measurement_report_tlli),
+  M_UINT              (Packet_Measurement_Report_t,  TLLI,  32),
 
   M_NEXT_EXIST        (Packet_Measurement_Report_t, Exist_PSI5_CHANGE_MARK, 1),
-  M_UINT              (Packet_Measurement_Report_t,  PSI5_CHANGE_MARK,  2, &hf_packet_measurement_report_psi5_change_mark),
+  M_UINT              (Packet_Measurement_Report_t,  PSI5_CHANGE_MARK,  2),
 
   M_UNION             (Packet_Measurement_Report_t, 2),
   M_TYPE              (Packet_Measurement_Report_t, u.NC_Measurement_Report, NC_Measurement_Report_t),
@@ -4694,7 +3509,7 @@ CSN_DESCR_END   (PEMR_AdditionsR9_t)
 static const
 CSN_DESCR_BEGIN (Bitmap_Report_Quantity_t)
   M_NEXT_EXIST  (Bitmap_Report_Quantity_t, Exist_REPORTING_QUANTITY, 1),
-  M_UINT        (Bitmap_Report_Quantity_t,  REPORTING_QUANTITY,  6, &hf_reporting_quantity_instance_reporting_quantity),
+  M_UINT        (Bitmap_Report_Quantity_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END   (Bitmap_Report_Quantity_t)
 
 static const
@@ -4710,7 +3525,7 @@ CSN_DESCR_END   (PEMR_AdditionsR8_t)
 static const
 CSN_DESCR_BEGIN (PEMR_AdditionsR5_t)
   M_NEXT_EXIST  (PEMR_AdditionsR5_t, Exist_GRNTI_Ext, 1),
-  M_UINT        (PEMR_AdditionsR5_t,  GRNTI_Ext,  4, &hf_pmo_additionsr5_grnti),
+  M_UINT        (PEMR_AdditionsR5_t,  GRNTI_Ext,  4),
   M_NEXT_EXIST_OR_NULL(PEMR_AdditionsR5_t, Exist_AdditionsR8, 1),
   M_TYPE        (PEMR_AdditionsR5_t, AdditionsR8, PEMR_AdditionsR8_t),
 CSN_DESCR_END   (PEMR_AdditionsR5_t)
@@ -4719,13 +3534,13 @@ CSN_DESCR_END   (PEMR_AdditionsR5_t)
 static const
 CSN_DESCR_BEGIN       (Packet_Enh_Measurement_Report_t)
   /* Mac header */
-  M_UINT              (Packet_Enh_Measurement_Report_t,  PayloadType,  2, &hf_packet_enh_measurement_report_payloadtype),
-  M_UINT              (Packet_Enh_Measurement_Report_t,  spare,  5, &hf_packet_enh_measurement_report_spare),
-  M_UINT              (Packet_Enh_Measurement_Report_t,  R,  1, &hf_packet_enh_measurement_report_r),
-  M_UINT              (Packet_Enh_Measurement_Report_t,  MESSAGE_TYPE,  6, &hf_packet_enh_measurement_report_message_type),
+  M_UINT              (Packet_Enh_Measurement_Report_t,  PayloadType,  2),
+  M_UINT              (Packet_Enh_Measurement_Report_t,  spare,  5),
+  M_UINT              (Packet_Enh_Measurement_Report_t,  R,  1),
+  M_UINT              (Packet_Enh_Measurement_Report_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
-  M_UINT              (Packet_Enh_Measurement_Report_t,  TLLI,  32, &hf_packet_enh_measurement_report_tlli),
+  M_UINT              (Packet_Enh_Measurement_Report_t,  TLLI,  32),
 
   M_TYPE              (Packet_Enh_Measurement_Report_t, Measurements, ENH_NC_Measurement_Report_t),
 
@@ -4736,9 +3551,9 @@ CSN_DESCR_END         (Packet_Enh_Measurement_Report_t)
 /*< Packet Measurement Order message contents >*/
 static const
 CSN_DESCR_BEGIN(EXT_Frequency_List_t)
-  M_UINT       (EXT_Frequency_List_t,  START_FREQUENCY,  10, &hf_ext_frequency_list_start_frequency),
-  M_UINT       (EXT_Frequency_List_t,  NR_OF_FREQUENCIES,  5, &hf_ext_frequency_list_nr_of_frequencies),
-  M_UINT       (EXT_Frequency_List_t,  FREQ_DIFF_LENGTH,  3, &hf_ext_frequency_list_freq_diff_length),
+  M_UINT       (EXT_Frequency_List_t,  START_FREQUENCY,  10),
+  M_UINT       (EXT_Frequency_List_t,  NR_OF_FREQUENCIES,  5),
+  M_UINT       (EXT_Frequency_List_t,  FREQ_DIFF_LENGTH,  3),
 
 /* TBD: Count_FREQUENCY_DIFF
  * guint8 FREQUENCY_DIFF[31];
@@ -4748,13 +3563,13 @@ CSN_DESCR_END  (EXT_Frequency_List_t)
 
 static const
 CSN_DESCR_BEGIN        (Packet_Measurement_Order_t)
-  M_UINT               (Packet_Measurement_Order_t,  MESSAGE_TYPE,  6, &hf_packet_measurement_order_message_type),
-  M_UINT               (Packet_Measurement_Order_t,  PAGE_MODE,  2, &hf_packet_measurement_order_page_mode),
+  M_UINT               (Packet_Measurement_Order_t,  MESSAGE_TYPE,  6),
+  M_UINT               (Packet_Measurement_Order_t,  PAGE_MODE,  2),
 
   M_TYPE               (Packet_Measurement_Order_t, ID, PacketDownlinkID_t), /* reuse the PDA ID type */
 
-  M_UINT               (Packet_Measurement_Order_t,  PMO_INDEX,  3, &hf_packet_measurement_order_pmo_index),
-  M_UINT               (Packet_Measurement_Order_t,  PMO_COUNT,  3, &hf_packet_measurement_order_pmo_count),
+  M_UINT               (Packet_Measurement_Order_t,  PMO_INDEX,  3),
+  M_UINT               (Packet_Measurement_Order_t,  PMO_COUNT,  3),
 
   M_NEXT_EXIST         (Packet_Measurement_Order_t, Exist_NC_Measurement_Parameters, 1),
   M_TYPE               (Packet_Measurement_Order_t, NC_Measurement_Parameters, NC_Measurement_Parameters_with_Frequency_List_t),
@@ -4768,33 +3583,33 @@ CSN_DESCR_END          (Packet_Measurement_Order_t)
 
 static const
 CSN_DESCR_BEGIN(CCN_Measurement_Report_t)
-  M_UINT       (CCN_Measurement_Report_t,  RXLEV_SERVING_CELL,  6, &hf_ccn_measurement_report_rxlev_serving_cell),
+  M_UINT       (CCN_Measurement_Report_t,  RXLEV_SERVING_CELL,  6),
   M_FIXED      (CCN_Measurement_Report_t, 1, 0),
-  M_UINT       (CCN_Measurement_Report_t,  NUMBER_OF_NC_MEASUREMENTS,  3, &hf_ccn_measurement_report_number_of_nc_measurements),
+  M_UINT       (CCN_Measurement_Report_t,  NUMBER_OF_NC_MEASUREMENTS,  3),
   M_VAR_TARRAY (CCN_Measurement_Report_t, NC_Measurements, NC_Measurements_t, NUMBER_OF_NC_MEASUREMENTS),
 CSN_DESCR_END  (CCN_Measurement_Report_t)
 
 static const
 CSN_DESCR_BEGIN(Target_Cell_GSM_Notif_t)
-  M_UINT       (Target_Cell_GSM_Notif_t,  ARFCN,  10, &hf_target_cell_gsm_notif_arfcn),
-  M_UINT       (Target_Cell_GSM_Notif_t,  BSIC,  6, &hf_target_cell_gsm_notif_bsic),
+  M_UINT       (Target_Cell_GSM_Notif_t,  ARFCN,  10),
+  M_UINT       (Target_Cell_GSM_Notif_t,  BSIC,  6),
 CSN_DESCR_END  (Target_Cell_GSM_Notif_t)
 
 static const
 CSN_DESCR_BEGIN(FDD_Target_Cell_Notif_t)
-  M_UINT       (FDD_Target_Cell_Notif_t,  FDD_ARFCN,  14, &hf_fdd_target_cell_notif_fdd_arfcn),
+  M_UINT       (FDD_Target_Cell_Notif_t,  FDD_ARFCN,  14),
   M_NEXT_EXIST (FDD_Target_Cell_Notif_t, Exist_Bandwith_FDD, 1),
-  M_UINT       (FDD_Target_Cell_Notif_t,  BANDWITH_FDD,  3, &hf_fdd_target_cell_notif_bandwith_fdd),
-  M_UINT       (FDD_Target_Cell_Notif_t,  SCRAMBLING_CODE,  9, &hf_fdd_target_cell_notif_scrambling_code),
+  M_UINT       (FDD_Target_Cell_Notif_t,  BANDWITH_FDD,  3),
+  M_UINT       (FDD_Target_Cell_Notif_t,  SCRAMBLING_CODE,  9),
 CSN_DESCR_END  (FDD_Target_Cell_Notif_t)
 
 static const
 CSN_DESCR_BEGIN(TDD_Target_Cell_Notif_t)
-  M_UINT       (TDD_Target_Cell_Notif_t,  TDD_ARFCN,  14, &hf_tddarget_cell_t_tdd_arfcn),
+  M_UINT       (TDD_Target_Cell_Notif_t,  TDD_ARFCN,  14),
   M_NEXT_EXIST (TDD_Target_Cell_Notif_t, Exist_Bandwith_TDD, 1),
-  M_UINT       (TDD_Target_Cell_Notif_t,  BANDWITH_TDD,  3, &hf_tddarget_cell_t_bandwith_tdd),
-  M_UINT       (TDD_Target_Cell_Notif_t,  CELL_PARAMETER,  7, &hf_tddarget_cell_t_cell_parameter),
-  M_UINT       (TDD_Target_Cell_Notif_t,  Sync_Case_TSTD,  1, &hf_tddarget_cell_t_sync_case_tstd),
+  M_UINT       (TDD_Target_Cell_Notif_t,  BANDWITH_TDD,  3),
+  M_UINT       (TDD_Target_Cell_Notif_t,  CELL_PARAMETER,  7),
+  M_UINT       (TDD_Target_Cell_Notif_t,  Sync_Case_TSTD,  1),
 CSN_DESCR_END  (TDD_Target_Cell_Notif_t)
 
 static const
@@ -4803,29 +3618,29 @@ CSN_DESCR_BEGIN(Target_Cell_3G_Notif_t)
   M_TYPE       (Target_Cell_3G_Notif_t, FDD_Target_Cell_Notif, FDD_Target_Cell_Notif_t),
   M_NEXT_EXIST (Target_Cell_3G_Notif_t, Exist_TDD_Description, 1),
   M_TYPE       (Target_Cell_3G_Notif_t, TDD_Target_Cell, TDD_Target_Cell_Notif_t),
-  M_UINT       (Target_Cell_3G_Notif_t,  REPORTING_QUANTITY,  6, &hf_target_cell_3g_notif_reporting_quantity),
+  M_UINT       (Target_Cell_3G_Notif_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END  (Target_Cell_3G_Notif_t)
 
 static const
 CSN_DESCR_BEGIN(Target_EUTRAN_Cell_Notif_t)
-  M_UINT       (Target_EUTRAN_Cell_Notif_t,  EARFCN,  16, &hf_target_cell_eutran_earfcn),
+  M_UINT       (Target_EUTRAN_Cell_Notif_t,  EARFCN,  16),
   M_NEXT_EXIST (Target_EUTRAN_Cell_Notif_t, Exist_Measurement_Bandwidth, 1),
-  M_UINT       (Target_EUTRAN_Cell_Notif_t,  Measurement_Bandwidth,  3, &hf_target_cell_eutran_measurement_bandwidth),
-  M_UINT       (Target_EUTRAN_Cell_Notif_t,  Physical_Layer_Cell_Identity,  9, &hf_target_cell_eutran_pl_cell_id),
-  M_UINT       (Target_EUTRAN_Cell_Notif_t,  Reporting_Quantity,  6, &hf_packet_cell_change_notification_lte_reporting_quantity),
+  M_UINT       (Target_EUTRAN_Cell_Notif_t,  Measurement_Bandwidth,  3),
+  M_UINT       (Target_EUTRAN_Cell_Notif_t,  Physical_Layer_Cell_Identity,  9),
+  M_UINT       (Target_EUTRAN_Cell_Notif_t,  Reporting_Quantity,  6),
 CSN_DESCR_END  (Target_EUTRAN_Cell_Notif_t)
 
 static const
 CSN_DESCR_BEGIN(Eutran_Ccn_Measurement_Report_Cell_t)
-  M_UINT       (Eutran_Ccn_Measurement_Report_Cell_t,  EUTRAN_FREQUENCY_INDEX,  3, &hf_eutran_ccn_meas_rpt_freq_idx),
-  M_UINT       (Eutran_Ccn_Measurement_Report_Cell_t,  CELL_IDENTITY,  9, &hf_eutran_ccn_meas_cell_id),
-  M_UINT       (Eutran_Ccn_Measurement_Report_Cell_t,  REPORTING_QUANTITY,  6, &hf_eutran_ccn_meas_rpt_quantity),
+  M_UINT       (Eutran_Ccn_Measurement_Report_Cell_t,  EUTRAN_FREQUENCY_INDEX,  3),
+  M_UINT       (Eutran_Ccn_Measurement_Report_Cell_t,  CELL_IDENTITY,  9),
+  M_UINT       (Eutran_Ccn_Measurement_Report_Cell_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END  (Eutran_Ccn_Measurement_Report_Cell_t)
 
 
 static const
 CSN_DESCR_BEGIN(Eutran_Ccn_Measurement_Report_t)
-  M_BIT        (Eutran_Ccn_Measurement_Report_t,  ThreeG_BA_USED, &hf_eutran_ccn_meas_rpt_3g_ba_used),
+  M_BIT        (Eutran_Ccn_Measurement_Report_t,  ThreeG_BA_USED),
   M_UINT_OFFSET(Eutran_Ccn_Measurement_Report_t,  N_EUTRAN,  2, 1),
   M_VAR_TARRAY (Eutran_Ccn_Measurement_Report_t,  Eutran_Ccn_Measurement_Report_Cell, Eutran_Ccn_Measurement_Report_Cell_t, N_EUTRAN),
 CSN_DESCR_END  (Eutran_Ccn_Measurement_Report_t)
@@ -4833,8 +3648,8 @@ CSN_DESCR_END  (Eutran_Ccn_Measurement_Report_t)
 static const
 CSN_DESCR_BEGIN(Target_Cell_4G_Notif_t)
   M_NEXT_EXIST (Target_Cell_4G_Notif_t, Exist_Arfcn, 2),
-  M_UINT       (Target_Cell_4G_Notif_t,  Arfcn,  10, &hf_target_cell_gsm_arfcn),
-  M_UINT       (Target_Cell_4G_Notif_t,  bsic,  6, &hf_target_cell_gsm_bsic),
+  M_UINT       (Target_Cell_4G_Notif_t,  Arfcn,  10),
+  M_UINT       (Target_Cell_4G_Notif_t,  bsic,  6),
   M_NEXT_EXIST (Target_Cell_4G_Notif_t, Exist_3G_Target_Cell, 1),
   M_TYPE       (Target_Cell_4G_Notif_t,  Target_Cell_3G_Notif, Target_Cell_3G_Notif_t),
   M_NEXT_EXIST (Target_Cell_4G_Notif_t, Exist_Eutran_Target_Cell, 1),
@@ -4880,7 +3695,7 @@ CSN_DESCR_END  (Target_Cell_t)
 static const
 CSN_DESCR_BEGIN (PCCN_AdditionsR6_t)
   M_NEXT_EXIST  (PCCN_AdditionsR6_t, Exist_BA_USED_3G, 1),
-  M_UINT        (PCCN_AdditionsR6_t,  BA_USED_3G,  1, &hf_pccn_additionsr6_ba_used_3g),
+  M_UINT        (PCCN_AdditionsR6_t,  BA_USED_3G,  1),
 
   M_UINT_OFFSET (PCCN_AdditionsR6_t, N_3G, 3, 1),   /* offset 1 */
   M_VAR_TARRAY_OFFSET (PCCN_AdditionsR6_t, Measurements_3G, Measurements_3G_t, N_3G),
@@ -4890,21 +3705,21 @@ CSN_DESCR_END   (PCCN_AdditionsR6_t)
 static const
 CSN_DESCR_BEGIN(Packet_Cell_Change_Notification_t)
   /* Mac header */
-  M_UINT              (Packet_Cell_Change_Notification_t,  PayloadType,  2, &hf_packet_cell_change_notification_payloadtype),
-  M_UINT              (Packet_Cell_Change_Notification_t,  spare,  5, &hf_packet_cell_change_notification_spare),
-  M_UINT              (Packet_Cell_Change_Notification_t,  R,  1, &hf_packet_cell_change_notification_r),
-  M_UINT              (Packet_Cell_Change_Notification_t,  MESSAGE_TYPE,  6, &hf_packet_cell_change_notification_message_type),
+  M_UINT              (Packet_Cell_Change_Notification_t,  PayloadType,  2),
+  M_UINT              (Packet_Cell_Change_Notification_t,  spare,  5),
+  M_UINT              (Packet_Cell_Change_Notification_t,  R,  1),
+  M_UINT              (Packet_Cell_Change_Notification_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
   M_TYPE              (Packet_Cell_Change_Notification_t, Global_TFI, Global_TFI_t),
   M_TYPE              (Packet_Cell_Change_Notification_t, Target_Cell, Target_Cell_t),
 
   M_UNION             (Packet_Cell_Change_Notification_t, 2),
-  M_UINT              (Packet_Cell_Change_Notification_t,  u.BA_IND,  1, &hf_packet_cell_change_notification_ba_ind),
-  M_UINT              (Packet_Cell_Change_Notification_t,  u.PSI3_CHANGE_MARK,  2, &hf_packet_cell_change_notification_psi3_change_mark),
+  M_UINT              (Packet_Cell_Change_Notification_t,  u.BA_IND,  1),
+  M_UINT              (Packet_Cell_Change_Notification_t,  u.PSI3_CHANGE_MARK,  2),
 
-  M_UINT              (Packet_Cell_Change_Notification_t,  PMO_USED,  1, &hf_packet_cell_change_notification_pmo_used),
-  M_UINT              (Packet_Cell_Change_Notification_t,  PCCN_SENDING,  1, &hf_packet_cell_change_notification_pccn_sending),
+  M_UINT              (Packet_Cell_Change_Notification_t,  PMO_USED,  1),
+  M_UINT              (Packet_Cell_Change_Notification_t,  PCCN_SENDING,  1),
   M_TYPE              (Packet_Cell_Change_Notification_t, CCN_Measurement_Report, CCN_Measurement_Report_t),
 
   M_NEXT_EXIST_OR_NULL(Packet_Cell_Change_Notification_t, Exist_AdditionsR6, 1),
@@ -4914,22 +3729,22 @@ CSN_DESCR_END  (Packet_Cell_Change_Notification_t)
 /*< Packet Cell Change Continue message contents > */
 static const
 CSN_DESCR_BEGIN(Packet_Cell_Change_Continue_t)
-  M_UINT       (Packet_Cell_Change_Continue_t,  MESSAGE_TYPE,  6, &hf_packet_cell_change_continue_message_type),
-  M_UINT       (Packet_Cell_Change_Continue_t,  PAGE_MODE,  2, &hf_packet_cell_change_continue_page_mode),
+  M_UINT       (Packet_Cell_Change_Continue_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Cell_Change_Continue_t,  PAGE_MODE,  2),
   M_FIXED      (Packet_Cell_Change_Continue_t, 1, 0x00),
   M_TYPE       (Packet_Cell_Change_Continue_t, Global_TFI, Global_TFI_t),
 
   M_NEXT_EXIST (Packet_Cell_Change_Continue_t, Exist_ID, 3),
-  M_UINT       (Packet_Cell_Change_Continue_t,  ARFCN, 10, &hf_packet_cell_change_continue_arfcn),
-  M_UINT       (Packet_Cell_Change_Continue_t,  BSIC,  6, &hf_packet_cell_change_continue_bsic),
-  M_UINT       (Packet_Cell_Change_Continue_t,  CONTAINER_ID,  2, &hf_packet_cell_change_continue_container_id),
+  M_UINT       (Packet_Cell_Change_Continue_t,  ARFCN, 10),
+  M_UINT       (Packet_Cell_Change_Continue_t,  BSIC,  6),
+  M_UINT       (Packet_Cell_Change_Continue_t,  CONTAINER_ID,  2),
 CSN_DESCR_END  (Packet_Cell_Change_Continue_t)
 
 /*< Packet Neighbour Cell Data message contents > */
 static const
 CSN_DESCR_BEGIN(PNCD_Container_With_ID_t)
-  M_UINT       (PNCD_Container_With_ID_t,  ARFCN, 10, &hf_pncd_container_with_id_arfcn),
-  M_UINT       (PNCD_Container_With_ID_t,  BSIC,  6, &hf_pncd_container_with_id_bsic),
+  M_UINT       (PNCD_Container_With_ID_t,  ARFCN, 10),
+  M_UINT       (PNCD_Container_With_ID_t,  BSIC,  6),
   M_UINT_ARRAY (PNCD_Container_With_ID_t, CONTAINER, 8, 17),/* 8*17 bits */
 CSN_DESCR_END  (PNCD_Container_With_ID_t)
 
@@ -4952,14 +3767,14 @@ CSN_DESCR_END  (PNCDContainer_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Neighbour_Cell_Data_t)
-  M_UINT       (Packet_Neighbour_Cell_Data_t,  MESSAGE_TYPE,  6, &hf_packet_neighbour_cell_data_message_type),
-  M_UINT       (Packet_Neighbour_Cell_Data_t,  PAGE_MODE,  2, &hf_packet_neighbour_cell_data_page_mode),
+  M_UINT       (Packet_Neighbour_Cell_Data_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Neighbour_Cell_Data_t,  PAGE_MODE,  2),
   M_FIXED      (Packet_Neighbour_Cell_Data_t, 1, 0x00),
   M_TYPE       (Packet_Neighbour_Cell_Data_t, Global_TFI, Global_TFI_t),
 
-  M_UINT       (Packet_Neighbour_Cell_Data_t,  CONTAINER_ID,  2, &hf_packet_neighbour_cell_data_container_id),
-  M_UINT       (Packet_Neighbour_Cell_Data_t,  spare,  1, &hf_packet_neighbour_cell_data_spare),
-  M_UINT       (Packet_Neighbour_Cell_Data_t,  CONTAINER_INDEX,  5, &hf_packet_neighbour_cell_data_container_index),
+  M_UINT       (Packet_Neighbour_Cell_Data_t,  CONTAINER_ID,  2),
+  M_UINT       (Packet_Neighbour_Cell_Data_t,  spare,  1),
+  M_UINT       (Packet_Neighbour_Cell_Data_t,  CONTAINER_INDEX,  5),
 
   M_TYPE       (Packet_Neighbour_Cell_Data_t, Container, PNCDContainer_t),
 CSN_DESCR_END  (Packet_Neighbour_Cell_Data_t)
@@ -4967,13 +3782,13 @@ CSN_DESCR_END  (Packet_Neighbour_Cell_Data_t)
 /*< Packet Serving Cell Data message contents > */
 static const
 CSN_DESCR_BEGIN(Packet_Serving_Cell_Data_t)
-  M_UINT       (Packet_Serving_Cell_Data_t,  MESSAGE_TYPE,  6, &hf_packet_serving_cell_data_message_type),
-  M_UINT       (Packet_Serving_Cell_Data_t,  PAGE_MODE,  2, &hf_packet_serving_cell_data_page_mode),
+  M_UINT       (Packet_Serving_Cell_Data_t,  MESSAGE_TYPE,  6),
+  M_UINT       (Packet_Serving_Cell_Data_t,  PAGE_MODE,  2),
   M_FIXED      (Packet_Serving_Cell_Data_t, 1, 0x00),
   M_TYPE       (Packet_Serving_Cell_Data_t, Global_TFI, Global_TFI_t),
 
-  M_UINT       (Packet_Serving_Cell_Data_t,  spare,  4, &hf_packet_serving_cell_data_spare),
-  M_UINT       (Packet_Serving_Cell_Data_t,  CONTAINER_INDEX,  5, &hf_packet_serving_cell_data_container_index),
+  M_UINT       (Packet_Serving_Cell_Data_t,  spare,  4),
+  M_UINT       (Packet_Serving_Cell_Data_t,  CONTAINER_INDEX,  5),
   M_UINT_ARRAY (Packet_Serving_Cell_Data_t, CONTAINER, 8, 19),/* 8*19 bits */
 CSN_DESCR_END  (Packet_Serving_Cell_Data_t)
 
@@ -4981,32 +3796,32 @@ CSN_DESCR_END  (Packet_Serving_Cell_Data_t)
 /* Enhanced Measurement Report */
 static const
 CSN_DESCR_BEGIN (ServingCellData_t)
-  M_UINT        (ServingCellData_t,  RXLEV_SERVING_CELL,  6, &hf_servingcelldata_rxlev_serving_cell),
+  M_UINT        (ServingCellData_t,  RXLEV_SERVING_CELL,  6),
   M_FIXED       (ServingCellData_t, 1, 0),
 CSN_DESCR_END   (ServingCellData_t)
 
 static const
 CSN_DESCR_BEGIN (Repeated_Invalid_BSIC_Info_t)
-  M_UINT        (Repeated_Invalid_BSIC_Info_t,  BCCH_FREQ_NCELL,  5, &hf_repeated_invalid_bsic_info_bcch_freq_ncell),
-  M_UINT        (Repeated_Invalid_BSIC_Info_t,  BSIC,  6, &hf_repeated_invalid_bsic_info_bsic),
-  M_UINT        (Repeated_Invalid_BSIC_Info_t,  RXLEV_NCELL,  5, &hf_repeated_invalid_bsic_info_rxlev_ncell),
+  M_UINT        (Repeated_Invalid_BSIC_Info_t,  BCCH_FREQ_NCELL,  5),
+  M_UINT        (Repeated_Invalid_BSIC_Info_t,  BSIC,  6),
+  M_UINT        (Repeated_Invalid_BSIC_Info_t,  RXLEV_NCELL,  5),
 CSN_DESCR_END   (Repeated_Invalid_BSIC_Info_t)
 
 static const
 CSN_DESCR_BEGIN (REPORTING_QUANTITY_t)
   M_NEXT_EXIST  (REPORTING_QUANTITY_t, Exist_REPORTING_QUANTITY, 1),
-  M_UINT        (REPORTING_QUANTITY_t,  REPORTING_QUANTITY,  6, &hf_reporting_quantity_reporting_quantity),
+  M_UINT        (REPORTING_QUANTITY_t,  REPORTING_QUANTITY,  6),
 CSN_DESCR_END   (REPORTING_QUANTITY_t)
 
 
 static const
 CSN_DESCR_BEGIN (NC_MeasurementReport_t)
-  M_BIT         (NC_MeasurementReport_t,  NC_MODE, &hf_nc_measurementreport_nc_mode),
+  M_BIT         (NC_MeasurementReport_t,  NC_MODE),
   M_UNION       (NC_MeasurementReport_t, 2),
   M_TYPE        (NC_MeasurementReport_t, u.BA_USED, BA_USED_t),
-  M_UINT        (NC_MeasurementReport_t,  u.PSI3_CHANGE_MARK,  2, &hf_nc_measurementreport_psi3_change_mark),
-  M_BIT         (NC_MeasurementReport_t,  PMO_USED, &hf_nc_measurementreport_pmo_used),
-  M_BIT         (NC_MeasurementReport_t,  SCALE, &hf_nc_measurementreport_scale),
+  M_UINT        (NC_MeasurementReport_t,  u.PSI3_CHANGE_MARK,  2),
+  M_BIT         (NC_MeasurementReport_t,  PMO_USED),
+  M_BIT         (NC_MeasurementReport_t,  SCALE),
 
   M_NEXT_EXIST  (NC_MeasurementReport_t, Exist_ServingCellData, 1),
   M_TYPE        (NC_MeasurementReport_t, ServingCellData, ServingCellData_t),
@@ -5023,56 +3838,56 @@ CSN_DESCR_END   (NC_MeasurementReport_t)
 static const
 CSN_DESCR_BEGIN (GlobalTimeslotDescription_t)
   M_UNION       (GlobalTimeslotDescription_t, 2),
-  M_UINT        (GlobalTimeslotDescription_t,  u.MS_TimeslotAllocation,  8, &hf_globaltimeslotdescription_ms_timeslotallocation),
+  M_UINT        (GlobalTimeslotDescription_t,  u.MS_TimeslotAllocation,  8),
   M_TYPE        (GlobalTimeslotDescription_t, u.Power_Control_Parameters, Power_Control_Parameters_t),
 CSN_DESCR_END   (GlobalTimeslotDescription_t)
 
 static const
 CSN_DESCR_BEGIN (PHO_DownlinkAssignment_t)
-  M_UINT        (PHO_DownlinkAssignment_t,  TimeslotAllocation,  8, &hf_pho_downlinkassignment_timeslotallocation),
-  M_UINT        (PHO_DownlinkAssignment_t,  PFI,  7, &hf_pho_downlinkassignment_pfi),
-  M_BIT         (PHO_DownlinkAssignment_t,  RLC_Mode, &hf_pho_downlinkassignment_rlc_mode),
-  M_UINT        (PHO_DownlinkAssignment_t,  TFI_Assignment,  5, &hf_pho_downlinkassignment_tfi_assignment),
-  M_BIT         (PHO_DownlinkAssignment_t,  ControlACK, &hf_pho_downlinkassignment_controlack),
+  M_UINT        (PHO_DownlinkAssignment_t,  TimeslotAllocation,  8),
+  M_UINT        (PHO_DownlinkAssignment_t,  PFI,  7),
+  M_BIT         (PHO_DownlinkAssignment_t,  RLC_Mode),
+  M_UINT        (PHO_DownlinkAssignment_t,  TFI_Assignment,  5),
+  M_BIT         (PHO_DownlinkAssignment_t,  ControlACK),
 
   M_NEXT_EXIST  (PHO_DownlinkAssignment_t, Exist_EGPRS_WindowSize, 1),
-  M_UINT        (PHO_DownlinkAssignment_t,  EGPRS_WindowSize,  5, &hf_pho_downlinkassignment_egprs_windowsize),
+  M_UINT        (PHO_DownlinkAssignment_t,  EGPRS_WindowSize,  5),
 CSN_DESCR_END   (PHO_DownlinkAssignment_t)
 
 static const
 CSN_DESCR_BEGIN (PHO_USF_1_7_t)
   M_NEXT_EXIST  (PHO_USF_1_7_t, Exist_USF, 1),
-  M_UINT        (PHO_USF_1_7_t,  USF,  3, &hf_pho_usf_1_7_usf),
+  M_UINT        (PHO_USF_1_7_t,  USF,  3),
 CSN_DESCR_END   (PHO_USF_1_7_t)
 
 static const
 CSN_DESCR_BEGIN       (USF_AllocationArray_t)
-  M_UINT              (USF_AllocationArray_t,  USF_0,  3, &hf_usf_allocationarray_usf_0),
+  M_UINT              (USF_AllocationArray_t,  USF_0,  3),
   M_VAR_TARRAY_OFFSET (USF_AllocationArray_t, USF_1_7, PHO_USF_1_7_t, NBR_OfAllocatedTimeslots),
 CSN_DESCR_END         (USF_AllocationArray_t)
 
 static const
 CSN_DESCR_BEGIN  (PHO_UplinkAssignment_t)
-  M_UINT         (PHO_UplinkAssignment_t,  PFI,  7, &hf_pho_uplinkassignment_pfi),
-  M_BIT          (PHO_UplinkAssignment_t,  RLC_Mode, &hf_pho_uplinkassignment_rlc_mode),
-  M_UINT         (PHO_UplinkAssignment_t,  TFI_Assignment,  5, &hf_pho_uplinkassignment_tfi_assignment),
+  M_UINT         (PHO_UplinkAssignment_t,  PFI,  7),
+  M_BIT          (PHO_UplinkAssignment_t,  RLC_Mode),
+  M_UINT         (PHO_UplinkAssignment_t,  TFI_Assignment,  5),
 
   M_NEXT_EXIST   (PHO_UplinkAssignment_t, Exist_ChannelCodingCommand, 1),
-  M_UINT         (PHO_UplinkAssignment_t,  ChannelCodingCommand,  2, &hf_pho_uplinkassignment_channelcodingcommand),
+  M_UINT         (PHO_UplinkAssignment_t,  ChannelCodingCommand,  2),
 
   M_NEXT_EXIST   (PHO_UplinkAssignment_t, Exist_EGPRS_ChannelCodingCommand, 1),
-  M_UINT         (PHO_UplinkAssignment_t,  EGPRS_ChannelCodingCommand,  4, &hf_pho_uplinkassignment_egprs_channelcodingcommand),
+  M_UINT         (PHO_UplinkAssignment_t,  EGPRS_ChannelCodingCommand,  4),
 
   M_NEXT_EXIST   (PHO_UplinkAssignment_t, Exist_EGPRS_WindowSize, 1),
-  M_UINT         (PHO_UplinkAssignment_t,  EGPRS_WindowSize,  5, &hf_pho_uplinkassignment_egprs_windowsize),
+  M_UINT         (PHO_UplinkAssignment_t,  EGPRS_WindowSize,  5),
 
-  M_BIT          (PHO_UplinkAssignment_t,  USF_Granularity, &hf_pho_uplinkassignment_usf_granularity),
+  M_BIT          (PHO_UplinkAssignment_t,  USF_Granularity),
 
   M_NEXT_EXIST   (PHO_UplinkAssignment_t, Exist_TBF_TimeslotAllocation, 1),
   M_LEFT_VAR_BMP (PHO_UplinkAssignment_t, TBF_TimeslotAllocation, u.USF_AllocationArray.NBR_OfAllocatedTimeslots, 0),
 
   M_UNION        (PHO_UplinkAssignment_t, 2),
-  M_UINT         (PHO_UplinkAssignment_t,  u.USF_SingleAllocation,  3, &hf_pho_uplinkassignment_usf_singleallocation),
+  M_UINT         (PHO_UplinkAssignment_t,  u.USF_SingleAllocation,  3),
   M_TYPE         (PHO_UplinkAssignment_t, u.USF_AllocationArray, USF_AllocationArray_t),
 CSN_DESCR_END    (PHO_UplinkAssignment_t)
 
@@ -5088,7 +3903,7 @@ CSN_DESCR_END   (GlobalTimeslotDescription_UA_t)
 static const
 CSN_DESCR_BEGIN (PHO_GPRS_t)
   M_NEXT_EXIST  (PHO_GPRS_t, Exist_ChannelCodingCommand, 1),
-  M_UINT        (PHO_GPRS_t,  ChannelCodingCommand,  2, &hf_pho_gprs_channelcodingcommand),
+  M_UINT        (PHO_GPRS_t,  ChannelCodingCommand,  2),
 
   M_NEXT_EXIST  (PHO_GPRS_t, Exist_GlobalTimeslotDescription_UA, 1),
   M_TYPE        (PHO_GPRS_t, GTD_UA, GlobalTimeslotDescription_UA_t),
@@ -5101,11 +3916,11 @@ CSN_DESCR_END   (PHO_GPRS_t)
 static const
 CSN_DESCR_BEGIN (EGPRS_Description_t)
   M_NEXT_EXIST  (EGPRS_Description_t, Exist_EGPRS_WindowSize, 1),
-  M_UINT        (EGPRS_Description_t,  EGPRS_WindowSize,  5, &hf_egprs_description_egprs_windowsize),
+  M_UINT        (EGPRS_Description_t,  EGPRS_WindowSize,  5),
 
-  M_UINT        (EGPRS_Description_t,  LinkQualityMeasurementMode,  2, &hf_egprs_description_linkqualitymeasurementmode),
+  M_UINT        (EGPRS_Description_t,  LinkQualityMeasurementMode,  2),
   M_NEXT_EXIST  (EGPRS_Description_t, Exist_BEP_Period2, 1),
-  M_UINT        (EGPRS_Description_t,  BEP_Period2,  4, &hf_egprs_description_bep_period2),
+  M_UINT        (EGPRS_Description_t,  BEP_Period2,  4),
 CSN_DESCR_END   (EGPRS_Description_t)
 
 static const
@@ -5121,13 +3936,13 @@ CSN_DESCR_END   (DownlinkTBF_t)
 static const
 CSN_DESCR_BEGIN (PHO_EGPRS_t)
   M_NEXT_EXIST  (PHO_EGPRS_t, Exist_EGPRS_WindowSize, 1),
-  M_UINT        (PHO_EGPRS_t,  EGPRS_WindowSize,  5, &hf_pho_egprs_egprs_windowsize),
+  M_UINT        (PHO_EGPRS_t,  EGPRS_WindowSize,  5),
 
   M_NEXT_EXIST  (PHO_EGPRS_t, Exist_EGPRS_ChannelCodingCommand, 1),
-  M_UINT        (PHO_EGPRS_t,  EGPRS_ChannelCodingCommand,  4, &hf_pho_egprs_egprs_channelcodingcommand),
+  M_UINT        (PHO_EGPRS_t,  EGPRS_ChannelCodingCommand,  4),
 
   M_NEXT_EXIST  (PHO_EGPRS_t, Exist_BEP_Period2, 1),
-  M_UINT        (PHO_EGPRS_t,  BEP_Period2,  4, &hf_pho_egprs_bep_period2),
+  M_UINT        (PHO_EGPRS_t,  BEP_Period2,  4),
 
   M_NEXT_EXIST  (PHO_EGPRS_t, Exist_GlobalTimeslotDescription_UA, 1),
   M_TYPE        (PHO_EGPRS_t, GTD_UA, GlobalTimeslotDescription_UA_t),
@@ -5140,18 +3955,18 @@ static const
 CSN_DESCR_BEGIN(PHO_TimingAdvance_t)
   M_TYPE       (PHO_TimingAdvance_t, GlobalPacketTimingAdvance, Global_Packet_Timing_Advance_t),
   M_NEXT_EXIST (PHO_TimingAdvance_t, Exist_PacketExtendedTimingAdvance, 1),
-  M_UINT       (PHO_TimingAdvance_t,  PacketExtendedTimingAdvance,  2, &hf_pho_timingadvance_packetextendedtimingadvance),
+  M_UINT       (PHO_TimingAdvance_t,  PacketExtendedTimingAdvance,  2),
 CSN_DESCR_END  (PHO_TimingAdvance_t)
 
 static const
 CSN_DESCR_BEGIN(NAS_Container_t)
-  M_UINT       (NAS_Container_t,  NAS_ContainerLength,  7, &hf_nas_container_nas_containerlength),
+  M_UINT       (NAS_Container_t,  NAS_ContainerLength,  7),
   M_VAR_ARRAY  (NAS_Container_t, NAS_Container, NAS_ContainerLength, 0),
 CSN_DESCR_END  (NAS_Container_t)
 
 static const
 CSN_DESCR_BEGIN(PS_HandoverTo_UTRAN_Payload_t)
-  M_UINT       (PS_HandoverTo_UTRAN_Payload_t,  RRC_ContainerLength,  8, &hf_ps_handoverto_utran_payload_rrc_containerlength),
+  M_UINT       (PS_HandoverTo_UTRAN_Payload_t,  RRC_ContainerLength,  8),
   M_VAR_ARRAY  (PS_HandoverTo_UTRAN_Payload_t, RRC_Container, RRC_ContainerLength, 0),
 CSN_DESCR_END  (PS_HandoverTo_UTRAN_Payload_t)
 
@@ -5159,35 +3974,35 @@ CSN_DESCR_END  (PS_HandoverTo_UTRAN_Payload_t)
 static const
 CSN_DESCR_BEGIN(PHO_RadioResources_t)
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_HandoverReference, 1),
-  M_UINT       (PHO_RadioResources_t,  HandoverReference,  8, &hf_pho_radioresources_handoverreference),
+  M_UINT       (PHO_RadioResources_t,  HandoverReference,  8),
 
-  M_UINT       (PHO_RadioResources_t,  ARFCN,  10, &hf_pho_radioresources_arfcn),
-  M_UINT       (PHO_RadioResources_t,  SI,  2, &hf_pho_radioresources_si),
-  M_BIT        (PHO_RadioResources_t,  NCI, &hf_pho_radioresources_nci),
-  M_UINT       (PHO_RadioResources_t,  BSIC,  6, &hf_pho_radioresources_bsic),
+  M_UINT       (PHO_RadioResources_t,  ARFCN,  10),
+  M_UINT       (PHO_RadioResources_t,  SI,  2),
+  M_BIT        (PHO_RadioResources_t,  NCI),
+  M_UINT       (PHO_RadioResources_t,  BSIC,  6),
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_CCN_Active, 1),
-  M_BIT        (PHO_RadioResources_t,  CCN_Active, &hf_pho_radioresources_ccn_active),
+  M_BIT        (PHO_RadioResources_t,  CCN_Active),
 
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_CCN_Active_3G, 1),
-  M_BIT        (PHO_RadioResources_t,  CCN_Active_3G, &hf_pho_radioresources_ccn_active_3g),
+  M_BIT        (PHO_RadioResources_t,  CCN_Active_3G),
 
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_CCN_Support_Description, 1),
   M_TYPE       (PHO_RadioResources_t, CCN_Support_Description, CCN_Support_Description_t),
 
   M_TYPE       (PHO_RadioResources_t, Frequency_Parameters, Frequency_Parameters_t),
-  M_UINT       (PHO_RadioResources_t,  NetworkControlOrder,  2, &hf_pho_radioresources_networkcontrolorder),
+  M_UINT       (PHO_RadioResources_t,  NetworkControlOrder,  2),
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_PHO_TimingAdvance, 1),
   M_TYPE       (PHO_RadioResources_t, PHO_TimingAdvance, PHO_TimingAdvance_t),
 
-  M_BIT        (PHO_RadioResources_t,  Extended_Dynamic_Allocation, &hf_pho_radioresources_extended_dynamic_allocation),
-  M_BIT        (PHO_RadioResources_t,  RLC_Reset, &hf_pho_radioresources_rlc_reset),
+  M_BIT        (PHO_RadioResources_t,  Extended_Dynamic_Allocation),
+  M_BIT        (PHO_RadioResources_t,  RLC_Reset),
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_PO_PR, 2),
-  M_UINT       (PHO_RadioResources_t,  PO,  4, &hf_pho_radioresources_po),
-  M_BIT        (PHO_RadioResources_t,  PR_Mode, &hf_pho_radioresources_pr_mode),
+  M_UINT       (PHO_RadioResources_t,  PO,  4),
+  M_BIT        (PHO_RadioResources_t,  PR_Mode),
 
 
   M_NEXT_EXIST (PHO_RadioResources_t, Exist_UplinkControlTimeslot, 1),
-  M_UINT       (PHO_RadioResources_t,  UplinkControlTimeslot,  3, &hf_pho_radioresources_uplinkcontroltimeslot),
+  M_UINT       (PHO_RadioResources_t,  UplinkControlTimeslot,  3),
 
   M_UNION      (PHO_RadioResources_t, 2),
   M_TYPE       (PHO_RadioResources_t, u.PHO_GPRS_Mode, PHO_GPRS_t),
@@ -5205,13 +4020,13 @@ CSN_DESCR_END  (PS_HandoverTo_A_GB_ModePayload_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_Handover_Command_t)
-  M_UINT       (Packet_Handover_Command_t,  MessageType,  6, &hf_packet_handover_command_messagetype),
-  M_UINT       (Packet_Handover_Command_t,  PageMode,  2, &hf_packet_handover_command_pagemode),
+  M_UINT       (Packet_Handover_Command_t,  MessageType,  6),
+  M_UINT       (Packet_Handover_Command_t,  PageMode,  2),
 
   M_FIXED      (Packet_Handover_Command_t, 1, 0x00), /* 0 fixed */
   M_TYPE       (Packet_Handover_Command_t, Global_TFI, Global_TFI_t),
 
-  M_UINT       (Packet_Handover_Command_t,  ContainerID,  2, &hf_packet_handover_command_containerid),
+  M_UINT       (Packet_Handover_Command_t,  ContainerID,  2),
 
   M_UNION      (Packet_Handover_Command_t, 4),
   M_TYPE       (Packet_Handover_Command_t, u.PS_HandoverTo_A_GB_ModePayload, PS_HandoverTo_A_GB_ModePayload_t),
@@ -5226,12 +4041,12 @@ CSN_DESCR_END  (Packet_Handover_Command_t)
 
 static const
 CSN_DESCR_BEGIN(Packet_PhysicalInformation_t)
-  M_UINT       (Packet_PhysicalInformation_t,  MessageType,  6, &hf_packet_physicalinformation_messagetype),
-  M_UINT       (Packet_PhysicalInformation_t,  PageMode,  2, &hf_packet_physicalinformation_pagemode),
+  M_UINT       (Packet_PhysicalInformation_t,  MessageType,  6),
+  M_UINT       (Packet_PhysicalInformation_t,  PageMode,  2),
 
   M_TYPE       (Packet_PhysicalInformation_t, Global_TFI, Global_TFI_t),
 
-  M_UINT       (Packet_PhysicalInformation_t,  TimingAdvance,  8, &hf_packet_physicalinformation_timingadvance),
+  M_UINT       (Packet_PhysicalInformation_t,  TimingAdvance,  8),
 CSN_DESCR_END  (Packet_PhysicalInformation_t)
 
 /*< End Packet Physical Information > */
@@ -5242,7 +4057,7 @@ static const
 CSN_ChoiceElement_t AdditionalMsRadAccessCapID[] =
 {
   {1, 0,    M_TYPE(AdditionalMsRadAccessCapID_t, u.Global_TFI, Global_TFI_t)},
-  {1, 0x01, M_UINT(AdditionalMsRadAccessCapID_t, u.TLLI, 32, &hf_additionalmsradcap_tlli)},
+  {1, 0x01, M_UINT(AdditionalMsRadAccessCapID_t, u.TLLI, 32)},
 };
 
 static const
@@ -5254,10 +4069,10 @@ CSN_DESCR_END  (AdditionalMsRadAccessCapID_t)
 static const
 CSN_DESCR_BEGIN       (Additional_MS_Rad_Access_Cap_t)
   /* Mac header */
-  M_UINT              (Additional_MS_Rad_Access_Cap_t,  PayloadType,  2, &hf_packet_resource_request_payloadtype),
-  M_UINT              (Additional_MS_Rad_Access_Cap_t,  spare,  5, &hf_packet_resource_request_spare),
-  M_UINT              (Additional_MS_Rad_Access_Cap_t,  R,  1, &hf_packet_resource_request_r),
-  M_UINT              (Additional_MS_Rad_Access_Cap_t,  MESSAGE_TYPE,  6, &hf_packet_resource_request_message_type),
+  M_UINT              (Additional_MS_Rad_Access_Cap_t,  PayloadType,  2),
+  M_UINT              (Additional_MS_Rad_Access_Cap_t,  spare,  5),
+  M_UINT              (Additional_MS_Rad_Access_Cap_t,  R,  1),
+  M_UINT              (Additional_MS_Rad_Access_Cap_t,  MESSAGE_TYPE,  6),
   /* Mac header */
 
   M_TYPE              (Additional_MS_Rad_Access_Cap_t,  ID, AdditionalMsRadAccessCapID_t),
@@ -5272,8 +4087,8 @@ CSN_DESCR_END         (Additional_MS_Rad_Access_Cap_t)
 
 static const
 CSN_DESCR_BEGIN       (Packet_Pause_t)
-  M_UINT              (Packet_Pause_t,  MESSAGE_TYPE,  2, &hf_packet_pause_message_type),
-  M_UINT              (Packet_Pause_t,  TLLI, 32, &hf_packet_pause_tlli),
+  M_UINT              (Packet_Pause_t,  MESSAGE_TYPE,  2),
+  M_UINT              (Packet_Pause_t,  TLLI, 32),
   M_BITMAP            (Packet_Pause_t,  RAI, 48),
 CSN_DESCR_END         (Packet_Pause_t)
 
@@ -5284,39 +4099,39 @@ CSN_DESCR_END         (Packet_Pause_t)
 /*< Packet System Information Type 1 message content >*/
 static const
 CSN_DESCR_BEGIN(PSI1_AdditionsR99_t)
-  M_UINT       (PSI1_AdditionsR99_t,  MSCR,  1, &hf_packet_system_info_type1_mscr),
-  M_UINT       (PSI1_AdditionsR99_t,  SGSNR,  1, &hf_packet_system_info_type1_sgsnr),
-  M_UINT       (PSI1_AdditionsR99_t,  BandIndicator,  1, &hf_packet_system_info_type1_band_indicator),
+  M_UINT       (PSI1_AdditionsR99_t,  MSCR,  1),
+  M_UINT       (PSI1_AdditionsR99_t,  SGSNR,  1),
+  M_UINT       (PSI1_AdditionsR99_t,  BandIndicator,  1),
 CSN_DESCR_END  (PSI1_AdditionsR99_t)
 
 static const
 CSN_DESCR_BEGIN(PCCCH_Organization_t)
-  M_UINT       (PCCCH_Organization_t,  BS_PCC_REL,  1, &hf_pccch_org_bs_pcc_rel),
-  M_UINT       (PCCCH_Organization_t,  BS_PBCCH_BLKS,  2, &hf_pccch_org_pbcch_blks),
-  M_UINT       (PCCCH_Organization_t,  BS_PAG_BLKS_RES,  4, &hf_pccch_org_pag_blks_res),
-  M_UINT       (PCCCH_Organization_t,  BS_PRACH_BLKS,  4, &hf_pccch_org_prach_blks),
+  M_UINT       (PCCCH_Organization_t,  BS_PCC_REL,  1),
+  M_UINT       (PCCCH_Organization_t,  BS_PBCCH_BLKS,  2),
+  M_UINT       (PCCCH_Organization_t,  BS_PAG_BLKS_RES,  4),
+  M_UINT       (PCCCH_Organization_t,  BS_PRACH_BLKS,  4),
 CSN_DESCR_END  (PCCCH_Organization_t)
 
 
 static const
 CSN_DESCR_BEGIN(PSI1_t)
-  M_UINT       (PSI1_t,  MESSAGE_TYPE,  6, &hf_packet_system_info_type1_message_type),
-  M_UINT       (PSI1_t,  PAGE_MODE,  2, &hf_packet_system_info_type1_page_mode),
+  M_UINT       (PSI1_t,  MESSAGE_TYPE,  6),
+  M_UINT       (PSI1_t,  PAGE_MODE,  2),
 
-  M_UINT       (PSI1_t,  PBCCH_CHANGE_MARK,  3, &hf_packet_system_info_type1_pbcch_change_mark),
-  M_UINT       (PSI1_t,  PSI_CHANGE_FIELD,  4, &hf_packet_system_info_type1_psi_change_field),
-  M_UINT       (PSI1_t,  PSI1_REPEAT_PERIOD,  4, &hf_packet_system_info_type1_psi1_repeat_period),
-  M_UINT       (PSI1_t,  PSI_COUNT_LR,  6, &hf_packet_system_info_type1_psi_count_lr),
+  M_UINT       (PSI1_t,  PBCCH_CHANGE_MARK,  3),
+  M_UINT       (PSI1_t,  PSI_CHANGE_FIELD,  4),
+  M_UINT       (PSI1_t,  PSI1_REPEAT_PERIOD,  4),
+  M_UINT       (PSI1_t,  PSI_COUNT_LR,  6),
 
   M_NEXT_EXIST (PSI1_t, Exist_PSI_COUNT_HR, 1),
-  M_UINT       (PSI1_t,  PSI_COUNT_HR,  4, &hf_packet_system_info_type1_psi_count_hr),
+  M_UINT       (PSI1_t,  PSI_COUNT_HR,  4),
 
-  M_UINT       (PSI1_t,  MEASUREMENT_ORDER,  1, &hf_packet_system_info_type1_measurement_order),
+  M_UINT       (PSI1_t,  MEASUREMENT_ORDER,  1),
   M_TYPE       (PSI1_t,  GPRS_Cell_Options, GPRS_Cell_Options_t),
   M_TYPE       (PSI1_t,  PRACH_Control, PRACH_Control_t),
   M_TYPE       (PSI1_t,  PCCCH_Organization, PCCCH_Organization_t),
   M_TYPE       (PSI1_t,  Global_Power_Control_Parameters, Global_Power_Control_Parameters_t),
-  M_UINT       (PSI1_t,  PSI_STATUS_IND,  1, &hf_packet_system_info_type1_psi_status_ind),
+  M_UINT       (PSI1_t,  PSI_STATUS_IND,  1),
 
   M_NEXT_EXIST (PSI1_t, Exist_AdditionsR99, 1),
   M_TYPE       (PSI1_t,  AdditionsR99, PSI1_AdditionsR99_t),
@@ -5329,34 +4144,34 @@ CSN_DESCR_END  (PSI1_t)
 static const
 CSN_DESCR_BEGIN(LAI_t)
   M_TYPE       (LAI_t,  PLMN, PLMN_t),
-  M_UINT       (LAI_t,  LAC,  16, &hf_packet_lai_lac),
+  M_UINT       (LAI_t,  LAC,  16),
 CSN_DESCR_END  (LAI_t)
 
 static const
 CSN_DESCR_BEGIN(Cell_Identification_t)
   M_TYPE       (Cell_Identification_t,  LAI, LAI_t),
-  M_UINT       (Cell_Identification_t,  RAC,  8, &hf_packet_cell_id_rac),
-  M_UINT       (Cell_Identification_t,  Cell_Identity,  16, &hf_packet_cell_id_cell_idneity),
+  M_UINT       (Cell_Identification_t,  RAC,  8),
+  M_UINT       (Cell_Identification_t,  Cell_Identity,  16),
 CSN_DESCR_END  (Cell_Identification_t)
 
 static const
 CSN_DESCR_BEGIN(Non_GPRS_Cell_Options_t)
-  M_BIT        (Non_GPRS_Cell_Options_t,  ATT, &hf_packet_non_gprs_cell_opt_att),
+  M_BIT        (Non_GPRS_Cell_Options_t,  ATT),
   
   M_NEXT_EXIST (Non_GPRS_Cell_Options_t, Exist_T3212, 1),
-  M_UINT       (Non_GPRS_Cell_Options_t,  T3212, 8, &hf_packet_non_gprs_cell_opt_t3212),
+  M_UINT       (Non_GPRS_Cell_Options_t,  T3212, 8),
   
-  M_BIT        (Non_GPRS_Cell_Options_t,  NECI, &hf_packet_non_gprs_cell_opt_neci),
-  M_BIT        (Non_GPRS_Cell_Options_t,  PWRC, &hf_packet_non_gprs_cell_opt_pwrc),
-  M_UINT       (Non_GPRS_Cell_Options_t,  DTX, 2, &hf_packet_non_gprs_cell_opt_dtx),
-  M_UINT       (Non_GPRS_Cell_Options_t,  RADIO_LINK_TIMEOUT, 4, &hf_packet_non_gprs_cell_opt_radio_link_timeout),
-  M_UINT       (Non_GPRS_Cell_Options_t,  BS_AG_BLKS_RES, 3, &hf_packet_non_gprs_cell_opt_bs_ag_blks_res),
-  M_UINT       (Non_GPRS_Cell_Options_t,  CCCH_CONF, 3, &hf_packet_non_gprs_cell_opt_ccch_conf),
-  M_UINT       (Non_GPRS_Cell_Options_t,  BS_PA_MFRMS, 3, &hf_packet_non_gprs_cell_opt_bs_pa_mfrms),
-  M_UINT       (Non_GPRS_Cell_Options_t,  MAX_RETRANS, 2, &hf_packet_non_gprs_cell_opt_max_retrans),
-  M_UINT       (Non_GPRS_Cell_Options_t,  TX_INTEGER, 4, &hf_packet_non_gprs_cell_opt_tx_int),
-  M_BIT        (Non_GPRS_Cell_Options_t,  EC, &hf_packet_non_gprs_cell_opt_ec),
-  M_UINT       (Non_GPRS_Cell_Options_t,  MS_TXPWR_MAX_CCCH, 5, &hf_packet_non_gprs_cell_opt_ms_txpwr_max_ccch),
+  M_BIT        (Non_GPRS_Cell_Options_t,  NECI),
+  M_BIT        (Non_GPRS_Cell_Options_t,  PWRC),
+  M_UINT       (Non_GPRS_Cell_Options_t,  DTX, 2),
+  M_UINT       (Non_GPRS_Cell_Options_t,  RADIO_LINK_TIMEOUT, 4),
+  M_UINT       (Non_GPRS_Cell_Options_t,  BS_AG_BLKS_RES, 3),
+  M_UINT       (Non_GPRS_Cell_Options_t,  CCCH_CONF, 3),
+  M_UINT       (Non_GPRS_Cell_Options_t,  BS_PA_MFRMS, 3),
+  M_UINT       (Non_GPRS_Cell_Options_t,  MAX_RETRANS, 2),
+  M_UINT       (Non_GPRS_Cell_Options_t,  TX_INTEGER, 4),
+  M_BIT        (Non_GPRS_Cell_Options_t,  EC),
+  M_UINT       (Non_GPRS_Cell_Options_t,  MS_TXPWR_MAX_CCCH, 5),
 
   M_NEXT_EXIST (Non_GPRS_Cell_Options_t, Exist_Extension_Bits, 1),
   M_TYPE       (Non_GPRS_Cell_Options_t,  Extension_Bits, Extension_Bits_t),
@@ -5364,21 +4179,21 @@ CSN_DESCR_END  (Non_GPRS_Cell_Options_t)
 
 static const
 CSN_DESCR_BEGIN(Reference_Frequency_t)
-  M_UINT(Reference_Frequency_t, NUMBER, 4, &hf_packet_system_info_type2_ref_freq_num),
+  M_UINT(Reference_Frequency_t, NUMBER, 4),
   M_UINT_OFFSET(Reference_Frequency_t, Length, 4, 3),
   M_VAR_ARRAY  (Reference_Frequency_t, Contents[0], Length, 0),
 CSN_DESCR_END  (Reference_Frequency_t)
 
 static const
 CSN_DESCR_BEGIN(PSI2_MA_t)
-  M_UINT(PSI2_MA_t, NUMBER, 4, &hf_packet_system_info_type2_ma_number),
+  M_UINT(PSI2_MA_t, NUMBER, 4),
   M_TYPE(PSI2_MA_t, Mobile_Allocation, GPRS_Mobile_Allocation_t),
 CSN_DESCR_END  (PSI2_MA_t)
 
 static const
 CSN_DESCR_BEGIN(Non_Hopping_PCCCH_Carriers_t)
-  M_UINT(Non_Hopping_PCCCH_Carriers_t, ARFCN, 10, &hf_packet_system_info_type2_non_hopping_arfcn),
-  M_UINT(Non_Hopping_PCCCH_Carriers_t, TIMESLOT_ALLOCATION, 8, &hf_packet_system_info_type2_non_hopping_timeslot),
+  M_UINT(Non_Hopping_PCCCH_Carriers_t, ARFCN, 10),
+  M_UINT(Non_Hopping_PCCCH_Carriers_t, TIMESLOT_ALLOCATION, 8),
 CSN_DESCR_END  (Non_Hopping_PCCCH_Carriers_t)
 
 static const
@@ -5388,19 +4203,19 @@ CSN_DESCR_END  (NonHoppingPCCCH_t)
 
 static const
 CSN_DESCR_BEGIN(Hopping_PCCCH_Carriers_t)
-  M_UINT(Hopping_PCCCH_Carriers_t, MAIO, 6, &hf_packet_system_info_type2_hopping_maio),
-  M_UINT(Hopping_PCCCH_Carriers_t, TIMESLOT_ALLOCATION, 8, &hf_packet_system_info_type2_hopping_timeslot),
+  M_UINT(Hopping_PCCCH_Carriers_t, MAIO, 6),
+  M_UINT(Hopping_PCCCH_Carriers_t, TIMESLOT_ALLOCATION, 8),
 CSN_DESCR_END  (Hopping_PCCCH_Carriers_t)
 
 static const
 CSN_DESCR_BEGIN(HoppingPCCCH_t)
-  M_UINT(HoppingPCCCH_t, MA_NUMBER, 4, &hf_packet_system_info_type2_hopping_ma_num),
+  M_UINT(HoppingPCCCH_t, MA_NUMBER, 4),
   M_REC_TARRAY (HoppingPCCCH_t, Carriers[0], Hopping_PCCCH_Carriers_t, Count_Carriers),
 CSN_DESCR_END  (HoppingPCCCH_t)
 
 static const
 CSN_DESCR_BEGIN(PCCCH_Description_t)
-  M_UINT(PCCCH_Description_t, TSC, 3, &hf_packet_system_info_type2_pcch_desc_tsc),
+  M_UINT(PCCCH_Description_t, TSC, 3),
   M_UNION     (PCCCH_Description_t, 2),
   M_TYPE      (PCCCH_Description_t, u.NonHopping, NonHoppingPCCCH_t),
   M_TYPE      (PCCCH_Description_t, u.Hopping, HoppingPCCCH_t),
@@ -5408,12 +4223,12 @@ CSN_DESCR_END  (PCCCH_Description_t)
 
 static const
 CSN_DESCR_BEGIN(PSI2_t)
-  M_UINT       (PSI2_t,  MESSAGE_TYPE,  6, &hf_packet_system_info_type2_message_type),
-  M_UINT       (PSI2_t,  PAGE_MODE,  2, &hf_packet_system_info_type2_page_mode),
+  M_UINT       (PSI2_t,  MESSAGE_TYPE,  6),
+  M_UINT       (PSI2_t,  PAGE_MODE,  2),
 
-  M_UINT       (PSI2_t,  CHANGE_MARK,  2, &hf_packet_system_info_type2_change_mark),
-  M_UINT       (PSI2_t,  INDEX,  3, &hf_packet_system_info_type2_index),
-  M_UINT       (PSI2_t,  COUNT,  3, &hf_packet_system_info_type2_count),
+  M_UINT       (PSI2_t,  CHANGE_MARK,  2),
+  M_UINT       (PSI2_t,  INDEX,  3),
+  M_UINT       (PSI2_t,  COUNT,  3),
 
   M_NEXT_EXIST (PSI2_t, Exist_Cell_Identification, 1),
   M_TYPE       (PSI2_t,  Cell_Identification, Cell_Identification_t),
@@ -5433,51 +4248,51 @@ CSN_DESCR_END  (PSI2_t)
 /*< Packet System Information Type 3 message content >*/
 static const
 CSN_DESCR_BEGIN(Serving_Cell_params_t)
-  M_BIT        (Serving_Cell_params_t,  CELL_BAR_ACCESS_2, &hf_packet_scell_param_cell_bar_access_2),
-  M_BIT        (Serving_Cell_params_t,  EXC_ACC, &hf_packet_scell_param_exc_acc),
-  M_UINT       (Serving_Cell_params_t,  GPRS_RXLEV_ACCESS_MIN, 6, &hf_packet_scell_param_gprs_rxlev_access_min),
-  M_UINT       (Serving_Cell_params_t,  GPRS_MS_TXPWR_MAX_CCH, 5, &hf_packet_scell_param_gprs_ms_txpwr_max_cch),
+  M_BIT        (Serving_Cell_params_t,  CELL_BAR_ACCESS_2),
+  M_BIT        (Serving_Cell_params_t,  EXC_ACC),
+  M_UINT       (Serving_Cell_params_t,  GPRS_RXLEV_ACCESS_MIN, 6),
+  M_UINT       (Serving_Cell_params_t,  GPRS_MS_TXPWR_MAX_CCH, 5),
   M_NEXT_EXIST (Serving_Cell_params_t, Exist_HCS, 1),
   M_TYPE       (Serving_Cell_params_t,  HCS, HCS_t),
-  M_UINT       (Serving_Cell_params_t,  MULTIBAND_REPORTING, 2, &hf_packet_scell_param_multiband_reporting),
+  M_UINT       (Serving_Cell_params_t,  MULTIBAND_REPORTING, 2),
 CSN_DESCR_END  (Serving_Cell_params_t)
 
 
 static const
 CSN_DESCR_BEGIN(Gen_Cell_Sel_t)
-  M_UINT       (Gen_Cell_Sel_t,  GPRS_CELL_RESELECT_HYSTERESIS, 3, &hf_packet_gen_cell_sel_gprs_cell_resl_hyst),
-  M_BIT        (Gen_Cell_Sel_t,  C31_HYST, &hf_packet_gen_cell_sel_c31_hyst),
-  M_BIT        (Gen_Cell_Sel_t,  C32_QUAL, &hf_packet_gen_cell_sel_c32_qual),
+  M_UINT       (Gen_Cell_Sel_t,  GPRS_CELL_RESELECT_HYSTERESIS, 3),
+  M_BIT        (Gen_Cell_Sel_t,  C31_HYST),
+  M_BIT        (Gen_Cell_Sel_t,  C32_QUAL),
   M_FIXED      (Gen_Cell_Sel_t, 1, 0x01),
     
   M_NEXT_EXIST (Gen_Cell_Sel_t, Exist_T_RESEL, 1),
-  M_UINT       (Gen_Cell_Sel_t,  T_RESEL, 3, &hf_packet_gen_cell_sel_t_resel),
+  M_UINT       (Gen_Cell_Sel_t,  T_RESEL, 3),
 
   M_NEXT_EXIST (Gen_Cell_Sel_t, Exist_RA_RESELECT_HYSTERESIS, 1),
-  M_UINT       (Gen_Cell_Sel_t,  RA_RESELECT_HYSTERESIS, 3, &hf_packet_gen_cell_sel_ra_resel_hyst),
+  M_UINT       (Gen_Cell_Sel_t,  RA_RESELECT_HYSTERESIS, 3),
 CSN_DESCR_END  (Gen_Cell_Sel_t)
 
 
 static const
 CSN_DESCR_BEGIN(COMPACT_Cell_Sel_t)
-  M_UINT       (COMPACT_Cell_Sel_t,  bsic, 6, &hf_packet_compact_cell_sel_bsic),
-  M_BIT        (COMPACT_Cell_Sel_t,  CELL_BAR_ACCESS_2, &hf_packet_compact_cell_sel_cell_bar_access_2),
-  M_BIT        (COMPACT_Cell_Sel_t,  EXC_ACC, &hf_packet_compact_cell_sel_exc_acc),
-  M_BIT        (COMPACT_Cell_Sel_t,  SAME_RA_AS_SERVING_CELL, &hf_packet_compact_cell_sel_same_as_scell),
+  M_UINT       (COMPACT_Cell_Sel_t,  bsic, 6),
+  M_BIT        (COMPACT_Cell_Sel_t,  CELL_BAR_ACCESS_2),
+  M_BIT        (COMPACT_Cell_Sel_t,  EXC_ACC),
+  M_BIT        (COMPACT_Cell_Sel_t,  SAME_RA_AS_SERVING_CELL),
   M_NEXT_EXIST (COMPACT_Cell_Sel_t, Exist_GPRS_RXLEV_ACCESS_MIN, 2),
-  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_RXLEV_ACCESS_MIN, 6, &hf_packet_compact_cell_sel_gprs_rxlev_access_min),
-  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_MS_TXPWR_MAX_CCH, 5, &hf_packet_compact_cell_sel_gprs_ms_txpwr_max_cch),
+  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_RXLEV_ACCESS_MIN, 6),
+  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_MS_TXPWR_MAX_CCH, 5),
   M_NEXT_EXIST (COMPACT_Cell_Sel_t, Exist_GPRS_TEMPORARY_OFFSET, 2),
-  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_TEMPORARY_OFFSET, 3, &hf_packet_compact_cell_sel_gprs_temp_offset),
-  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_PENALTY_TIME, 5, &hf_packet_compact_cell_sel_gprs_penalty_time),
+  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_TEMPORARY_OFFSET, 3),
+  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_PENALTY_TIME, 5),
   M_NEXT_EXIST (COMPACT_Cell_Sel_t, Exist_GPRS_RESELECT_OFFSET, 1),
-  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_RESELECT_OFFSET, 5, &hf_packet_compact_cell_sel_gprs_resel_offset),
+  M_UINT       (COMPACT_Cell_Sel_t,  GPRS_RESELECT_OFFSET, 5),
   M_NEXT_EXIST (COMPACT_Cell_Sel_t, Exist_Hcs_Parm, 1),
   M_TYPE       (COMPACT_Cell_Sel_t,  HCS_Param, HCS_t),
   M_NEXT_EXIST (COMPACT_Cell_Sel_t, Exist_TIME_GROUP, 1),
-  M_UINT       (COMPACT_Cell_Sel_t,  TIME_GROUP, 2, &hf_packet_compact_cell_sel_time_group),
+  M_UINT       (COMPACT_Cell_Sel_t,  TIME_GROUP, 2),
   M_NEXT_EXIST (COMPACT_Cell_Sel_t, Exist_GUAR_CONSTANT_PWR_BLKS, 1),
-  M_UINT       (COMPACT_Cell_Sel_t,  GUAR_CONSTANT_PWR_BLKS, 2, &hf_packet_compact_cell_sel_guar_const_pwr_blks),
+  M_UINT       (COMPACT_Cell_Sel_t,  GUAR_CONSTANT_PWR_BLKS, 2),
 CSN_DESCR_END  (COMPACT_Cell_Sel_t)
 
 static const
@@ -5492,9 +4307,9 @@ CSN_DESCR_END  (COMPACT_Neighbour_Cell_Param_Remaining_t)
 
 static const
 CSN_DESCR_BEGIN(COMPACT_Neighbour_Cell_Param_t)
-  M_UINT       (COMPACT_Neighbour_Cell_Param_t,  START_FREQUENCY, 10, &hf_packet_compact_ncell_param_start_freq),
+  M_UINT       (COMPACT_Neighbour_Cell_Param_t,  START_FREQUENCY, 10),
   M_TYPE       (COMPACT_Neighbour_Cell_Param_t,  COMPACT_Cell_Sel, COMPACT_Cell_Sel_t),
-  M_UINT       (COMPACT_Neighbour_Cell_Param_t,  NR_OF_REMAINING_CELLS, 4, &hf_packet_compact_ncell_param_nr_of_remaining_cells),
+  M_UINT       (COMPACT_Neighbour_Cell_Param_t,  NR_OF_REMAINING_CELLS, 4),
   M_UINT_OFFSET(COMPACT_Neighbour_Cell_Param_t,  FREQ_DIFF_LENGTH, 3, 1),
   M_VAR_TARRAY (COMPACT_Neighbour_Cell_Param_t,  COMPACT_Neighbour_Cell_Param_Remaining, COMPACT_Neighbour_Cell_Param_Remaining_t, NR_OF_REMAINING_CELLS),
 CSN_DESCR_END  (COMPACT_Neighbour_Cell_Param_t)
@@ -5539,10 +4354,10 @@ CSN_DESCR_END  (PSI3_AdditionR98_t)
 
 static const
 CSN_DESCR_BEGIN(PSI3_t)
-  M_UINT       (PSI3_t,  MESSAGE_TYPE,  6, &hf_packet_system_info_type3_message_type),
-  M_UINT       (PSI3_t,  PAGE_MODE,  2, &hf_packet_system_info_type3_page_mode),
-  M_UINT       (PSI3_t,  CHANGE_MARK,  2, &hf_packet_system_info_type3_change_mark),
-  M_UINT       (PSI3_t,  BIS_COUNT,  4, &hf_packet_system_info_type3_bis_count),
+  M_UINT       (PSI3_t,  MESSAGE_TYPE,  6),
+  M_UINT       (PSI3_t,  PAGE_MODE,  2),
+  M_UINT       (PSI3_t,  CHANGE_MARK,  2),
+  M_UINT       (PSI3_t,  BIS_COUNT,  4),
   M_TYPE       (PSI3_t,  Serving_Cell_params, Serving_Cell_params_t),
   M_TYPE       (PSI3_t,  General_Cell_Selection, Gen_Cell_Sel_t),
   M_TYPE       (PSI3_t,  NeighbourCellList, NeighbourCellList_t),
@@ -5557,13 +4372,13 @@ CSN_DESCR_END  (PSI3_t)
 static const
 CSN_DESCR_BEGIN(MeasurementParams_t)
   M_NEXT_EXIST (MeasurementParams_t, Exist_MULTI_BAND_REPORTING, 1),
-  M_UINT       (MeasurementParams_t,  MULTI_BAND_REPORTING,  2, &hf_gprsmeasurementparams_pmo_pcco_multi_band_reporting),
+  M_UINT       (MeasurementParams_t,  MULTI_BAND_REPORTING,  2),
 
   M_NEXT_EXIST (MeasurementParams_t, Exist_SERVING_BAND_REPORTING, 1),
-  M_UINT       (MeasurementParams_t,  SERVING_BAND_REPORTING,  2, &hf_gprsmeasurementparams_pmo_pcco_serving_band_reporting),
+  M_UINT       (MeasurementParams_t,  SERVING_BAND_REPORTING,  2),
 
   M_NEXT_EXIST (MeasurementParams_t, Exist_SCALE_ORD, 1),
-  M_UINT       (MeasurementParams_t,  SCALE_ORD,  2, &hf_gprsmeasurementparams_pmo_pcco_scale_ord),
+  M_UINT       (MeasurementParams_t,  SCALE_ORD,  2),
 
   M_NEXT_EXIST (MeasurementParams_t, Exist_OffsetThreshold900, 1),
   M_TYPE       (MeasurementParams_t, OffsetThreshold900, OffsetThreshold_t),
@@ -5584,29 +4399,29 @@ CSN_DESCR_END  (MeasurementParams_t)
 static const
 CSN_DESCR_BEGIN(GPRSMeasurementParams3G_PSI5_t)
   M_NEXT_EXIST (GPRSMeasurementParams3G_PSI5_t, existRepParamsFDD, 2),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  RepQuantFDD,  1, &hf_gprsmeasurementparams3g_psi5_repquantfdd),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  MultiratReportingFDD,  2, &hf_gprsmeasurementparams3g_psi5_multiratreportingfdd),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  RepQuantFDD,  1),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  MultiratReportingFDD,  2),
     
   M_NEXT_EXIST (GPRSMeasurementParams3G_PSI5_t, existReportingParamsFDD, 2),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingOffsetFDD,  3, &hf_gprsmeasurementparams3g_psi5_reportingoffsetfdd),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingThresholdFDD,  3, &hf_gprsmeasurementparams3g_psi5_reportingthresholdfdd),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingOffsetFDD,  3),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingThresholdFDD,  3),
     
   M_NEXT_EXIST (GPRSMeasurementParams3G_PSI5_t, existMultiratReportingTDD, 1),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  MultiratReportingTDD,  2, &hf_gprsmeasurementparams3g_psi5_multiratreportingtdd),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  MultiratReportingTDD,  2),
     
   M_NEXT_EXIST (GPRSMeasurementParams3G_PSI5_t, existOffsetThresholdTDD, 2),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingOffsetTDD,  3, &hf_gprsmeasurementparams3g_psi5_reportingoffsettdd),
-  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingThresholdTDD,  3, &hf_gprsmeasurementparams3g_psi5_reportingthresholdtdd),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingOffsetTDD,  3),
+  M_UINT       (GPRSMeasurementParams3G_PSI5_t,  ReportingThresholdTDD,  3),
 CSN_DESCR_END  (GPRSMeasurementParams3G_PSI5_t)
 
 static const
 CSN_DESCR_BEGIN(ENH_Reporting_Parameters_t)
-  M_UINT       (ENH_Reporting_Parameters_t,  REPORT_TYPE,  1, &hf_enh_reporting_parameters_report_type),
-  M_UINT       (ENH_Reporting_Parameters_t,  REPORTING_RATE,  1, &hf_enh_reporting_parameters_reporting_rate),
-  M_UINT       (ENH_Reporting_Parameters_t,  INVALID_BSIC_REPORTING,  1, &hf_enh_reporting_parameters_invalid_bsic_reporting),
+  M_UINT       (ENH_Reporting_Parameters_t,  REPORT_TYPE,  1),
+  M_UINT       (ENH_Reporting_Parameters_t,  REPORTING_RATE,  1),
+  M_UINT       (ENH_Reporting_Parameters_t,  INVALID_BSIC_REPORTING,  1),
 
   M_NEXT_EXIST (ENH_Reporting_Parameters_t, Exist_NCC_PERMITTED, 1),
-  M_UINT       (ENH_Reporting_Parameters_t,  NCC_PERMITTED,  8, &hf_enh_reporting_parameters_ncc_permitted),
+  M_UINT       (ENH_Reporting_Parameters_t,  NCC_PERMITTED,  8),
     
   M_NEXT_EXIST (ENH_Reporting_Parameters_t, Exist_GPRSMeasurementParams, 1),
   M_TYPE       (ENH_Reporting_Parameters_t, GPRSMeasurementParams, MeasurementParams_t),
@@ -5644,11 +4459,11 @@ CSN_DESCR_END  (PSI5_AdditionsR99)
 
 static const
 CSN_DESCR_BEGIN(PSI5_t)
-  M_UINT       (PSI5_t,  MESSAGE_TYPE,  6, &hf_packet_system_info_type5_message_type),
-  M_UINT       (PSI5_t,  PAGE_MODE,  2, &hf_packet_system_info_type5_page_mode),
-  M_UINT       (PSI5_t,  CHANGE_MARK,  2, &hf_packet_system_info_type5_change_mark),
-  M_UINT       (PSI5_t,  INDEX,  3, &hf_packet_system_info_type5_index),
-  M_UINT       (PSI5_t,  COUNT,  3, &hf_packet_system_info_type5_count),
+  M_UINT       (PSI5_t,  MESSAGE_TYPE,  6),
+  M_UINT       (PSI5_t,  PAGE_MODE,  2),
+  M_UINT       (PSI5_t,  CHANGE_MARK,  2),
+  M_UINT       (PSI5_t,  INDEX,  3),
+  M_UINT       (PSI5_t,  COUNT,  3),
 
   M_NEXT_EXIST (PSI5_t, Eixst_NC_Meas_Param, 1),
   M_TYPE       (PSI5_t,  NC_Meas_Param, NC_Measurement_Parameters_t),
@@ -5665,33 +4480,33 @@ CSN_DESCR_END  (PSI5_t)
 static const
 CSN_DESCR_BEGIN(PSI13_AdditionsR6)
   M_NEXT_EXIST (PSI13_AdditionsR6, Exist_LB_MS_TXPWR_MAX_CCH, 1),
-  M_UINT       (PSI13_AdditionsR6,  LB_MS_TXPWR_MAX_CCH,  5, &hf_packet_system_info_type13_lb_ms_mxpwr_max_cch),
-  M_UINT       (PSI13_AdditionsR6,  SI2n_SUPPORT,  2, &hf_packet_system_info_type13_si2n_support),
+  M_UINT       (PSI13_AdditionsR6,  LB_MS_TXPWR_MAX_CCH,  5),
+  M_UINT       (PSI13_AdditionsR6,  SI2n_SUPPORT,  2),
 CSN_DESCR_END  (PSI13_AdditionsR6)
 
 static const
 CSN_DESCR_BEGIN(PSI13_AdditionsR4)
-  M_UINT       (PSI13_AdditionsR4,  SI_STATUS_IND,  1, &hf_packet_system_info_type13_si_status_ind),
+  M_UINT       (PSI13_AdditionsR4,  SI_STATUS_IND,  1),
   M_NEXT_EXIST (PSI13_AdditionsR4, Exist_AdditionsR6, 1),
   M_TYPE       (PSI13_AdditionsR4,  AdditionsR6, PSI13_AdditionsR6),
 CSN_DESCR_END  (PSI13_AdditionsR4)
 
 static const
 CSN_DESCR_BEGIN(PSI13_AdditionR99)
-  M_UINT       (PSI13_AdditionR99,  SGSNR,  1, &hf_packet_system_info_type13_sgsnr),
+  M_UINT       (PSI13_AdditionR99,  SGSNR,  1),
   M_NEXT_EXIST (PSI13_AdditionR99, Exist_AdditionsR4, 1),
   M_TYPE       (PSI13_AdditionR99,  AdditionsR4, PSI13_AdditionsR4),
 CSN_DESCR_END  (PSI13_AdditionR99)
 
 static const
 CSN_DESCR_BEGIN(PSI13_t)
-  M_UINT       (PSI13_t,  MESSAGE_TYPE,  6, &hf_packet_system_info_type13_message_type),
-  M_UINT       (PSI13_t,  PAGE_MODE,  2, &hf_packet_system_info_type13_page_mode),
-  M_UINT       (PSI13_t,  BCCH_CHANGE_MARK,  3, &hf_packet_system_info_type13_bcch_change_mark),
-  M_UINT       (PSI13_t,  SI_CHANGE_FIELD,  4, &hf_packet_system_info_type13_si_change_field),
+  M_UINT       (PSI13_t,  MESSAGE_TYPE,  6),
+  M_UINT       (PSI13_t,  PAGE_MODE,  2),
+  M_UINT       (PSI13_t,  BCCH_CHANGE_MARK,  3),
+  M_UINT       (PSI13_t,  SI_CHANGE_FIELD,  4),
   
   M_NEXT_EXIST (PSI13_t, Exist_MA, 2),
-  M_UINT       (PSI13_t,  SI13_CHANGE_MARK,  2, &hf_packet_system_info_type13_change_mark),
+  M_UINT       (PSI13_t,  SI13_CHANGE_MARK,  2),
   M_TYPE       (PSI13_t,  GPRS_Mobile_Allocation, GPRS_Mobile_Allocation_t),
 
   M_UNION      (PSI13_t, 2),
@@ -5822,18 +4637,18 @@ MT_UL_TextGet(guint8 mt)
 static const
 CSN_DESCR_BEGIN  (SI1_RestOctet_t)
   M_NEXT_EXIST_LH(SI1_RestOctet_t, Exist_NCH_Position, 1),
-  M_UINT         (SI1_RestOctet_t,  NCH_Position,  5, &hf_si1_restoctet_nch_position),
+  M_UINT         (SI1_RestOctet_t,  NCH_Position,  5),
 
-  M_UINT_LH      (SI1_RestOctet_t,  BandIndicator,  1, &hf_si1_restoctet_bandindicator),
+  M_UINT_LH      (SI1_RestOctet_t,  BandIndicator,  1),
 CSN_DESCR_END    (SI1_RestOctet_t)
 
 /* SI3_Rest_Octet_t */
 static const
 CSN_DESCR_BEGIN(Selection_Parameters_t)
-  M_UINT       (Selection_Parameters_t,  CBQ,  1, &hf_selection_parameters_cbq),
-  M_UINT       (Selection_Parameters_t,  CELL_RESELECT_OFFSET,  6, &hf_selection_parameters_cell_reselect_offset),
-  M_UINT       (Selection_Parameters_t,  TEMPORARY_OFFSET,  3, &hf_selection_parameters_temporary_offset),
-  M_UINT       (Selection_Parameters_t,  PENALTY_TIME,  5, &hf_selection_parameters_penalty_time),
+  M_UINT       (Selection_Parameters_t,  CBQ,  1),
+  M_UINT       (Selection_Parameters_t,  CELL_RESELECT_OFFSET,  6),
+  M_UINT       (Selection_Parameters_t,  TEMPORARY_OFFSET,  3),
+  M_UINT       (Selection_Parameters_t,  PENALTY_TIME,  5),
 CSN_DESCR_END  (Selection_Parameters_t)
 
 static const
@@ -5842,22 +4657,22 @@ CSN_DESCR_BEGIN  (SI3_Rest_Octet_t)
   M_TYPE         (SI3_Rest_Octet_t, Selection_Parameters, Selection_Parameters_t),
 
   M_NEXT_EXIST_LH(SI3_Rest_Octet_t, Exist_Power_Offset, 1),
-  M_UINT         (SI3_Rest_Octet_t,  Power_Offset,  2, &hf_si3_rest_octet_power_offset),
+  M_UINT         (SI3_Rest_Octet_t,  Power_Offset,  2),
 
-  M_UINT_LH      (SI3_Rest_Octet_t,  System_Information_2ter_Indicator,  1, &hf_si3_rest_octet_system_information_2ter_indicator),
-  M_UINT_LH      (SI3_Rest_Octet_t,  Early_Classmark_Sending_Control,  1, &hf_si3_rest_octet_early_classmark_sending_control),
+  M_UINT_LH      (SI3_Rest_Octet_t,  System_Information_2ter_Indicator,  1),
+  M_UINT_LH      (SI3_Rest_Octet_t,  Early_Classmark_Sending_Control,  1),
 
   M_NEXT_EXIST_LH(SI3_Rest_Octet_t, Exist_WHERE, 1),
-  M_UINT         (SI3_Rest_Octet_t,  WHERE,  3, &hf_si3_rest_octet_where),
+  M_UINT         (SI3_Rest_Octet_t,  WHERE,  3),
 
   M_NEXT_EXIST_LH(SI3_Rest_Octet_t, Exist_GPRS_Indicator, 2),
-  M_UINT         (SI3_Rest_Octet_t,  RA_COLOUR,  3, &hf_si3_rest_octet_ra_colour),
-  M_UINT         (SI3_Rest_Octet_t,  SI13_POSITION,  1, &hf_si3_rest_octet_si13_position),
+  M_UINT         (SI3_Rest_Octet_t,  RA_COLOUR,  3),
+  M_UINT         (SI3_Rest_Octet_t,  SI13_POSITION,  1),
 
-  M_UINT_LH      (SI3_Rest_Octet_t,  ECS_Restriction3G,  1, &hf_si3_rest_octet_ecs_restriction3g),
+  M_UINT_LH      (SI3_Rest_Octet_t,  ECS_Restriction3G,  1),
 
   M_NEXT_EXIST_LH(SI3_Rest_Octet_t, ExistSI2quaterIndicator, 1),
-  M_UINT         (SI3_Rest_Octet_t,  SI2quaterIndicator,  1, &hf_si3_rest_octet_si2quaterindicator),
+  M_UINT         (SI3_Rest_Octet_t,  SI2quaterIndicator,  1),
 CSN_DESCR_END    (SI3_Rest_Octet_t)
 
 static const
@@ -5866,24 +4681,24 @@ CSN_DESCR_BEGIN  (SI4_Rest_Octet_t)
   M_TYPE         (SI4_Rest_Octet_t, Selection_Parameters, Selection_Parameters_t),
 
   M_NEXT_EXIST_LH(SI4_Rest_Octet_t, Exist_Power_Offset, 1),
-  M_UINT         (SI4_Rest_Octet_t,  Power_Offset,  2, &hf_si4_rest_octet_power_offset),
+  M_UINT         (SI4_Rest_Octet_t,  Power_Offset,  2),
 
   M_NEXT_EXIST_LH(SI4_Rest_Octet_t, Exist_GPRS_Indicator, 2),
-  M_UINT         (SI4_Rest_Octet_t,  RA_COLOUR,  3, &hf_si4_rest_octet_ra_colour),
-  M_UINT         (SI4_Rest_Octet_t,  SI13_POSITION,  1, &hf_si4_rest_octet_si13_position),
+  M_UINT         (SI4_Rest_Octet_t,  RA_COLOUR,  3),
+  M_UINT         (SI4_Rest_Octet_t,  SI13_POSITION,  1),
 CSN_DESCR_END    (SI4_Rest_Octet_t)
 
 /* SI6_RestOctet_t */
 
 static const
 CSN_DESCR_BEGIN(PCH_and_NCH_Info_t)
-  M_UINT       (PCH_and_NCH_Info_t,  PagingChannelRestructuring,  1, &hf_pch_and_nch_info_pagingchannelrestructuring),
-  M_UINT       (PCH_and_NCH_Info_t,  NLN_SACCH,  2, &hf_pch_and_nch_info_nln_sacch),
+  M_UINT       (PCH_and_NCH_Info_t,  PagingChannelRestructuring,  1),
+  M_UINT       (PCH_and_NCH_Info_t,  NLN_SACCH,  2),
 
   M_NEXT_EXIST (PCH_and_NCH_Info_t, Exist_CallPriority, 1),
-  M_UINT       (PCH_and_NCH_Info_t,  CallPriority,  3, &hf_pch_and_nch_info_callpriority),
+  M_UINT       (PCH_and_NCH_Info_t,  CallPriority,  3),
 
-  M_UINT       (PCH_and_NCH_Info_t,  NLN_Status,  1, &hf_pch_and_nch_info_nln_status),
+  M_UINT       (PCH_and_NCH_Info_t,  NLN_Status,  1),
 CSN_DESCR_END  (PCH_and_NCH_Info_t)
 
 static const
@@ -5892,13 +4707,13 @@ CSN_DESCR_BEGIN  (SI6_RestOctet_t)
   M_TYPE         (SI6_RestOctet_t, PCH_and_NCH_Info, PCH_and_NCH_Info_t),
 
   M_NEXT_EXIST_LH(SI6_RestOctet_t, Exist_VBS_VGCS_Options, 1),
-  M_UINT         (SI6_RestOctet_t,  VBS_VGCS_Options,  2, &hf_si6_restoctet_vbs_vgcs_options),
+  M_UINT         (SI6_RestOctet_t,  VBS_VGCS_Options,  2),
 
   M_NEXT_EXIST_LH(SI6_RestOctet_t, Exist_DTM_Support, 2),
-  M_UINT         (SI6_RestOctet_t,  RAC,  8, &hf_si6_restoctet_rac),
-  M_UINT         (SI6_RestOctet_t,  MAX_LAPDm,  3, &hf_si6_restoctet_max_lapdm),
+  M_UINT         (SI6_RestOctet_t,  RAC,  8),
+  M_UINT         (SI6_RestOctet_t,  MAX_LAPDm,  3),
 
-  M_UINT_LH      (SI6_RestOctet_t,  BandIndicator,  1, &hf_si6_restoctet_bandindicator),
+  M_UINT_LH      (SI6_RestOctet_t,  BandIndicator,  1),
 CSN_DESCR_END    (SI6_RestOctet_t)
 
 void decode_gsm_rlcmac_uplink(BitVector * vector, RlcMacUplink_t * data)

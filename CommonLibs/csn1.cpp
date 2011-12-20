@@ -30,7 +30,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "packet-csn1.h"
+#include "csn1.h"
 
 
 #define pvDATA(_pv, _offset) ((void*) ((unsigned char*)_pv + _offset))
