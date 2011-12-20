@@ -4905,9 +4905,19 @@ typedef struct
    *   This will be needed for some EGPRS messages to compute the length of included variable bitmap
    */
   guint8 PAYLOAD_TYPE;
-  guint8 AC;
+  guint8 RRBP;
+  guint8 SP;
+  guint8 USF;
   guint8 RBSN;
+  guint8 RTI;
   guint8 FS;
+  guint8 AC;
+  guint8 PR;
+  guint8 TFI;
+  guint8 D;
+  guint8 RBSNe;
+  guint8 FSe;
+  guint8 spare;
   gint16 NrOfBits;
 } RlcMacDownlink_t;
 
