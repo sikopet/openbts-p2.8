@@ -26,12 +26,9 @@
 #include "gsm_rlcmac.h"
 using namespace std;
 
-
-int main(int argc, char *argv[])
+void printSizeofRLCMAC()
 {
-
-	/*
-	cout << "sizeof RlcMacUplink                         " << sizeof(RlcMacUplink_t) << endl;
+	cout << "sizeof RlcMacUplink_t                       " << sizeof(RlcMacUplink_t) << endl;
 	cout << "sizeof Packet_Cell_Change_Failure_t         " << sizeof(Packet_Cell_Change_Failure_t) << endl;
 	cout << "sizeof Packet_Control_Acknowledgement_t     " << sizeof(Packet_Control_Acknowledgement_t) << endl;
 	cout << "sizeof Packet_Downlink_Ack_Nack_t           " << sizeof(Packet_Downlink_Ack_Nack_t) << endl;
@@ -47,7 +44,7 @@ int main(int argc, char *argv[])
 	cout << "sizeof Additional_MS_Rad_Access_Cap_t       " << sizeof(Additional_MS_Rad_Access_Cap_t) << endl;
 	cout << "sizeof Packet_Pause_t                       " << sizeof(Packet_Pause_t) << endl;
 
-	cout << "sizeof RlcMacDownlink                         " << sizeof(RlcMacDownlink_t) << endl;
+	cout << "sizeof RlcMacDownlink_t                       " << sizeof(RlcMacDownlink_t) << endl;
 	cout << "sizeof Packet_Access_Reject_t                 " << sizeof(Packet_Access_Reject_t) << endl;
        	cout << "sizeof Packet_Cell_Change_Order_t             " << sizeof(Packet_Cell_Change_Order_t) << endl;
        	cout << "sizeof Packet_Downlink_Assignment_t           " << sizeof(Packet_Downlink_Assignment_t) << endl;
@@ -75,75 +72,106 @@ int main(int argc, char *argv[])
 	cout << "sizeof PSI4_t                " << sizeof(PSI4_t) << endl;
 	cout << "sizeof PSI13_t               " << sizeof(PSI13_t) << endl;
 	cout << "sizeof PSI5_t                " << sizeof(PSI5_t) << endl;
-	*/
+}
 
-
-	BitVector vectorU[10];
-	BitVector vectorD[10];
-        BitVector resultVector(23*8);
-
-
-	//DOWNLINK
-
-        // Packet Downlink Assignment
-	vectorD[0].resize(23*8);
-	vectorD[0].unhex("4e082500e3f1a81d080820800b2b2b2b2b2b2b2b2b2b2b");
-        // Packet Uplink Assignment
-	vectorD[1].resize(23*8);
-	vectorD[1].unhex("48282407a6a074227201000b2b2b2b2b2b2b2b2b2b2b2b");
-	// Packet Uplink Ack Nack
-	vectorD[2].resize(23*8);
-	vectorD[2].unhex("47240c00400000000000000079eb2ac9402b2b2b2b2b2b");
-        // Packet Uplink Assignment
-	vectorD[3].resize(23*8);
-	vectorD[3].unhex("47283c367513ba333004242b2b2b2b2b2b2b2b2b2b2b2b");
-
-	cout << " DOWNLINK " << endl;
-	for (int i = 0; i < 4; i++)
-	{
-	        RlcMacDownlink_t * data = (RlcMacDownlink_t *)malloc(sizeof(RlcMacDownlink_t));
-		cout << "=========Start DECODE===========" << endl;
-		decode_gsm_rlcmac_downlink(&vectorD[i], data);
-		cout << "+++++++++Finish DECODE++++++++++" << endl;
-		cout << "=========Start ENCODE=============" << endl;
-	        encode_gsm_rlcmac_downlink(&resultVector, data);
-		cout << "+++++++++Finish ENCODE+++++++++++" << endl;
-		cout << "vector1 = " <<  vectorD[i] << endl;
-	        cout << "vector2 = " <<  resultVector << endl;
-		resultVector.unhex("2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b");
-		delete data;
-	}
-
-
-	// UPLINK
-
-        // Packet Uplink Dummy Control Block message
-	vectorU[0].resize(23*8);
-	vectorU[0].unhex("400e1e61d11f2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b");
-
-	// Packet Downlink Ack/Nack message
-	vectorU[1].resize(23*8);
-	vectorU[1].unhex("400b8020000000000000002480e00b2b2b2b2b2b2b2b2b");
-	
-	// Packet Resource Request
-	vectorU[2].resize(23*8);
-        vectorU[2].unhex("4016713dc094270ca2ae57ef909006aa0fc0001f80222b");
+void testRlcMacDownlink()
+{
+	BitVector resultVector(23*8);
 	resultVector.unhex("2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b");
 
-	cout << " UPLINK " << endl;
-	for (int i = 0; i < 3; i++)
+	std::string testData[] = {
+	"4e082500e3f1a81d080820800b2b2b2b2b2b2b2b2b2b2b", // Packet Downlink Assignment
+	"48282407a6a074227201000b2b2b2b2b2b2b2b2b2b2b2b", // Packet Uplink Assignment
+	"47240c00400000000000000079eb2ac9402b2b2b2b2b2b", // Packet Uplink Ack Nack
+	"47283c367513ba333004242b2b2b2b2b2b2b2b2b2b2b2b"  // Packet Uplink Assignment
+	};
+
+	int testDataSize = sizeof(testData)/sizeof(testData[0]);
+	BitVector vector[testDataSize];
+
+	unsigned char origin[23];
+	unsigned char result[23];
+
+	cout << " DOWNLINK " << endl;
+	for (int i = 0; i < testDataSize; i++)
 	{
-	        RlcMacUplink_t * data = (RlcMacUplink_t *)malloc(sizeof(RlcMacUplink_t));
+		vector[i].resize(23*8);
+		vector[i].unhex(testData[i].c_str());
+		RlcMacDownlink_t * data = (RlcMacDownlink_t *)malloc(sizeof(RlcMacDownlink_t));
 		cout << "=========Start DECODE===========" << endl;
-		decode_gsm_rlcmac_uplink(&vectorU[i], data);
+		decode_gsm_rlcmac_downlink(&vector[i], data);
 		cout << "+++++++++Finish DECODE++++++++++" << endl;
 		cout << "=========Start ENCODE=============" << endl;
-	        encode_gsm_rlcmac_uplink(&resultVector, data);
-		cout << "+++++++++Finish MAKE+++++++++++" << endl;
-		cout << "vector1 = " <<  vectorU[i] << endl;
-	        cout << "vector2 = " <<  resultVector << endl;
+		encode_gsm_rlcmac_downlink(&resultVector, data);
+		cout << "+++++++++Finish ENCODE+++++++++++" << endl;
+		cout << "vector1 = " <<  vector[i] << endl;
+		cout << "vector2 = " <<  resultVector << endl;
+		vector[i].pack(origin);
+		resultVector.pack(result);
+		if (memcmp(origin, result, 23) == 0)
+		{
+			cout << "vector1 == vector2 : TRUE" << endl;
+		}
+		else
+		{
+			cout << "vector1 == vector2 : FALSE" << endl;
+		}
 		resultVector.unhex("2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b");
-		delete data;
+		free(data);
 	}
+}
+
+
+void testRlcMacUplink()
+{
+	BitVector resultVector(23*8);
+	resultVector.unhex("2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b");
+
+	std::string testData[] = {
+	"400e1e61d11f2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b", // Packet Uplink Dummy Control Block
+	"400b8020000000000000002480e00b2b2b2b2b2b2b2b2b", // Packet Downlink Ack/Nack
+	"4016713dc094270ca2ae57ef909006aa0fc0001f80222b"  // Packet Resource Request
+	};
+
+	int testDataSize = sizeof(testData)/sizeof(testData[0]);
+	BitVector vector[testDataSize];
+
+	unsigned char origin[23];
+	unsigned char result[23];
+
+	cout << " UPLINK " << endl;
+	for (int i = 0; i < testDataSize; i++)
+	{
+		vector[i].resize(23*8);
+		vector[i].unhex(testData[i].c_str());
+		RlcMacUplink_t * data = (RlcMacUplink_t *)malloc(sizeof(RlcMacUplink_t));
+		cout << "=========Start DECODE===========" << endl;
+		decode_gsm_rlcmac_uplink(&vector[i], data);
+		cout << "+++++++++Finish DECODE++++++++++" << endl;
+		cout << "=========Start ENCODE=============" << endl;
+		encode_gsm_rlcmac_uplink(&resultVector, data);
+		cout << "+++++++++Finish ENCODE+++++++++++" << endl;
+		cout << "vector1 = " <<  vector[i] << endl;
+		cout << "vector2 = " <<  resultVector << endl;
+		vector[i].pack(origin);
+		resultVector.pack(result);
+		if (memcmp(origin, result, 23) == 0)
+		{
+			cout << "vector1 == vector2 : TRUE" << endl;
+		}
+		else
+		{
+			cout << "vector1 == vector2 : FALSE" << endl;
+		}
+		resultVector.unhex("2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b");
+		free(data);
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	//printSizeofRLCMAC();
+	testRlcMacDownlink();
+	testRlcMacUplink();
 
 }
