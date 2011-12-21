@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include "BitVector.h"
+#include <BitVector.h>
 #include <iostream>
 #include <cstdlib>
 #ifndef _PACKET_CSN1_H_

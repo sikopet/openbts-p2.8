@@ -19,6 +19,7 @@
 #
 
 COMMON_INCLUDEDIR = $(top_srcdir)/CommonLibs
+GPRS_INCLUDEDIR = $(top_srcdir)/GPRS
 CONTROL_INCLUDEDIR = $(top_srcdir)/Control
 GSM_INCLUDEDIR = $(top_srcdir)/GSM
 SIP_INCLUDEDIR = $(top_srcdir)/SIP
@@ -31,6 +32,7 @@ SR_INCLUDEDIR = $(top_srcdir)/SR
 
 STD_DEFINES_AND_INCLUDES = \
 	-I$(COMMON_INCLUDEDIR) \
+	-I$(GPRS_INCLUDEDIR) \
 	-I$(CONTROL_INCLUDEDIR) \
 	-I$(GSM_INCLUDEDIR) \
 	-I$(SIP_INCLUDEDIR) \
@@ -42,6 +44,7 @@ STD_DEFINES_AND_INCLUDES = \
 	-I$(SQLITE_INCLUDEDIR)
 
 COMMON_LA = $(top_builddir)/CommonLibs/libcommon.la
+GPRS_LA = $(top_builddir)/GPRS/libGPRS.la
 GSM_LA = $(top_builddir)/GSM/libGSM.la
 SIP_LA = $(top_builddir)/SIP/libSIP.la
 SMS_LA = $(top_builddir)/SMS/libSMS.la

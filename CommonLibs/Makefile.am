@@ -33,9 +33,7 @@ libcommon_la_SOURCES = \
 	Timeval.cpp \
 	Logger.cpp \
 	URLEncode.cpp \
-	Configuration.cpp \
-	csn1.cpp \
-	gsm_rlcmac.cpp
+	Configuration.cpp
 
 noinst_PROGRAMS = \
 	BitVectorTest \
@@ -46,8 +44,7 @@ noinst_PROGRAMS = \
 	VectorTest \
 	ConfigurationTest \
 	LogTest \
-	F16Test \
-	RLCMACTest
+	F16Test
 
 noinst_HEADERS = \
 	BitVector.h \
@@ -61,12 +58,7 @@ noinst_HEADERS = \
 	URLEncode.h \
 	Configuration.h \
 	F16.h \
-	Logger.h \
-	csn1.h \
-	gsm_rlcmac.h
-
-RLCMACTest_SOURCES = RLCMACTest.cpp
-RLCMACTest_LDADD = libcommon.la
+	Logger.h
 
 BitVectorTest_SOURCES = BitVectorTest.cpp
 BitVectorTest_LDADD = libcommon.la

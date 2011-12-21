@@ -1,5 +1,5 @@
 #
-# Copyright 2008 Free Software Foundation, Inc.
+# Copyright 2008, 2009 Free Software Foundation, Inc.
 #
 # This software is distributed under the terms of the GNU Public License.
 # See the COPYING file in the main directory for details.
@@ -20,54 +20,24 @@
 
 include $(top_srcdir)/Makefile.common
 
-AM_CPPFLAGS = $(STD_DEFINES_AND_INCLUDES) $(USB_INCLUDES) $(WITH_INCLUDES)
-AM_CXXFLAGS = -Wall -pthread -ldl
-#AM_CXXFLAGS = -Wall -O2 -NDEBUG -pthread -ldl
-#AM_CFLAGS = -Wall -O2 -NDEBUG -pthread -ldl
+AM_CPPFLAGS = $(STD_DEFINES_AND_INCLUDES)
+AM_CXXFLAGS = -Wall -ldl -pthread
 
-# Order must be preserved
-_SUBDIRS = \
-	config \
-	AsteriskConfig \
-	sqlite3 \
-	CommonLibs \
-	GPRS \
-	Globals \
-	SR \
-	CLI \
-	SIP \
-	GSM \
-	SMS \
-	TransceiverRAD1 \
-	TRXManager \
-	Control \
-	apps \
-	doc \
-	tools
+noinst_LTLIBRARIES = libgprs.la
 
-#if UHD or USRP1 defined, build Transceiver52M as well
-if UHD
-SUBDIRS = $(_SUBDIRS) \
-	  Transceiver52M
-else
-if USRP1
-SUBDIRS = $(_SUBDIRS) \
-	  Transceiver52M
-else
-SUBDIRS = $(_SUBDIRS)
-endif
-endif
+libgprs_la_SOURCES = \
+	csn1.cpp \
+	gsm_rlcmac.cpp
 
-EXTRA_DIST = \
-	autogen.sh \
-	Transceiver52M \
-	INSTALLATION \
-	LEGAL \
-	COPYING \
-	README
+noinst_PROGRAMS = \
+	RLCMACTest
+
+noinst_HEADERS = \
+	csn1.h \
+	gsm_rlcmac.h
+
+RLCMACTest_SOURCES = RLCMACTest.cpp
+RLCMACTest_LDADD = $(COMMON_LA) 
+#MOSTLYCLEANFILES += testSource testDestination
 
 
-dox: FORCE
-	doxygen doxconfig
-
-FORCE:
