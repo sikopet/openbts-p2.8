@@ -39,7 +39,8 @@ libcommon_la_SOURCES = \
 	Reporting.cpp \
 	Configuration.cpp \
 	csn1.cpp \
-	gsm_rlcmac.cpp
+	gsm_rlcmac.cpp \
+	Configuration.cpp
 
 noinst_PROGRAMS = \
 	BitVectorTest \
@@ -50,8 +51,7 @@ noinst_PROGRAMS = \
 	VectorTest \
 	ConfigurationTest \
 	LogTest \
-	F16Test \
-	RLCMACTest
+	F16Test
 
 #	ReportingTest
 
@@ -73,7 +73,6 @@ noinst_HEADERS = \
 	csn1.h \
 	gsm_rlcmac.h
 
-RLCMACTest_SOURCES = RLCMACTest.cpp
 BitVectorTest_SOURCES = BitVectorTest.cpp
 BitVectorTest_LDADD = libcommon.la
 
