@@ -121,6 +121,10 @@ void DCCHDispatcher(GSM::LogicalChannel *DCCH);
 void PDCHDispatcher(GSM::LogicalChannel *PDCH);
 //@}
 
+/**@name Socket for GPRS RLC/MAC. */
+//@{
+void GPRSReader(GSM::LogicalChannel *PDCH);
+//@}
 
 
 /**
