@@ -43,11 +43,14 @@
 #include <Reporting.h>
 #include <Globals.h>
 
+#define MAX_UDP_LENGTH 1500
+
 using namespace std;
 using namespace GSM;
 using namespace Control;
 
-
+// TODO: We should take ports and IP from config.
+UDPSocket RLCMACSocket(5934, "127.0.0.1", 5070);
 
 
 /**
@@ -198,35 +201,35 @@ void Control::PDCHDispatcher(LogicalChannel *PDCH)
 		frame = ((PDTCHLogicalChannel*)PDCH)->recvPDCH();
 		if (!frame) { 
 			delete frame;
-			frame = NULL;			
+			frame = NULL;
 			continue;
-		}	
+ 		}
 		LOG(NOTICE) << " PDCH received frame " << *frame;
-		switch (frame->payloadType()) {
-			case RLCMACDataBlockType: {
-				RLCMACBlock* block = parseRLCMAC(*frame);
-				LOG(NOTICE) << " PDCH block " << *block;
-				if (((RLCMACDataBlock*)block)->CV() == 0) {
-					RLCMACControlBlock* ctrlblock = new RLCMACControlBlock(((RLCMACDataBlock*)block)->TFI(), ((RLCMACDataBlock*)block)->TLLI());
-					LOG(NOTICE) << "RLC/MAC Control block " << *ctrlblock;
-					RLCMACFrame *frameCtrl = new RLCMACFrame();
-					ctrlblock->write(*frameCtrl);
-					LOG(NOTICE) << "Send RLC/MAC frame "<< *frameCtrl;
-					((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frameCtrl);
-					delete ctrlblock;
-				}
-				delete block;
-				}
-				break;
-			// TODO: Dispatchers for RLCMACControlBlockType1 and RLCMACControlBlockType2.
-			default:
-				LOG(NOTICE) << "unhandled RLC/MAC Block Type";
-			}
+		char buffer[MAX_UDP_LENGTH];
+		int ofs = 0;
+		frame->pack((unsigned char*)&buffer[ofs]);
+		ofs += frame->size() >> 3;
+		COUT("Send to RLCMAC: " << *frame);
+		RLCMACSocket.write(buffer, ofs);
 		delete frame;
 		frame = NULL;
 	}
 }
 
+void Control::GPRSReader(LogicalChannel *PDCH)
+{
+	RLCMACSocket.nonblocking();
+	char buf[MAX_UDP_LENGTH];
+	while (1) {
+		RLCMACFrame *frame = new RLCMACFrame(23*8);
+		int count = RLCMACSocket.read(buf, 3000);
+		if (count>0) {
+			frame->unpack((unsigned char*)buf);
+			COUT("Recieve from RLCMAC and send to MS on PDCH: " << *frame);
+			((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
+		}
+	}
+}
 
 
 // vim: ts=4 sw=4

@@ -482,6 +482,8 @@ int main(int argc, char *argv[])
 			threadG->start((void*(*)(void*))Control::PDCHDispatcher,PDTCH);
 			PDTCH->open();
 			gBTS.addPDTCH(PDTCH);
+			Thread* threadGb = new Thread;
+			threadGb->start((void*(*)(void*))Control::GPRSReader,PDTCH);
 		}
 	}
 
