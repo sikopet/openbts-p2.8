@@ -298,7 +298,7 @@ void L3SI13RestOctets::writeV(L3Frame& dest, size_t &wp) const
 	dest.writeField(wp, 0x1, 1);               // "1" GPRS Mobile Allocation: Present
 	dest.writeField(wp, mSI13_CHANGE_MARK, 2); // SI13_CHANGE_MARK
 
-	// GPRS Mobile Allocation GSM 04.60 12.10a
+	// GPRS Mobile Allocation GSM 04.60 12.10a
 	dest.writeField(wp, mHSN, 6);              // Hopping sequence number
 	dest.writeField(wp, 0x0, 1);               // "0" RFL number list: Not present
 	dest.writeField(wp, 0x0, 1);               // "0" MA_BITMAP: Present
@@ -311,7 +311,7 @@ void L3SI13RestOctets::writeV(L3Frame& dest, size_t &wp) const
 	dest.writeField(wp, mPRIORITY_ACCESS_THR, 3);   // PRIORITY_ACCESS_THR
 	dest.writeField(wp, mNETWORK_CONTROL_ORDER, 2); // NETWORK_CONTROL_ORDER
 
-	//GPRS Cell Options GSM 04.60 12.24 
+	// GPRS Cell Options GSM 04.60 12.24 
 	dest.writeField(wp, mNMO, 2);               // NMO Network Mode of Operation
 	dest.writeField(wp, mT3168, 3);             // T3168
 	dest.writeField(wp, mT3192, 3);             // T3192
@@ -325,7 +325,7 @@ void L3SI13RestOctets::writeV(L3Frame& dest, size_t &wp) const
 	dest.writeField(wp, mPAN_MAX, 3);           // PAN_MAX
 	dest.writeField(wp, 0x0, 1);                // "0" Cell Options Extension Information: Not present
 
-	//GPRS Power Control Parameters
+	// GPRS Power Control Parameters
 	dest.writeField(wp, mALPHA, 4);         // ALPHA 
 	dest.writeField(wp, mT_AVG_W, 5);       // T_AVG_W
 	dest.writeField(wp, mT_AVG_T, 5);       // T_AVG_T              
@@ -592,6 +592,20 @@ void L3IARestOctets::text(ostream& os) const
 	os << " TIMING_ADVANCE_INDEX_FLAG=" << mTIMING_ADVANCE_INDEX_FLAG;
 	os << " TIMING_ADVANCE_INDEX=" << mTIMING_ADVANCE_INDEX;
 	os << " TBF_STARTING_TIME_FLAG=" << mTBF_STARTING_TIME_FLAG;
+	os << " TBF_starting_time=" << mTBF_starting_time;
+}
+
+void L3IARestOctetsDownlinkAssignment::writeV(L3Frame& dest, size_t &wp) const
+{
+	for(unsigned i = 0; i < 7; i++)
+		dest.writeField(wp, mIARestOctets[i], 8);
+	L3StartingTime ie_time(mTBF_starting_time);
+	ie_time.writeV(dest, wp);  // mTBF_STARTING_TIME
+	dest.writeField(wp, mIARestOctets[9], 8);
+	dest.writeField(wp, mIARestOctets[10], 8);
+}
+void L3IARestOctetsDownlinkAssignment::text(ostream& os) const
+{
 	os << " TBF_starting_time=" << mTBF_starting_time;
 }
 

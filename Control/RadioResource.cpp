@@ -158,6 +158,7 @@ void AccessGrantResponder(
 	LOG(INFO) << "RA=0x" << hex << RA << dec
 		<< " when=" << when << " age=" << age
 		<< " delay=" << timingError << " RSSI=" << RSSI;
+	COUT("RA=0x" << hex << RA << dec << " when=" << when << " age=" << age << " delay=" << timingError << " RSSI=" << RSSI);
 	if (age>maxAge) {
 		LOG(WARNING) << "ignoring RACH bust with age " << age;
 		gBTS.growT3122()/1000;
@@ -176,7 +177,7 @@ void AccessGrantResponder(
 	assert(AGCH);
 	// Check AGCH load now.
 	if (AGCH->load()>gConfig.getNum("GSM.CCCH.AGCH.QMax")) {
-		LOG(WARNING) "AGCH congestion";
+		LOG(WARNING) << "AGCH congestion";
 		return;
 	}
 
@@ -241,8 +242,9 @@ void AccessGrantResponder(
 		gprsRACH,
 		L3RequestReference(RA,when),
 		LCH->channelDescription(),
-		gBTS.time(),                //We use it for TBF starting time.
-		L3TimingAdvance(initialTA)	
+		gBTS.time(), //We use it for TBF starting time.
+		L3DedicatedModeOrTBF(0,0,gprsRACH?1:0),
+		L3TimingAdvance(initialTA)
 	);
 	LOG(INFO) << "sending " << assign;
 	AGCH->send(assign);
