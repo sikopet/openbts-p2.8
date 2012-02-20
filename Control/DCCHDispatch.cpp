@@ -37,6 +37,7 @@
 #include <GSML3RRMessages.h>
 #include <SIPUtility.h>
 #include <SIPInterface.h>
+#include <GSMConfig.h>
 
 #include <Logger.h>
 #undef WARNING
@@ -217,13 +218,55 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 {
 	RLCMACSocket.nonblocking();
 	char buf[MAX_UDP_LENGTH];
-	while (1) {
-		RLCMACFrame *frame = new RLCMACFrame(23*8);
+	while (1)
+	{
 		int count = RLCMACSocket.read(buf, 3000);
-		if (count>0) {
+		if (count>0)
+		{
+			RLCMACFrame *frame = new RLCMACFrame(23*8);
 			frame->unpack((unsigned char*)buf);
 			COUT("Recieve from RLCMAC and send to MS on PDCH: " << *frame);
-			((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
+			if (frame->payloadType() != 0x03)//RLCMACReserved)
+			{
+				COUT(" GPRS downlink PDTCH");
+				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
+			}
+			else
+			{
+				COUT(" GPRS downlink assignment CCCH");
+				// Get an AGCH to send on.
+				CCCHLogicalChannel *AGCH = gBTS.getAGCH();
+				// Someone had better have created a least one AGCH.
+				assert(AGCH);
+				// Check AGCH load now.
+				if (AGCH->load()>gConfig.getNum("GSM.CCCH.AGCH.QMax"))
+				{
+					COUT(" GPRS AGCH congestion");
+					return;
+				}
+				unsigned RA = 0x7a;
+				const GSM::Time when = gBTS.time();
+				GSM::Time start = gBTS.time();
+				LogicalChannel *LCH = NULL;
+				LCH = PDCH;
+				bool gprs = true;
+				// Assignment, GSM 04.08 3.3.1.1.3.1.
+				// Create the ImmediateAssignment message.
+				int initialTA = 0;
+				const L3ImmediateAssignment assign(
+					gprs,
+					L3RequestReference(RA,when),
+					LCH->channelDescription(),
+					start, // We use it for TBF starting time.
+					// This message assigns a downlink TBF to the mobile station identified in the IA Rest Octets IE
+					L3DedicatedModeOrTBF(1,0,1),
+					L3TimingAdvance(initialTA),
+					(unsigned char*)buf
+				);
+				COUT("sending " << assign);
+				AGCH->send(assign);
+				delete frame;
+			}
 		}
 	}
 }

@@ -526,6 +526,7 @@ private:
 	L3ChannelDescription mChannelDescription;  
 	L3TimingAdvance mTimingAdvance;
 	L3IARestOctets mIARestOctets;
+	L3IARestOctetsDownlinkAssignment mRestOctetsDownlinkAssignment;
 
 public:
 
@@ -535,14 +536,17 @@ public:
 				const L3RequestReference& wRequestReference,
 				const L3ChannelDescription& wChannelDescription,
 				Time wTBF_starting_time,
-				const L3TimingAdvance& wTimingAdvance = L3TimingAdvance(0))
+				L3DedicatedModeOrTBF wDedicatedModeOrTBF,
+				const L3TimingAdvance& wTimingAdvance = L3TimingAdvance(0),
+				unsigned char* wIARestOctetsDownlink = NULL)
 		:L3RRMessageNRO(),
 		mGPRS(wGPRS),
-		mDedicatedModeOrTBF(0,0,wGPRS?1:0),
+		mDedicatedModeOrTBF(wDedicatedModeOrTBF),
 		mRequestReference(wRequestReference),
 		mChannelDescription(wChannelDescription),
 		mTimingAdvance(wTimingAdvance),
-		mIARestOctets(wTBF_starting_time)
+		mIARestOctets(wTBF_starting_time),
+		mRestOctetsDownlinkAssignment(wTBF_starting_time, wIARestOctetsDownlink)
 	{}
 
 	int MTI() const { return (int)ImmediateAssignment; }

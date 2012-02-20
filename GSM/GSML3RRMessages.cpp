@@ -490,7 +490,12 @@ void L3ImmediateAssignment::writeBody( L3Frame &dest, size_t &wp ) const
 	// A zero-length LV.  Just write L=0.
 	dest.writeField(wp,0,8);
 	if (mGPRS) {
-		mIARestOctets.writeV(dest, wp);
+		if (mDedicatedModeOrTBF.downlink()) {
+			mRestOctetsDownlinkAssignment.writeV(dest, wp);
+		}
+		else {
+			mIARestOctets.writeV(dest, wp);
+		}
 	}
 }
 
@@ -508,7 +513,10 @@ void L3ImmediateAssignment::text(ostream& os) const
 	os << " RequestReference=("<<mRequestReference<<")";
 	os << " TimingAdvance="<<mTimingAdvance;
 	if (mGPRS) {
-		os << " IARestOctets=("<<mIARestOctets<<")";
+		if (mDedicatedModeOrTBF.downlink()) 
+			os << " RestOctetsDownlinkAssignment=("<<mRestOctetsDownlinkAssignment<<")";
+		else
+			os << " IARestOctets=("<<mIARestOctets<<")";
 	}
 }
 

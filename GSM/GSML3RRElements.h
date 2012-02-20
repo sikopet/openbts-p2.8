@@ -477,7 +477,7 @@ public:
 	void parseV( const L3Frame&, size_t&) { assert(0); }
 	void parseV(const L3Frame&, size_t& , size_t) { assert(0); }
 	void text(std::ostream&) const;
-
+	unsigned downlink() const { return mDownlink; }
 };
 
 
@@ -677,6 +677,27 @@ class L3IARestOctets : public L3ProtocolElement {
 		mTIMING_ADVANCE_INDEX = gConfig.getNum("GPRS.IA.TIMING_ADVANCE_INDEX");
 		mTBF_STARTING_TIME_FLAG = gConfig.getNum("GPRS.IA.TBF_STARTING_TIME_FLAG");
 	}
+
+	size_t lengthV() const { return 11; }
+	void writeV(L3Frame& dest, size_t &wp) const;
+	void parseV(const L3Frame&, size_t&) { assert(0); }
+	void parseV(const L3Frame&, size_t& , size_t) { assert(0); }
+	void text(std::ostream&) const;
+
+};
+
+/** IA Rest Octets GSM 04.08 10.5.2.16 */
+class  L3IARestOctetsDownlinkAssignment : public L3ProtocolElement {
+	unsigned char* mIARestOctets; 
+	Time mTBF_starting_time;  ///< TBF_STARTING_TIME
+	public:
+	
+	/** Default constructor parameters allows all access. */
+	L3IARestOctetsDownlinkAssignment(Time wTBF_starting_time, unsigned char* wIARestOctets)
+		:L3ProtocolElement(),
+		mTBF_starting_time(wTBF_starting_time),
+		mIARestOctets(wIARestOctets)
+	{}
 
 	size_t lengthV() const { return 11; }
 	void writeV(L3Frame& dest, size_t &wp) const;
