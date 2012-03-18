@@ -38,6 +38,7 @@
 #include <SIPUtility.h>
 #include <SIPInterface.h>
 #include <GSMConfig.h>
+#include <gsmL1prim.h>
 
 #include <Logger.h>
 #undef WARNING
@@ -49,7 +50,7 @@ using namespace GSM;
 using namespace Control;
 
 // TODO: We should take ports and IP from config.
-UDPSocket RLCMACSocket(5934, "127.0.0.1", 5070);
+UDPSocket RLCMACSocket(5934, "127.0.0.1", 5944);
 
 
 /**
@@ -191,6 +192,36 @@ void Control::DCCHDispatcher(LogicalChannel *DCCH)
 }
 
 
+void writeRLCMAC(const RLCMACFrame *frame)
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+
+	prim->id = GsmL1_PrimId_PhDataInd;
+	frame->pack((unsigned char*)&(prim->u.phDataInd.msgUnitParam.u8Buffer[ofs]));
+	ofs += frame->size() >> 3;
+	prim->u.phDataInd.msgUnitParam.u8Size = ofs;
+	prim->u.phDataInd.sapi = GsmL1_Sapi_Pdtch;
+	ofs = sizeof(*prim);
+
+	COUT("Send to RLCMAC: " << *frame);
+	RLCMACSocket.write(buffer, ofs);
+}
+
+int readRLCMAC(unsigned char* buffer, RLCMACFrame *frame)
+{
+	int rc = 0;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+	if (prim->id == GsmL1_PrimId_PhDataReq)
+	{
+		rc = 1;
+		frame->unpack((const unsigned char*)prim->u.phDataReq.msgUnitParam.u8Buffer);
+	}
+
+	return rc;
+}
+
 /** Example of a closed-loop, persistent-thread control function for the PDCH. */
 void Control::PDCHDispatcher(LogicalChannel *PDCH)
 {
@@ -203,12 +234,7 @@ void Control::PDCHDispatcher(LogicalChannel *PDCH)
 			continue;
  		}
 		LOG(NOTICE) << " PDCH received frame " << *frame;
-		char buffer[MAX_UDP_LENGTH];
-		int ofs = 0;
-		frame->pack((unsigned char*)&buffer[ofs]);
-		ofs += frame->size() >> 3;
-		COUT("Send to RLCMAC: " << *frame);
-		RLCMACSocket.write(buffer, ofs);
+		writeRLCMAC(frame);
 		delete frame;
 		frame = NULL;
 	}
@@ -224,9 +250,13 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 		if (count>0)
 		{
 			RLCMACFrame *frame = new RLCMACFrame(23*8);
-			frame->unpack((unsigned char*)buf);
+			if (!readRLCMAC((unsigned char*) buf, frame))
+			{
+				delete frame;
+				continue;
+			}
 			COUT("Recieve from RLCMAC and send to MS on PDCH: " << *frame);
-			if (frame->payloadType() != 0x03)//RLCMACReserved)
+			if (frame->payloadType() != 0x03) // RLCMACReserved
 			{
 				COUT(" GPRS downlink PDTCH");
 				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
