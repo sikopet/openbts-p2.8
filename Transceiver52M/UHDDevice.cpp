@@ -651,7 +651,6 @@ int uhd_device::readSamples(short *buf, int len, bool *overrun,
 			LOG(ALERT) << "UHD: Unrecoverable error, exiting...";
 			exit(-1);
 		case ERROR_TIMING:
-			restart(prev_ts);
 		case ERROR_UNHANDLED:
 			continue;
 		}
