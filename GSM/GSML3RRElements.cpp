@@ -597,12 +597,8 @@ void L3IARestOctets::text(ostream& os) const
 
 void L3IARestOctetsDownlinkAssignment::writeV(L3Frame& dest, size_t &wp) const
 {
-	for(unsigned i = 0; i < 7; i++)
+	for(unsigned i = 0; i < 8; i++)
 		dest.writeField(wp, mIARestOctets[i], 8);
-	L3StartingTime ie_time(mTBF_starting_time);
-	ie_time.writeV(dest, wp);  // mTBF_STARTING_TIME
-	dest.writeField(wp, mIARestOctets[9], 8);
-	dest.writeField(wp, mIARestOctets[10], 8);
 }
 void L3IARestOctetsDownlinkAssignment::text(ostream& os) const
 {
