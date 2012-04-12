@@ -53,6 +53,7 @@
 namespace GSM {
 class L3Message;
 class RLCMACBlock;
+class RLCMACFrame;
 class LogicalChannel;
 class SDCCHLogicalChannel;
 class SACCHLogicalChannel;
@@ -124,6 +125,8 @@ void PDCHDispatcher(GSM::LogicalChannel *PDCH);
 /**@name Socket for GPRS RLC/MAC. */
 //@{
 void GPRSReader(GSM::LogicalChannel *PDCH);
+void txPhReadyToSendInd(unsigned Tn, int Fn);
+void txPhDataInd(const GSM::RLCMACFrame *frame);
 //@}
 
 
