@@ -52,7 +52,6 @@ using namespace Control;
 // TODO: We should take ports and IP from config.
 UDPSocket RLCMACSocket(5934, "127.0.0.1", 5944);
 
-
 /**
 	Dispatch the appropriate controller for a Mobility Management message.
 	@param req A pointer to the initial message.
@@ -191,37 +190,6 @@ void Control::DCCHDispatcher(LogicalChannel *DCCH)
 	}
 }
 
-
-void writeRLCMAC(const RLCMACFrame *frame)
-{
-	char buffer[MAX_UDP_LENGTH];
-	int ofs = 0;
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
-
-	prim->id = GsmL1_PrimId_PhDataInd;
-	frame->pack((unsigned char*)&(prim->u.phDataInd.msgUnitParam.u8Buffer[ofs]));
-	ofs += frame->size() >> 3;
-	prim->u.phDataInd.msgUnitParam.u8Size = ofs;
-	prim->u.phDataInd.sapi = GsmL1_Sapi_Pdtch;
-	ofs = sizeof(*prim);
-
-	COUT("Send to RLCMAC: " << *frame);
-	RLCMACSocket.write(buffer, ofs);
-}
-
-int readRLCMAC(unsigned char* buffer, RLCMACFrame *frame)
-{
-	int rc = 0;
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
-	if (prim->id == GsmL1_PrimId_PhDataReq)
-	{
-		rc = 1;
-		frame->unpack((const unsigned char*)prim->u.phDataReq.msgUnitParam.u8Buffer);
-	}
-
-	return rc;
-}
-
 /** Example of a closed-loop, persistent-thread control function for the PDCH. */
 void Control::PDCHDispatcher(LogicalChannel *PDCH)
 {
@@ -234,31 +202,85 @@ void Control::PDCHDispatcher(LogicalChannel *PDCH)
 			continue;
  		}
 		LOG(NOTICE) << " PDCH received frame " << *frame;
-		writeRLCMAC(frame);
+		txPhDataInd(frame);
 		delete frame;
 		frame = NULL;
 	}
+}
+
+void Control::txPhReadyToSendInd(unsigned Tn, int Fn)
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+
+	prim->id = GsmL1_PrimId_PhReadyToSendInd;
+	prim->u.phReadyToSendInd.u8Tn = Tn;
+	prim->u.phReadyToSendInd.u32Fn = Fn;
+	prim->u.phReadyToSendInd.sapi = GsmL1_Sapi_Pdtch;
+	ofs = sizeof(*prim);
+
+	RLCMACSocket.write(buffer, ofs);
+}
+
+void Control::txPhDataInd(const RLCMACFrame *frame)
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+
+	prim->id = GsmL1_PrimId_PhDataInd;
+	frame->pack((unsigned char*)&(prim->u.phDataInd.msgUnitParam.u8Buffer[ofs]));
+	ofs += frame->size() >> 3;
+	prim->u.phDataInd.msgUnitParam.u8Size = ofs;
+	prim->u.phDataInd.sapi = GsmL1_Sapi_Pdtch;
+	ofs = sizeof(*prim);
+
+	COUT("TX: [ BTS -> PCU ] PhDataInd:" << *frame);
+	RLCMACSocket.write(buffer, ofs);
+}
+
+int readL1Prim(unsigned char* buffer, RLCMACFrame *frame)
+{
+	int rc = 0;
+	size_t readIndex = 8;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+
+
+	switch(prim->id) 
+	case GsmL1_PrimId_PhDataReq:
+	{
+		rc = 1;
+		frame->unpack((const unsigned char*)prim->u.phDataReq.msgUnitParam.u8Buffer);
+	}
+
+	if( (prim->u.phDataReq.msgUnitParam.u8Buffer[0]!= 0x41)&&(prim->u.phDataReq.msgUnitParam.u8Buffer[1]!= 0x94))
+	{
+		COUT("RX: [ BTS <- PCU ] PhDataReq:" << *frame);
+	}		
+
+	return rc;
 }
 
 void Control::GPRSReader(LogicalChannel *PDCH)
 {
 	RLCMACSocket.nonblocking();
 	char buf[MAX_UDP_LENGTH];
+	unsigned char targ[23];
+
 	while (1)
 	{
 		int count = RLCMACSocket.read(buf, 3000);
 		if (count>0)
 		{
 			RLCMACFrame *frame = new RLCMACFrame(23*8);
-			if (!readRLCMAC((unsigned char*) buf, frame))
+			if (!readL1Prim((unsigned char*) buf, frame))
 			{
 				delete frame;
 				continue;
 			}
-			COUT("Recieve from RLCMAC and send to MS on PDCH: " << *frame);
 			if (frame->payloadType() != 0x03) // RLCMACReserved
 			{
-				COUT(" GPRS downlink PDTCH");
 				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
 			}
 			else
@@ -280,6 +302,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				LogicalChannel *LCH = NULL;
 				LCH = PDCH;
 				bool gprs = true;
+				frame->pack(targ);
 				// Assignment, GSM 04.08 3.3.1.1.3.1.
 				// Create the ImmediateAssignment message.
 				int initialTA = 0;
@@ -291,7 +314,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 					// This message assigns a downlink TBF to the mobile station identified in the IA Rest Octets IE
 					L3DedicatedModeOrTBF(1,0,1),
 					L3TimingAdvance(initialTA),
-					(unsigned char*)buf
+					targ
 				);
 				COUT("sending " << assign);
 				AGCH->send(assign);
@@ -300,6 +323,5 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 		}
 	}
 }
-
 
 // vim: ts=4 sw=4

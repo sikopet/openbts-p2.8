@@ -1643,6 +1643,8 @@ void PDTCHL1Encoder::dispatch()
 		mDownstream->writeHighSide(mBurst);
 		rollForward();
 	}
+	// Send phReadyToSendInd primitive to gprs PCU
+	Control::txPhReadyToSendInd(mNextWriteTime.TN(), mNextWriteTime.FN());
 }
 
 SACCHL1Encoder* SACCHL1Decoder::SACCHSibling() 
