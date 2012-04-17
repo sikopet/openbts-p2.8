@@ -208,6 +208,41 @@ void Control::PDCHDispatcher(LogicalChannel *PDCH)
 	}
 }
 
+void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+
+	prim->id = GsmL1_PrimId_PhConnectInd;
+	prim->u.phConnectInd.u8Tn = channelDescription->tn();
+	prim->u.phConnectInd.u8Tsc = channelDescription->tsc();
+	prim->u.phConnectInd.u16Arfcn = channelDescription->arfcn();
+	ofs = sizeof(*prim);
+
+	COUT("TX: [ BTS -> PCU ] PhConnectInd: ARFCN: " << channelDescription->arfcn()
+		<<" TN: " << channelDescription->tn() << " TSC: " << channelDescription->tsc());
+	RLCMACSocket.write(buffer, ofs);
+}
+
+
+void Control::txPhRaInd(unsigned ra, int Fn, unsigned ta)
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+
+	prim->id = GsmL1_PrimId_PhRaInd;
+	prim->u.phRaInd.u32Fn = Fn;
+	prim->u.phRaInd.msgUnitParam.u8Buffer[0] = ra;
+	prim->u.phRaInd.msgUnitParam.u8Size = 1;
+	prim->u.phRaInd.measParam.i16BurstTiming = ta;
+	ofs = sizeof(*prim);
+
+	COUT("TX: [ BTS -> PCU ] PhRaInd: RA: " << ra <<" FN: " << Fn << " TA: " << ta);
+	RLCMACSocket.write(buffer, ofs);
+}
+
 void Control::txPhReadyToSendInd(unsigned Tn, int Fn)
 {
 	char buffer[MAX_UDP_LENGTH];
@@ -240,52 +275,53 @@ void Control::txPhDataInd(const RLCMACFrame *frame)
 	RLCMACSocket.write(buffer, ofs);
 }
 
-int readL1Prim(unsigned char* buffer, RLCMACFrame *frame)
+BitVector* readL1Prim(unsigned char* buffer, GsmL1_Sapi_t *sapi)
 {
-	int rc = 0;
-	size_t readIndex = 8;
 	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
-
 
 	switch(prim->id) 
 	case GsmL1_PrimId_PhDataReq:
 	{
-		rc = 1;
-		frame->unpack((const unsigned char*)prim->u.phDataReq.msgUnitParam.u8Buffer);
+		*sapi = prim->u.phDataReq.sapi;
+		BitVector * msg = new BitVector(prim->u.phDataReq.msgUnitParam.u8Size*8);
+		msg->unpack((const unsigned char*)prim->u.phDataReq.msgUnitParam.u8Buffer);
+		if(!((prim->u.phDataReq.msgUnitParam.u8Buffer[0]== 0x41)&&(prim->u.phDataReq.msgUnitParam.u8Buffer[1]== 0x94)))
+		{
+			COUT("RX: [ BTS <- PCU ] PhDataReq:" << (*sapi == GsmL1_Sapi_Agch? " (CCCH) ":" (PDCH) ") << *msg);
+		}
+		return msg;
 	}
 
-	if( (prim->u.phDataReq.msgUnitParam.u8Buffer[0]!= 0x41)&&(prim->u.phDataReq.msgUnitParam.u8Buffer[1]!= 0x94))
-	{
-		COUT("RX: [ BTS <- PCU ] PhDataReq:" << *frame);
-	}		
-
-	return rc;
+	return NULL;
 }
 
 void Control::GPRSReader(LogicalChannel *PDCH)
 {
 	RLCMACSocket.nonblocking();
 	char buf[MAX_UDP_LENGTH];
-	unsigned char targ[23];
+
+	// Send to PCU PhConnectInd primitive.
+	txPhConnectInd(&(PDCH->channelDescription()));
 
 	while (1)
 	{
 		int count = RLCMACSocket.read(buf, 3000);
 		if (count>0)
 		{
-			RLCMACFrame *frame = new RLCMACFrame(23*8);
-			if (!readL1Prim((unsigned char*) buf, frame))
+			GsmL1_Sapi_t sapi;
+			BitVector *msg = readL1Prim((unsigned char*) buf, &sapi);
+			if (!msg)
 			{
-				delete frame;
+				delete msg;
 				continue;
 			}
-			if (frame->payloadType() != 0x03) // RLCMACReserved
+			if ((sapi == GsmL1_Sapi_Pdtch)||(sapi == GsmL1_Sapi_Pacch))
 			{
+				RLCMACFrame *frame = new RLCMACFrame(*msg);
 				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
 			}
-			else
+			else if (sapi == GsmL1_Sapi_Agch)
 			{
-				COUT(" GPRS downlink assignment CCCH");
 				// Get an AGCH to send on.
 				CCCHLogicalChannel *AGCH = gBTS.getAGCH();
 				// Someone had better have created a least one AGCH.
@@ -296,30 +332,10 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 					COUT(" GPRS AGCH congestion");
 					return;
 				}
-				unsigned RA = 0x7a;
-				const GSM::Time when = gBTS.time();
-				GSM::Time start = gBTS.time();
-				LogicalChannel *LCH = NULL;
-				LCH = PDCH;
-				bool gprs = true;
-				frame->pack(targ);
-				// Assignment, GSM 04.08 3.3.1.1.3.1.
-				// Create the ImmediateAssignment message.
-				int initialTA = 0;
-				const L3ImmediateAssignment assign(
-					gprs,
-					L3RequestReference(RA,when),
-					LCH->channelDescription(),
-					start, // We use it for TBF starting time.
-					// This message assigns a downlink TBF to the mobile station identified in the IA Rest Octets IE
-					L3DedicatedModeOrTBF(1,0,1),
-					L3TimingAdvance(initialTA),
-					targ
-				);
-				COUT("sending " << assign);
-				AGCH->send(assign);
-				delete frame;
+				L3Frame *l3 = new L3Frame(*msg, UNIT_DATA);
+				AGCH->send(l3);
 			}
+			delete msg;
 		}
 	}
 }
