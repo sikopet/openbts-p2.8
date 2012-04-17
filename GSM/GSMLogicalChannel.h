@@ -459,6 +459,9 @@ class CCCHLogicalChannel : public NDCCHLogicalChannel {
 	void send(const L3RRMessage& msg)
 		{ mQ.write(new L3Frame((const L3Message&)msg,UNIT_DATA)); }
 
+	void send(L3Frame *frame)
+		{ mQ.write(frame); }
+
 	void send(const L3Message&) { assert(0); }
 
 	/** This is a loop in its own thread that empties mQ. */
