@@ -531,6 +531,10 @@ public:
 	void parseV(const L3Frame&, size_t& , size_t) { assert(0); }
 	void text(std::ostream&) const;
 
+	unsigned tn() const { return mTN; }
+	unsigned tsc() const { return mTSC; }
+	unsigned arfcn() const { return mARFCN; }
+
 };
 
 
