@@ -215,6 +215,16 @@ void AccessGrantResponder(
 		default: assert(0);
 	}
 
+	int initialTA = (int)(timingError + 0.5F);
+	if (initialTA<0) initialTA=0;
+	if (initialTA>62) initialTA=62;
+	
+	if (gprsRACH) {
+		Control::txPhRaInd(RA, when.FN(), (unsigned)initialTA);
+		return;
+	}
+
+
 	// Nothing available?
 	if (!LCH) {
 		// Rejection, GSM 04.08 3.3.1.1.3.2.
@@ -235,9 +245,6 @@ void AccessGrantResponder(
 	// Assignment, GSM 04.08 3.3.1.1.3.1.
 	// Create the ImmediateAssignment message.
 	// Woot!! We got a channel! Thanks to Legba!
-	int initialTA = (int)(timingError + 0.5F);
-	if (initialTA<0) initialTA=0;
-	if (initialTA>62) initialTA=62;
 	const L3ImmediateAssignment assign(
 		gprsRACH,
 		L3RequestReference(RA,when),

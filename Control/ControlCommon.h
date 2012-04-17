@@ -59,6 +59,7 @@ class SDCCHLogicalChannel;
 class SACCHLogicalChannel;
 class TCHFACCHLogicalChannel;
 class L3CMServiceRequest;
+class L3ChannelDescription;
 };
 
 
@@ -125,6 +126,8 @@ void PDCHDispatcher(GSM::LogicalChannel *PDCH);
 /**@name Socket for GPRS RLC/MAC. */
 //@{
 void GPRSReader(GSM::LogicalChannel *PDCH);
+void txPhConnectInd(GSM::L3ChannelDescription *channelDescription);
+void txPhRaInd(unsigned ra, int Fn, unsigned ta);
 void txPhReadyToSendInd(unsigned Tn, int Fn);
 void txPhDataInd(const GSM::RLCMACFrame *frame);
 //@}
