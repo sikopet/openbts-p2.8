@@ -85,7 +85,7 @@ ChannelType decodeChannelNeeded(unsigned RA)
 
 	if (gConfig.getNum("GSM.GPRS")) {
 		// One phase packet access with request for single timeslot uplink transmission; one PDCH is needed.
-		if ((RA3 == 0x0f)&&(RA != 0x7f)) return PDTCHType;
+		if (((RA3 == 0x0f)||(RA3 == 0x0e))&&(RA != 0x7f)) return PDTCHType;
 	}
 
 	int NECI = gConfig.getNum("GSM.CellSelection.NECI");
