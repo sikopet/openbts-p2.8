@@ -522,6 +522,19 @@ void uhd_device::restart(uhd::time_spec_t ts)
 	cmd = uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS;
 	cmd.stream_now = true;
 	usrp_dev->issue_stream_cmd(cmd);
+
+	uhd::rx_metadata_t md;
+	uint32_t buff[rx_spp];
+
+	for (int i = 0; i < 50; i++) {
+		usrp_dev->get_device()->recv(buff,
+					     rx_spp,
+					     md,
+					     uhd::io_type_t::COMPLEX_INT16,
+					     uhd::device::RECV_MODE_ONE_PACKET);
+	}
+
+	init_rd_ts = convert_time(md.time_spec, actual_smpl_rt);
 }
 
 bool uhd_device::start()
