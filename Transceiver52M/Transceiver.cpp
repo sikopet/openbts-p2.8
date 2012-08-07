@@ -32,7 +32,8 @@
 #include "Transceiver.h"
 #include <Logger.h>
 
-
+#define USB_LATENCY_MIN		(7,0)
+#define USB_LATENCY_UPDATE	(10,0)
 
 Transceiver::Transceiver(int wBasePort,
 			 const char *TRXAddress,
@@ -717,7 +718,7 @@ void Transceiver::driveTransmitFIFO()
       if (mRadioInterface->getBus() == RadioDevice::USB) {
         if (mRadioInterface->isUnderrun()) {
           // only do latency update every 10 frames, so we don't over update
-          if (radioClock->get() > mLatencyUpdateTime + GSM::Time(10,0)) {
+          if (radioClock->get() > mLatencyUpdateTime + GSM::Time(USB_LATENCY_UPDATE)) {
             mTransmitLatency = mTransmitLatency + GSM::Time(1,0);
             LOG(INFO) << "new latency: " << mTransmitLatency;
             mLatencyUpdateTime = radioClock->get();
@@ -726,7 +727,7 @@ void Transceiver::driveTransmitFIFO()
         else {
           // if underrun hasn't occurred in the last sec (216 frames) drop
           //    transmit latency by a timeslot
-          if (mTransmitLatency > GSM::Time(1,1)) {
+          if (mTransmitLatency > GSM::Time(USB_LATENCY_MIN)) {
               if (radioClock->get() > mLatencyUpdateTime + GSM::Time(216,0)) {
               mTransmitLatency.decTN();
               LOG(INFO) << "reduced latency: " << mTransmitLatency;
