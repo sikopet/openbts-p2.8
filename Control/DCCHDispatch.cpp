@@ -39,7 +39,8 @@
 #include <SIPInterface.h>
 #include <GSMConfig.h>
 #include <gsmL1prim.h>
-
+#include <sys/socket.h>
+#include <arpa/inet.h>
 #include <Logger.h>
 #undef WARNING
 #include <Reporting.h>
@@ -215,12 +216,53 @@ void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
-	prim->id = GsmL1_PrimId_PhConnectInd;
-	prim->u.phConnectInd.u8Tn = channelDescription->tn();
-	prim->u.phConnectInd.u8Tsc = channelDescription->tsc();
-	prim->u.phConnectInd.u16Arfcn = channelDescription->arfcn();
+	prim->msg_type = PCU_IF_MSG_INFO_IND;
+	prim->bts_nr = 1;
+	
+	prim->u.info_ind.flags |= PCU_IF_FLAG_ACTIVE;
+	prim->u.info_ind.flags |= PCU_IF_FLAG_CS1;
+	prim->u.info_ind.trx[0].arfcn  = channelDescription->arfcn();
+	prim->u.info_ind.trx[0].pdch_mask = 0x80;
+	prim->u.info_ind.trx[0].tsc[7] = channelDescription->tsc();
+	
+	prim->u.info_ind.initial_cs = gConfig.getNum("GPRS.INITIAL_CS");
+
+	prim->u.info_ind.t3142 = gConfig.getNum("GPRS.T3142");
+	prim->u.info_ind.t3169 = gConfig.getNum("GPRS.T3169");
+	prim->u.info_ind.t3191 = gConfig.getNum("GPRS.T3191");
+	prim->u.info_ind.t3193_10ms = gConfig.getNum("GPRS.T3193_10MS");
+	prim->u.info_ind.t3195 = gConfig.getNum("GPRS.T3195");
+	prim->u.info_ind.n3101 = gConfig.getNum("GPRS.T3101");
+	prim->u.info_ind.n3103 = gConfig.getNum("GPRS.T3103");
+	prim->u.info_ind.n3105 = gConfig.getNum("GPRS.T3105");
+	
+	/* RAI */
+	prim->u.info_ind.mcc = gConfig.getNum("GPRS.MCC");
+	prim->u.info_ind.mnc = gConfig.getNum("GPRS.MNC");
+	prim->u.info_ind.lac = gConfig.getNum("GSM.Identity.LAC");
+	prim->u.info_ind.rac = gConfig.getNum("GPRS.RAC");
+	/* NSE */
+	prim->u.info_ind.nsei = gConfig.getNum("GPRS.NSEI");
+	/* cell  */
+	prim->u.info_ind.cell_id = gConfig.getNum("GPRS.CELL_ID");
+	prim->u.info_ind.repeat_time = gConfig.getNum("GPRS.REPEAT_TIME");
+	prim->u.info_ind.repeat_count = gConfig.getNum("GPRS.REPEAT_COUNT");
+	prim->u.info_ind.bvci = gConfig.getNum("GPRS.BVCI");
+
+	prim->u.info_ind.cv_countdown = gConfig.getNum("GPRS.CV_COUNTDOWN");
+	/* NSVC */
+	prim->u.info_ind.nsvci[0] = gConfig.getNum("GPRS.NSVCI");
+	prim->u.info_ind.local_port[0] = gConfig.getNum("GPRS.NSVC_LPORT");
+	prim->u.info_ind.remote_port[0] = gConfig.getNum("GPRS.NSVC_RPORT");
+	
+	struct sockaddr_in dest;
+	dest.sin_family = AF_INET;
+	dest.sin_port = htons(gConfig.getNum("GPRS.NSVC_RPORT"));
+	inet_aton("127.0.0.1", &dest.sin_addr);
+	prim->u.info_ind.remote_ip[0] = ntohl(dest.sin_addr.s_addr);
+
 	ofs = sizeof(*prim);
 
 	COUT("TX: [ BTS -> PCU ] PhConnectInd: ARFCN: " << channelDescription->arfcn()
@@ -228,18 +270,19 @@ void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
 	RLCMACSocket.write(buffer, ofs);
 }
 
-
 void Control::txPhRaInd(unsigned ra, int Fn, unsigned ta)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
-	prim->id = GsmL1_PrimId_PhRaInd;
-	prim->u.phRaInd.u32Fn = Fn;
-	prim->u.phRaInd.msgUnitParam.u8Buffer[0] = ra;
-	prim->u.phRaInd.msgUnitParam.u8Size = 1;
-	prim->u.phRaInd.measParam.i16BurstTiming = ta;
+	prim->msg_type = PCU_IF_MSG_RACH_IND;
+	prim->bts_nr = 1;
+	prim->u.rach_ind.sapi = PCU_IF_SAPI_RACH;
+	prim->u.rach_ind.ra = ra;
+	prim->u.rach_ind.qta = ta;
+	prim->u.rach_ind.fn = Fn;
+	prim->u.rach_ind.arfcn = gConfig.getNum("GSM.Radio.C0");
 	ofs = sizeof(*prim);
 
 	COUT("TX: [ BTS -> PCU ] PhRaInd: RA: " << ra <<" FN: " << Fn << " TA: " << ta);
@@ -250,12 +293,48 @@ void Control::txPhReadyToSendInd(unsigned Tn, int Fn)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
-	prim->id = GsmL1_PrimId_PhReadyToSendInd;
-	prim->u.phReadyToSendInd.u8Tn = Tn;
-	prim->u.phReadyToSendInd.u32Fn = Fn;
-	prim->u.phReadyToSendInd.sapi = GsmL1_Sapi_Pdtch;
+	prim->msg_type = PCU_IF_MSG_RTS_REQ;
+	prim->bts_nr = 1;
+	prim->u.rts_req.sapi = PCU_IF_SAPI_PDTCH;
+	prim->u.rts_req.fn = Fn;
+	prim->u.rts_req.arfcn = gConfig.getNum("GSM.Radio.C0");
+	prim->u.rts_req.trx_nr = 0;
+	prim->u.rts_req.ts_nr = Tn;
+	int bn = 0;
+
+	int fn52 = 4;
+	while(fn52 < 52)
+	{
+		if ((Fn%52)<fn52)
+		{
+			break;
+		}
+		else
+		{
+			bn++;
+			fn52 += 4;
+		}
+	}
+
+	prim->u.rts_req.block_nr = bn;
+
+	ofs = sizeof(*prim);
+
+	RLCMACSocket.write(buffer, ofs);
+	txMphTimeInd();
+}
+
+void Control::txMphTimeInd()
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
+
+	prim->msg_type = PCU_IF_MSG_TIME_IND;
+	prim->bts_nr = 1;
+	prim->u.time_ind.fn = gBTS.time().FN();
 	ofs = sizeof(*prim);
 
 	RLCMACSocket.write(buffer, ofs);
@@ -265,33 +344,56 @@ void Control::txPhDataInd(const RLCMACFrame *frame)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
-	prim->id = GsmL1_PrimId_PhDataInd;
-	frame->pack((unsigned char*)&(prim->u.phDataInd.msgUnitParam.u8Buffer[ofs]));
+	prim->msg_type = PCU_IF_MSG_DATA_IND;
+	prim->bts_nr = 1;
+	
+	prim->u.data_ind.sapi = PCU_IF_SAPI_PDTCH;
+	frame->pack((unsigned char*)&(prim->u.data_ind.data[ofs]));
 	ofs += frame->size() >> 3;
-	prim->u.phDataInd.msgUnitParam.u8Size = ofs;
-	prim->u.phDataInd.sapi = GsmL1_Sapi_Pdtch;
+	prim->u.data_ind.len = ofs;
+	prim->u.data_ind.arfcn = gConfig.getNum("GSM.Radio.C0");
+	int Fn = gBTS.time().FN()-9;
+	prim->u.data_ind.fn = Fn;
+	int bn = 0;
+
+	int fn52 = 4;
+	while(fn52 < 52)
+	{
+		if ((Fn%52)<fn52)
+		{
+			break;
+		}
+		else
+		{
+			bn++;
+			fn52 += 4;
+		}
+	}
+
+	prim->u.data_ind.block_nr = bn;
+	prim->u.data_ind.trx_nr = 0;
+	prim->u.data_ind.ts_nr = gConfig.getNum("GPRS.TS");
+
 	ofs = sizeof(*prim);
 
 	COUT("TX: [ BTS -> PCU ] PhDataInd:" << *frame);
 	RLCMACSocket.write(buffer, ofs);
+	txMphTimeInd();
 }
 
-BitVector* readL1Prim(unsigned char* buffer, GsmL1_Sapi_t *sapi)
-{
-	struct GsmL1_Prim_t *prim = (struct GsmL1_Prim_t *)buffer;
 
-	switch(prim->id) 
-	case GsmL1_PrimId_PhDataReq:
+BitVector* readL1Prim(unsigned char* buffer, int *sapi)
+{
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
+
+	switch(prim->msg_type)
+	case PCU_IF_MSG_DATA_REQ:
 	{
-		*sapi = prim->u.phDataReq.sapi;
-		BitVector * msg = new BitVector(prim->u.phDataReq.msgUnitParam.u8Size*8);
-		msg->unpack((const unsigned char*)prim->u.phDataReq.msgUnitParam.u8Buffer);
-		if(!((prim->u.phDataReq.msgUnitParam.u8Buffer[0]== 0x41)&&(prim->u.phDataReq.msgUnitParam.u8Buffer[1]== 0x94)))
-		{
-			COUT("RX: [ BTS <- PCU ] PhDataReq:" << (*sapi == GsmL1_Sapi_Agch? " (CCCH) ":" (PDCH) ") << *msg);
-		}
+		*sapi = prim->u.data_req.sapi;
+		BitVector * msg = new BitVector(prim->u.data_req.len*8);
+		msg->unpack((const unsigned char*)prim->u.data_req.data);
 		return msg;
 	}
 
@@ -301,6 +403,7 @@ BitVector* readL1Prim(unsigned char* buffer, GsmL1_Sapi_t *sapi)
 void Control::GPRSReader(LogicalChannel *PDCH)
 {
 	RLCMACSocket.nonblocking();
+
 	char buf[MAX_UDP_LENGTH];
 
 	// Send to PCU PhConnectInd primitive.
@@ -311,31 +414,36 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 		int count = RLCMACSocket.read(buf, 3000);
 		if (count>0)
 		{
-			GsmL1_Sapi_t sapi;
+			int sapi;
 			BitVector *msg = readL1Prim((unsigned char*) buf, &sapi);
 			if (!msg)
 			{
 				delete msg;
 				continue;
 			}
-			if ((sapi == GsmL1_Sapi_Pdtch)||(sapi == GsmL1_Sapi_Pacch))
+			if (sapi == PCU_IF_SAPI_PDTCH)
 			{
 				RLCMACFrame *frame = new RLCMACFrame(*msg);
 				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
 			}
-			else if ((sapi == GsmL1_Sapi_Pch)||(sapi == GsmL1_Sapi_Agch))
+			else if ((sapi == PCU_IF_SAPI_AGCH)||(sapi == PCU_IF_SAPI_PCH))
 			{
 				// Get an PCH to send on.
-				CCCHLogicalChannel *PCH = gBTS.getPCH();
-				assert(PCH);
+				CCCHLogicalChannel *AGCH = gBTS.getAGCH();
+				assert(AGCH);
 				// Check PCH load now.
-				if (PCH->load()>gConfig.getNum("GSM.CCCH.AGCH.QMax"))
+				if (AGCH->load()>gConfig.getNum("GSM.CCCH.AGCH.QMax"))
 				{
 					COUT(" GPRS PCH congestion");
 					return;
 				}
+				if (sapi == PCU_IF_SAPI_AGCH)
+					*msg = msg->tail(8);
+				else
+					*msg = msg->tail(8*4);
 				L3Frame *l3 = new L3Frame(*msg, UNIT_DATA);
-				PCH->send(l3);
+				COUT("RX: [ BTS <- PCU ] CCCH: " << *l3);
+				AGCH->send(l3);
 			}
 			delete msg;
 		}
