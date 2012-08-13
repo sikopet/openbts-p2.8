@@ -129,6 +129,7 @@ void GPRSReader(GSM::LogicalChannel *PDCH);
 void txPhConnectInd(GSM::L3ChannelDescription *channelDescription);
 void txPhRaInd(unsigned ra, int Fn, unsigned ta);
 void txPhReadyToSendInd(unsigned Tn, int Fn);
+void txMphTimeInd();
 void txPhDataInd(const GSM::RLCMACFrame *frame);
 //@}
 
