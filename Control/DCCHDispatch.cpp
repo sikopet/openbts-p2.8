@@ -405,24 +405,31 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				RLCMACFrame *frame = new RLCMACFrame(*msg);
 				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
 			}
-			else if ((sapi == PCU_IF_SAPI_AGCH)||(sapi == PCU_IF_SAPI_PCH))
+			else if (sapi == PCU_IF_SAPI_AGCH)
 			{
-				// Get an PCH to send on.
+				// Get an AGCH to send on.
 				CCCHLogicalChannel *AGCH = gBTS.getAGCH();
 				assert(AGCH);
-				// Check PCH load now.
+				// Check AGCH load now.
 				if (AGCH->load()>gConfig.getNum("GSM.CCCH.AGCH.QMax"))
 				{
-					COUT(" GPRS PCH congestion");
+					COUT(" GPRS AGCH congestion");
 					return;
 				}
-				if (sapi == PCU_IF_SAPI_AGCH)
-					*msg = msg->tail(8);
-				else
-					*msg = msg->tail(8*4);
+				*msg = msg->tail(8);
 				L3Frame *l3 = new L3Frame(*msg, UNIT_DATA);
-				COUT("RX: [ BTS <- PCU ] CCCH: " << *l3);
+				COUT("RX: [ BTS <- PCU ] AGCH: " << *l3);
 				AGCH->send(l3);
+			}
+			else if (sapi == PCU_IF_SAPI_PCH)
+			{
+				// Get an PCH to send on.
+				CCCHLogicalChannel *PCH = gBTS.getPCH();
+				assert(PCH);
+				*msg = msg->tail(8*4);
+				L3Frame *l3 = new L3Frame(*msg, UNIT_DATA);
+				COUT("RX: [ BTS <- PCU ] PCH: " << *l3);
+				PCH->send(l3);
 			}
 			delete msg;
 		}
