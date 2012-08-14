@@ -742,7 +742,7 @@ void PDTCHL1Decoder::writeLowSide(const RxBurst& burst)
 void PDTCHL1Decoder::handleGoodFrame()
 {
 	RLCMACFrame* frame = new RLCMACFrame(mD);
-	mFramesQ.write(frame);
+	Control::txPhDataInd(frame, mReadTime);
 }
 
 
