@@ -194,24 +194,6 @@ void Control::DCCHDispatcher(LogicalChannel *DCCH)
 	}
 }
 
-/** Example of a closed-loop, persistent-thread control function for the PDCH. */
-void Control::PDCHDispatcher(LogicalChannel *PDCH)
-{
-	const RLCMACFrame *frame = NULL;
-	while (1) {
-		frame = ((PDTCHLogicalChannel*)PDCH)->recvPDCH();
-		if (!frame) { 
-			delete frame;
-			frame = NULL;
-			continue;
- 		}
-		LOG(NOTICE) << " PDCH received frame " << *frame;
-		txPhDataInd(frame);
-		delete frame;
-		frame = NULL;
-	}
-}
-
 void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
 {
 	char buffer[MAX_UDP_LENGTH];
@@ -340,7 +322,7 @@ void Control::txMphTimeInd()
 	RLCMACSocket.write(buffer, ofs);
 }
 
-void Control::txPhDataInd(const RLCMACFrame *frame)
+void Control::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
@@ -354,7 +336,7 @@ void Control::txPhDataInd(const RLCMACFrame *frame)
 	ofs += frame->size() >> 3;
 	prim->u.data_ind.len = ofs;
 	prim->u.data_ind.arfcn = gConfig.getNum("GSM.Radio.C0");
-	int Fn = gBTS.time().FN()-9;
+	int Fn = readTime.FN();
 	prim->u.data_ind.fn = Fn;
 	int bn = 0;
 
