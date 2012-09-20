@@ -221,7 +221,6 @@ void Control::txPhConnectInd()
 	prim->u.info_ind.n3105 = gConfig.getNum("GPRS.T3105");
 	
 	/* RAI */
-	prim->u.info_ind.bsic = gConfig.getNum("GSM.Identity.BSIC.BCC");
 	prim->u.info_ind.mcc = gConfig.getNum("GPRS.MCC");
 	prim->u.info_ind.mnc = gConfig.getNum("GPRS.MNC");
 	prim->u.info_ind.lac = gConfig.getNum("GSM.Identity.LAC");
