@@ -126,7 +126,7 @@ void PDCHDispatcher(GSM::LogicalChannel *PDCH);
 /**@name Socket for GPRS RLC/MAC. */
 //@{
 void GPRSReader(GSM::LogicalChannel *PDCH);
-void txPhConnectInd(GSM::L3ChannelDescription *channelDescription);
+void txPhConnectInd();
 void txPhRaInd(unsigned ra, int Fn, unsigned ta);
 void txPhReadyToSendInd(unsigned Tn, int Fn);
 void txMphTimeInd();

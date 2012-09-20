@@ -194,7 +194,7 @@ void Control::DCCHDispatcher(LogicalChannel *DCCH)
 	}
 }
 
-void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
+void Control::txPhConnectInd()
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
@@ -205,9 +205,9 @@ void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
 	
 	prim->u.info_ind.flags |= PCU_IF_FLAG_ACTIVE;
 	prim->u.info_ind.flags |= PCU_IF_FLAG_CS1;
-	prim->u.info_ind.trx[0].arfcn  = channelDescription->arfcn();
+	prim->u.info_ind.trx[0].arfcn  = gConfig.getNum("GSM.Radio.C0");
 	prim->u.info_ind.trx[0].pdch_mask = 0x80;
-	prim->u.info_ind.trx[0].tsc[7] = channelDescription->tsc();
+	prim->u.info_ind.trx[0].tsc[7] = gConfig.getNum("GSM.Identity.BSIC.BCC");
 	
 	prim->u.info_ind.initial_cs = gConfig.getNum("GPRS.INITIAL_CS");
 
@@ -221,6 +221,7 @@ void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
 	prim->u.info_ind.n3105 = gConfig.getNum("GPRS.T3105");
 	
 	/* RAI */
+	prim->u.info_ind.bsic = gConfig.getNum("GSM.Identity.BSIC.BCC");
 	prim->u.info_ind.mcc = gConfig.getNum("GPRS.MCC");
 	prim->u.info_ind.mnc = gConfig.getNum("GPRS.MNC");
 	prim->u.info_ind.lac = gConfig.getNum("GSM.Identity.LAC");
@@ -247,8 +248,8 @@ void Control::txPhConnectInd(L3ChannelDescription *channelDescription)
 
 	ofs = sizeof(*prim);
 
-	COUT("TX: [ BTS -> PCU ] PhConnectInd: ARFCN: " << channelDescription->arfcn()
-		<<" TN: " << channelDescription->tn() << " TSC: " << channelDescription->tsc());
+	COUT("TX: [ BTS -> PCU ] PhConnectInd: ARFCN: " << gConfig.getNum("GSM.Radio.C0")
+		<<" TN: " << gConfig.getNum("GPRS.TS") << " TSC: " << gConfig.getNum("GSM.Identity.BSIC.BCC"));
 	RLCMACSocket.write(buffer, ofs);
 }
 
@@ -389,7 +390,8 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 	char buf[MAX_UDP_LENGTH];
 
 	// Send to PCU PhConnectInd primitive.
-	txPhConnectInd(&(PDCH->channelDescription()));
+	
+	txPhConnectInd();
 
 	while (1)
 	{
@@ -419,8 +421,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 					COUT(" GPRS AGCH congestion");
 					return;
 				}
-				*msg = msg->tail(8);
-				L3Frame *l3 = new L3Frame(*msg, UNIT_DATA);
+				L3Frame *l3 = new L3Frame(msg->tail(8), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] AGCH: " << *l3);
 				AGCH->send(l3);
 			}
@@ -429,8 +430,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				// Get an PCH to send on.
 				CCCHLogicalChannel *PCH = gBTS.getPCH();
 				assert(PCH);
-				*msg = msg->tail(8*4);
-				L3Frame *l3 = new L3Frame(*msg, UNIT_DATA);
+				L3Frame *l3 = new L3Frame(msg->tail(8*4), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] PCH: " << *l3);
 				PCH->send(l3);
 			}
