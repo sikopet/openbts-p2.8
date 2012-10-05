@@ -431,6 +431,10 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 
 	char buf[MAX_UDP_LENGTH];
 
+	unsigned len = 6;
+	size_t readIndex = 0;
+	size_t l2Len = 0;
+
 	// Send to PCU PhConnectInd primitive.
 	
 	txPhConnectInd();
@@ -465,6 +469,8 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				}
 				L3Frame *l3 = new L3Frame(msg->tail(8), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] AGCH: " << *l3);
+				l2Len = msg->readField(readIndex, len);
+				l3->L2Length(l2Len);
 				AGCH->send(l3);
 				txPhDataIndCnf(msg, gBTS.time());
 			}
@@ -475,6 +481,9 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				assert(PCH);
 				L3Frame *l3 = new L3Frame(msg->tail(8*4), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] PCH: " << *l3);
+				readIndex = 24;
+				l2Len = msg->readField(readIndex, len);
+				l3->L2Length(l2Len);
 				PCH->send(l3);
 				txPhDataIndCnf(&(msg->tail(8*3)), gBTS.time());
 			}
