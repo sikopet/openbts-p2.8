@@ -203,6 +203,7 @@ void Control::txPhConnectInd()
 	prim->msg_type = PCU_IF_MSG_INFO_IND;
 	prim->bts_nr = 1;
 	
+	prim->u.info_ind.version = PCU_IF_VERSION;
 	prim->u.info_ind.flags |= PCU_IF_FLAG_ACTIVE;
 	prim->u.info_ind.flags |= PCU_IF_FLAG_CS1;
 	prim->u.info_ind.trx[0].arfcn  = gConfig.getNum("GSM.Radio.C0");
@@ -221,6 +222,7 @@ void Control::txPhConnectInd()
 	prim->u.info_ind.n3105 = gConfig.getNum("GPRS.T3105");
 	
 	/* RAI */
+	prim->u.info_ind.bsic = gConfig.getNum("GSM.Identity.BSIC.BCC");
 	prim->u.info_ind.mcc = gConfig.getNum("GPRS.MCC");
 	prim->u.info_ind.mnc = gConfig.getNum("GPRS.MNC");
 	prim->u.info_ind.lac = gConfig.getNum("GSM.Identity.LAC");
@@ -365,6 +367,47 @@ void Control::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime)
 	txMphTimeInd();
 }
 
+void txPhDataIndCnf(const BitVector *frame, GSM::Time readTime)
+{
+	char buffer[MAX_UDP_LENGTH];
+	int ofs = 0;
+	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
+
+	prim->msg_type = PCU_IF_MSG_DATA_CNF;
+	prim->bts_nr = 1;
+	
+	prim->u.data_ind.sapi = PCU_IF_SAPI_PCH;
+	frame->pack((unsigned char*)&(prim->u.data_ind.data[ofs]));
+	ofs += frame->size() >> 3;
+	prim->u.data_ind.len = ofs;
+	prim->u.data_ind.arfcn = gConfig.getNum("GSM.Radio.C0");
+	int Fn = readTime.FN();
+	prim->u.data_ind.fn = Fn;
+	int bn = 0;
+
+	int fn52 = 4;
+	while(fn52 < 52)
+	{
+		if ((Fn%52)<fn52)
+		{
+			break;
+		}
+		else
+		{
+			bn++;
+			fn52 += 4;
+		}
+	}
+
+	prim->u.data_ind.block_nr = bn;
+	prim->u.data_ind.trx_nr = 0;
+	prim->u.data_ind.ts_nr = gConfig.getNum("GPRS.TS");
+
+	ofs = sizeof(*prim);
+
+	RLCMACSocket.write(buffer, ofs);
+	txMphTimeInd();
+}
 
 BitVector* readL1Prim(unsigned char* buffer, int *sapi)
 {
@@ -423,6 +466,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				L3Frame *l3 = new L3Frame(msg->tail(8), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] AGCH: " << *l3);
 				AGCH->send(l3);
+				txPhDataIndCnf(msg, gBTS.time());
 			}
 			else if (sapi == PCU_IF_SAPI_PCH)
 			{
@@ -432,6 +476,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				L3Frame *l3 = new L3Frame(msg->tail(8*4), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] PCH: " << *l3);
 				PCH->send(l3);
+				txPhDataIndCnf(&(msg->tail(8*3)), gBTS.time());
 			}
 			delete msg;
 		}
