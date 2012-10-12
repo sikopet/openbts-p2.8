@@ -473,15 +473,16 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 			}
 			else if (sapi == PCU_IF_SAPI_PCH)
 			{
-				// Get an PCH to send on.
-				CCCHLogicalChannel *PCH = gBTS.getPCH();
-				assert(PCH);
-				L3Frame *l3 = new L3Frame(msg->tail(8*4), UNIT_DATA);
-				COUT("RX: [ BTS <- PCU ] PCH: " << *l3);
+				L3Frame *msg1 = new L3Frame(msg->tail(8*4), UNIT_DATA);
+				L3Frame *msg2 = new L3Frame(msg->tail(8*4), UNIT_DATA);
+				COUT("RX: [ BTS <- PCU ] PCH: " << *msg1);
 				readIndex = 24;
 				l2Len = msg->readField(readIndex, len);
-				l3->L2Length(l2Len);
-				PCH->send(l3);
+				msg1->L2Length(l2Len);
+				msg2->L2Length(l2Len);
+				// HACK -- We send every page twice.
+				gBTS.getPCH(0)->send(msg1);
+				gBTS.getPCH(0)->send(msg2);
 				txPhDataIndCnf(&(msg->tail(8*3)), gBTS.time());
 			}
 			delete msg;
