@@ -727,6 +727,25 @@ void SACCHL1Decoder::handleGoodFrame()
 	XCCHL1Decoder::handleGoodFrame();
 }
 
+void PDTCHL1Decoder::open()
+{
+	ScopedLock lock(mLock);
+	mT3111.reset();
+	mT3109.reset();
+	if (mT3101.active()) {
+			mT3101.reset();
+		}
+	if (!mRunning) start();
+	mFER=0.0F;
+	mActive = true;
+}
+
+void PDTCHL1Decoder::close(bool hardRelease)
+{
+	ScopedLock lock(mLock);
+	mActive = false;
+}
+
 bool PDTCHL1Decoder::processBurst(const RxBurst& inBurst)
 {
 	return XCCHL1Decoder::processBurst(inBurst);
@@ -1509,12 +1528,6 @@ void SACCHL1Decoder::setPhy(const SACCHL1Decoder& other)
 	for (int i=0; i<4; i++) mTimingError[i]=other.mTimingError[i];
 	OBJLOG(INFO) << "SACCHL1Decoder actuals RSSI=" << mRSSI[0] << "timingError=" << mTimingError[0]
 		<< " MSPower=" << mActualMSPower << " MSTiming=" << mActualMSTiming;
-}
-
-void PDTCHL1Decoder::open()
-{
-	OBJLOG(DEBUG) << "PDTCHL1Decoder";
-	XCCHL1Decoder::open();
 }
 
 void SACCHL1Encoder::setPhy(float wRSSI, float wTimingError)
