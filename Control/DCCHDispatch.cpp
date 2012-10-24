@@ -367,7 +367,7 @@ void Control::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime)
 	txMphTimeInd();
 }
 
-void txPhDataIndCnf(const BitVector *frame, GSM::Time readTime)
+void txPhDataIndCnf(const BitVector &frame, GSM::Time readTime)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
@@ -377,8 +377,8 @@ void txPhDataIndCnf(const BitVector *frame, GSM::Time readTime)
 	prim->bts_nr = 1;
 	
 	prim->u.data_ind.sapi = PCU_IF_SAPI_PCH;
-	frame->pack((unsigned char*)&(prim->u.data_ind.data[ofs]));
-	ofs += frame->size() >> 3;
+	frame.pack((unsigned char*)&(prim->u.data_ind.data[ofs]));
+	ofs += frame.size() >> 3;
 	prim->u.data_ind.len = ofs;
 	prim->u.data_ind.arfcn = gConfig.getNum("GSM.Radio.C0");
 	int Fn = readTime.FN();
@@ -462,7 +462,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				CCCHLogicalChannel *AGCH = gBTS.getAGCH();
 				assert(AGCH);
 				// Check AGCH load now.
-				if (AGCH->load()>gConfig.getNum("GSM.CCCH.AGCH.QMax"))
+				if (AGCH->load()>(unsigned)gConfig.getNum("GSM.CCCH.AGCH.QMax"))
 				{
 					COUT(" GPRS AGCH congestion");
 					return;
@@ -472,7 +472,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				l2Len = msg->readField(readIndex, len);
 				l3->L2Length(l2Len);
 				AGCH->send(l3);
-				txPhDataIndCnf(msg, gBTS.time());
+				txPhDataIndCnf(*msg, gBTS.time());
 			}
 			else if (sapi == PCU_IF_SAPI_PCH)
 			{
@@ -486,7 +486,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				// HACK -- We send every page twice.
 				gBTS.getPCH(0)->send(msg1);
 				gBTS.getPCH(0)->send(msg2);
-				txPhDataIndCnf(&(msg->tail(8*3)), gBTS.time());
+				txPhDataIndCnf(msg->tail(8*3), gBTS.time());
 			}
 			delete msg;
 		}
