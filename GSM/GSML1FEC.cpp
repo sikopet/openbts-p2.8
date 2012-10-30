@@ -1618,6 +1618,11 @@ void PDTCHL1Encoder::dispatch()
 	// Send, by priority: (1) PDTCH, (2) filler.
 	if (RLCMACFrame *frame = mRLCMACQ.readNoBlock()) {
 		OBJLOG(NOTICE) <<"PDTCH Encoder " << *frame;
+		if (frame->peekField(0,16) != 0x4794)
+		{
+			gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), gConfig.getNum("GPRS.TS"),
+								mNextWriteTime.FN(), GSM::PDCH, false, false, *frame);
+		}
 		frame->LSB8MSB();
 		frame->copyTo(mU);
 		// Encode u[] to c[], GSM 05.03 4.1.2 and 4.1.3.

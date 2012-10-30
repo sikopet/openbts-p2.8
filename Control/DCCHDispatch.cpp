@@ -35,6 +35,7 @@
 #include <GSMLogicalChannel.h>
 #include <GSML3MMMessages.h>
 #include <GSML3RRMessages.h>
+#include <GSMTAPDump.h>
 #include <SIPUtility.h>
 #include <SIPInterface.h>
 #include <GSMConfig.h>
@@ -363,6 +364,8 @@ void Control::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime)
 	ofs = sizeof(*prim);
 
 	COUT("TX: [ BTS -> PCU ] PhDataInd:" << *frame);
+	gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), gConfig.getNum("GPRS.TS"), Fn,
+												GSM::PDCH, false, true, *frame);
 	RLCMACSocket.write(buffer, ofs);
 	txMphTimeInd();
 }

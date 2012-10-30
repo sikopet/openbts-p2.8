@@ -93,6 +93,11 @@ void gWriteGSMTAP(unsigned ARFCN, unsigned TS, unsigned FN,
 			scn = to - GSM::TCHH_0;
 			break;
 
+		case GSM::PDCH:
+			stype = 0x0b;
+			scn = 0;
+			break;
+
 		default:
 			stype = GSMTAP_CHANNEL_UNKNOWN;
 			scn = 0;
