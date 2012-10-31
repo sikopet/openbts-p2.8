@@ -324,7 +324,7 @@ class L3SystemInformationType2 : public L3RRMessageNRO {
 	- Cell Selection Parameters 10.5.2.4 M V 2 
 	- RACH Control Parameters 10.5.2.29 M V 3 
 */
-class L3SystemInformationType3 : public L3RRMessageNRO {
+class L3SystemInformationType3 : public L3RRMessageRO {
 
 	private:
 
@@ -335,15 +335,12 @@ class L3SystemInformationType3 : public L3RRMessageNRO {
 	L3CellSelectionParameters mCellSelectionParameters;
 	L3RACHControlParameters mRACHControlParameters;
 
-	//bool mHaveRestOctets;
-	//L3SI3RestOctets mRestOctets;
 	L3SI3RestOctets mSI3RestOctets;
 
 	public:
 
 	L3SystemInformationType3()
-		:L3RRMessageNRO()//,
-		//mHaveRestOctets(gConfig.defines("GSM.SI3RO"))
+		:L3RRMessageRO()
 	{ }
 
 	void CI(const L3CellIdentity& wCI) { mCI = wCI; }
@@ -367,17 +364,8 @@ class L3SystemInformationType3 : public L3RRMessageNRO {
 
 	int MTI() const { return (int)SystemInformationType3; }
 
-	size_t l2BodyLength() const { 
-		if (gConfig.getNum("GSM.GPRS")){
-			return 20;
-		}
-		else {
-			return 16;
-		}
-	}
-	//size_t l2BodyLength() const { return 16; }
-	//size_t restOctetsLength() const { return mRestOctets.lengthV(); }
-	//size_t restOctetsLength() const { return 4; }
+	size_t l2BodyLength() const { return 16;}
+	size_t restOctetsLength() const { return 4; }
 	void writeBody(L3Frame &dest, size_t &wp) const;
 	void text(std::ostream&) const;
 };
@@ -493,7 +481,7 @@ class L3SystemInformationType6 : public L3RRMessageNRO {
 	System Information Type 13, GSM 04.08 9.1.43a
 	- SI 13 Rest Octets 10.5.2.37b M V 20
 */
-class L3SystemInformationType13 : public L3RRMessageNRO {
+class L3SystemInformationType13 : public L3RRMessageRO {
 
 	private:
 
@@ -501,14 +489,15 @@ class L3SystemInformationType13 : public L3RRMessageNRO {
 
 	public:
 
-	L3SystemInformationType13():L3RRMessageNRO() {}
+	L3SystemInformationType13():L3RRMessageRO() {}
  
 	void SI13RestOctets(const L3SI13RestOctets& wSI13RestOctets)
 		{ mSI13RestOctets = wSI13RestOctets; }
 
 	int MTI() const { return (int)SystemInformationType13; }
 
-	size_t l2BodyLength() const { return 20; }
+	size_t l2BodyLength() const { return 0; }
+	size_t restOctetsLength() const { return 20; }
 	void writeBody(L3Frame &dest, size_t &wp) const;
 	void text(std::ostream&) const;
 };

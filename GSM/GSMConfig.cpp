@@ -122,7 +122,8 @@ void GSMConfig::regenerateBeacon()
 	LOG(INFO) << SI13;
 	L3Frame SI13L3(UNIT_DATA);
 	SI13.write(SI13L3);
-	L2Header SI13Header(L2Length(SI13L3.L2Length()));
+	// set pseudolength = 0
+	L2Header SI13Header(L2Length(0));
 	mSI13Frame = L2Frame(SI13Header,SI13L3);
 	LOG(DEBUG) << "mSI13Frame " << mSI13Frame;
 /*
