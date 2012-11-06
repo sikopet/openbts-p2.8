@@ -200,32 +200,6 @@ ostream& GSM::operator<<(ostream& os, const RLCMACBlock& block)
 	return os;
 }
 
-GSM::RLCMACBlock* GSM::parseRLCMAC(const GSM::RLCMACFrame& source)
-{
-	if (source.size()==0) return NULL;
-
-	LOG(DEBUG) << "GPRS::parseRLCMAC "<< source;
-	RLCMACPayloadType payloadType = source.payloadType();
-	
-	RLCMACBlock *retVal = NULL;
-	switch (payloadType) {
-		case RLCMACDataBlockType:
-			retVal = parseRLCMACDataBlock(source);
-			break;
-		case RLCMACControlBlockType1:
-			//TODO: parse RLCMACControlBlockType1
-			break;
-		case RLCMACControlBlockType2:
-			//TODO: parse RLCMACControlBlockType2
-			break;
-		default:
-			LOG(NOTICE) << "RLC/MAC parsing failed for unsupported block Payload Type" << payloadType;
-			return NULL;
-	}
-
-	if (retVal) LOG(DEBUG) << "RLCMAC recv " << *retVal;
-	return retVal;
-}
 
 
 void L3ProtocolElement::parseLV(const L3Frame& source, size_t &rp)

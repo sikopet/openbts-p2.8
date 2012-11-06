@@ -595,16 +595,6 @@ void L3IARestOctets::text(ostream& os) const
 	os << " TBF_starting_time=" << mTBF_starting_time;
 }
 
-void L3IARestOctetsDownlinkAssignment::writeV(L3Frame& dest, size_t &wp) const
-{
-	for(unsigned i = 0; i < 8; i++)
-		dest.writeField(wp, mIARestOctets[i], 8);
-}
-void L3IARestOctetsDownlinkAssignment::text(ostream& os) const
-{
-	os << " TBF_starting_time=" << mTBF_starting_time;
-}
-
 void L3RRCause::writeV( L3Frame &dest, size_t &wp ) const
 {
 	dest.writeField(wp, mCauseValue, 8);	

@@ -224,7 +224,6 @@ void AccessGrantResponder(
 		return;
 	}
 
-
 	// Nothing available?
 	if (!LCH) {
 		// Rejection, GSM 04.08 3.3.1.1.3.2.
@@ -246,12 +245,9 @@ void AccessGrantResponder(
 	// Create the ImmediateAssignment message.
 	// Woot!! We got a channel! Thanks to Legba!
 	const L3ImmediateAssignment assign(
-		gprsRACH,
-		L3RequestReference(RA,when),
-		LCH->channelDescription(),
-		gBTS.time(), //We use it for TBF starting time.
-		L3DedicatedModeOrTBF(0,0,gprsRACH?1:0),
-		L3TimingAdvance(initialTA)
+	L3RequestReference(RA,when),
+	LCH->channelDescription(),
+	L3TimingAdvance(initialTA)
 	);
 	LOG(INFO) << "sending " << assign;
 	AGCH->send(assign);

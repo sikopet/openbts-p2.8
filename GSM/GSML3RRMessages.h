@@ -503,49 +503,33 @@ class L3SystemInformationType13 : public L3RRMessageRO {
 };
 
 
+
 /** Immediate Assignment, GSM 04.08 9.1.18 */
 class L3ImmediateAssignment : public L3RRMessageNRO {
 
 private:
 
-	bool mGPRS;
 	L3PageMode mPageMode;
 	L3DedicatedModeOrTBF mDedicatedModeOrTBF;
 	L3RequestReference mRequestReference;
 	L3ChannelDescription mChannelDescription;  
 	L3TimingAdvance mTimingAdvance;
-	L3IARestOctets mIARestOctets;
-	L3IARestOctetsDownlinkAssignment mRestOctetsDownlinkAssignment;
 
 public:
 
 
 	L3ImmediateAssignment(
-				bool wGPRS,
 				const L3RequestReference& wRequestReference,
 				const L3ChannelDescription& wChannelDescription,
-				Time wTBF_starting_time,
-				L3DedicatedModeOrTBF wDedicatedModeOrTBF,
-				const L3TimingAdvance& wTimingAdvance = L3TimingAdvance(0),
-				unsigned char* wIARestOctetsDownlink = NULL)
+				const L3TimingAdvance& wTimingAdvance = L3TimingAdvance(0))
 		:L3RRMessageNRO(),
-		mGPRS(wGPRS),
-		mDedicatedModeOrTBF(wDedicatedModeOrTBF),
 		mRequestReference(wRequestReference),
 		mChannelDescription(wChannelDescription),
-		mTimingAdvance(wTimingAdvance),
-		mIARestOctets(wTBF_starting_time),
-		mRestOctetsDownlinkAssignment(wTBF_starting_time, wIARestOctetsDownlink)
+		mTimingAdvance(wTimingAdvance)
 	{}
 
 	int MTI() const { return (int)ImmediateAssignment; }
-	size_t l2BodyLength() const {
-		if (mGPRS) { 
-			return 20;
-		} else {
-			return 9;
-		}
-	}
+	size_t l2BodyLength() const { return 9; }
 
 	void writeBody(L3Frame &dest, size_t &wp) const;
 	void text(std::ostream&) const;
@@ -903,69 +887,6 @@ class L3ClassmarkChange : public L3RRMessageNRO {
 	void text(std::ostream&) const;
 
 	const L3MobileStationClassmark2& classmark() const { return mClassmark; }
-};
-
-class RLCMACDataBlock : public RLCMACBlock {
-
-	protected:
-
-	unsigned mCountdownValue;
-	unsigned mSI;
-	unsigned mR;
-	unsigned mSpare;
-	unsigned mPI;
-	unsigned mTFI;
-	unsigned mTI;
-	unsigned mBSN; 
-	unsigned mE;
-	unsigned mPFI;	
-	uint64_t mTLLI;
-
-	public:
-
-
-	RLCMACDataBlock():RLCMACBlock() { } 
-	
-	size_t bodyLength() const;
-	unsigned CV() const { return mCountdownValue; }
-	unsigned TFI() const { return mTFI; }
-	uint64_t TLLI() { return mTLLI; }
-	protected:
-	void writeBody(RLCMACFrame&, unsigned int&) const {}
-	void parseBody(const RLCMACFrame&, unsigned int&);
-	RLCMACPayloadType payloadType() const { return RLCMACDataBlockType;}
-	void text(std::ostream&) const;
-
-};
-
-RLCMACDataBlock* parseRLCMACDataBlock(const RLCMACFrame& source);
-
-
-
-
-class RLCMACControlBlock : public RLCMACBlock {
-
-	protected:
-
-	unsigned mTFI;
-	uint64_t mTLLI;
-
-	public:
-
-
-	RLCMACControlBlock(unsigned wTFI, uint64_t wTLLI)
-		:RLCMACBlock(),
-		mTFI(wTFI),
-		mTLLI(wTLLI)
-	{} 
-	
-	size_t bodyLength() const;
-	protected:
-	void writeBody(RLCMACFrame&, unsigned int&) const;
-	void parseBody(const RLCMACFrame&, unsigned int&) {}
-	RLCMACPayloadType payloadType() const { return RLCMACControlBlockType1;}
-	void text(std::ostream&) const;
-
 };
 
 //std::ostream& operator<<(std::ostream& os, L3RRMessage::MessageType);
