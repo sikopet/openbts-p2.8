@@ -335,10 +335,11 @@ void *GSM::SACCHLogicalChannelServiceLoopAdapter(SACCHLogicalChannel* chan)
 }
 
 PDTCHLogicalChannel::PDTCHLogicalChannel(
+		unsigned wCN,
 		unsigned wTN,
 		const MappingPair& wMapping)
 {
-	mPDTCHL1 = new PDTCHL1FEC(wTN,wMapping);
+	mPDTCHL1 = new PDTCHL1FEC(wCN,wTN,wMapping);
 	mL1 = mPDTCHL1;
 	// SAP1
 	mL2[1] = new SACCHL2(1,1);

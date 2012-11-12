@@ -414,6 +414,7 @@ class PDTCHLogicalChannel : public LogicalChannel {
 	public:
 
 	PDTCHLogicalChannel(
+		unsigned wCN,
 		unsigned wTN,
 		const MappingPair& wMapping);
 

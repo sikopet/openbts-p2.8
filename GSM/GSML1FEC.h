@@ -658,10 +658,11 @@ class PDTCHL1Decoder : public XCCHL1Decoder {
 	public:
 
 	PDTCHL1Decoder(
+		unsigned wCN,
 		unsigned wTN,
 		const TDMAMapping& wMapping,
 		PDTCHL1FEC *wParent)
-		:XCCHL1Decoder(wTN,wMapping,(L1FEC*)wParent),
+		:XCCHL1Decoder(wCN,wTN,wMapping,(L1FEC*)wParent),
 		mPDTCHParent(wParent)
 	{ }
 
@@ -1102,8 +1103,8 @@ class PDTCHL1Encoder : public XCCHL1Encoder {
 
 	public:
 
-	PDTCHL1Encoder(unsigned wTN, const TDMAMapping& wMapping, PDTCHL1FEC *wParent)
-		:XCCHL1Encoder(wTN,wMapping,(L1FEC*)wParent),
+	PDTCHL1Encoder(unsigned wCN, unsigned wTN, const TDMAMapping& wMapping, PDTCHL1FEC *wParent)
+		:XCCHL1Encoder(wCN,wTN,wMapping,(L1FEC*)wParent),
 		mPDTCHParent(wParent)
 	{}
 
@@ -1298,13 +1299,14 @@ class PDTCHL1FEC : public L1FEC {
 	public:
  
 	PDTCHL1FEC(
+		unsigned wCN,
 		unsigned wTN,
 		const MappingPair& wMapping)
 		:L1FEC()
 	{
-		mPDTCHEncoder = new PDTCHL1Encoder(wTN,wMapping.downlink(),this);
+		mPDTCHEncoder = new PDTCHL1Encoder(wCN,wTN,wMapping.downlink(),this);
 		mEncoder = mPDTCHEncoder;
-		mPDTCHDecoder = new PDTCHL1Decoder(wTN,wMapping.uplink(),this);
+		mPDTCHDecoder = new PDTCHL1Decoder(wCN,wTN,wMapping.uplink(),this);
 		mDecoder = mPDTCHDecoder;
 	}
 

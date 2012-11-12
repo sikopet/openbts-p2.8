@@ -474,10 +474,10 @@ int main(int argc, char *argv[])
 
 	//GPRS
 	if (gConfig.getNum("GSM.GPRS")) {
-		radio->setSlot(gConfig.getNum("GPRS.TS"),8);
+		C0radio->setSlot(gConfig.getNum("GPRS.TS"),8);
 		for (int i=0; i<1; i++) {
-			PDTCHLogicalChannel* PDTCH = new PDTCHLogicalChannel(gConfig.getNum("GPRS.TS"),gPDTCH_FPair);
-			PDTCH->downstream(radio);
+			PDTCHLogicalChannel* PDTCH = new PDTCHLogicalChannel(0,gConfig.getNum("GPRS.TS"),gPDTCH_FPair);
+			PDTCH->downstream(C0radio);
 			PDTCH->open();
 			gBTS.addPDTCH(PDTCH);
 			Thread* threadGb = new Thread;
