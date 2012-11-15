@@ -223,7 +223,7 @@ void Control::txPhConnectInd()
 	prim->u.info_ind.n3105 = gConfig.getNum("GPRS.T3105");
 	
 	/* RAI */
-	prim->u.info_ind.bsic = gConfig.getNum("GSM.Identity.BSIC.BCC");
+	prim->u.info_ind.bsic = (gConfig.getNum("GSM.Identity.BSIC.NCC") << 3) | gConfig.getNum("GSM.Identity.BSIC.BCC");
 	prim->u.info_ind.mcc = gConfig.getNum("GPRS.MCC");
 	prim->u.info_ind.mnc = gConfig.getNum("GPRS.MNC");
 	prim->u.info_ind.lac = gConfig.getNum("GSM.Identity.LAC");
@@ -434,8 +434,6 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 
 	char buf[MAX_UDP_LENGTH];
 
-	unsigned len = 6;
-	size_t readIndex = 0;
 	size_t l2Len = 0;
 
 	// Send to PCU PhConnectInd primitive.
@@ -472,7 +470,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				}
 				L3Frame *l3 = new L3Frame(msg->tail(8), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] AGCH: " << *l3);
-				l2Len = msg->readField(readIndex, len);
+				l2Len = msg->peekField(0, 6);
 				l3->L2Length(l2Len);
 				AGCH->send(l3);
 				txPhDataIndCnf(*msg, gBTS.time());
@@ -482,8 +480,7 @@ void Control::GPRSReader(LogicalChannel *PDCH)
 				L3Frame *msg1 = new L3Frame(msg->tail(8*4), UNIT_DATA);
 				L3Frame *msg2 = new L3Frame(msg->tail(8*4), UNIT_DATA);
 				COUT("RX: [ BTS <- PCU ] PCH: " << *msg1);
-				readIndex = 24;
-				l2Len = msg->readField(readIndex, len);
+				l2Len = msg->peekField(8*3, 6);
 				msg1->L2Length(l2Len);
 				msg2->L2Length(l2Len);
 				// HACK -- We send every page twice.
