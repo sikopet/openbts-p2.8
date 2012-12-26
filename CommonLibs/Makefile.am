@@ -36,11 +36,7 @@ libcommon_la_SOURCES = \
 	sqlite3util.cpp \
 	Logger.cpp \
 	URLEncode.cpp \
-	Reporting.cpp \
-	Configuration.cpp \
-	csn1.cpp \
-	gsm_rlcmac.cpp \
-	Configuration.cpp
+	Reporting.cpp
 
 noinst_PROGRAMS = \
 	BitVectorTest \
@@ -69,9 +65,7 @@ noinst_HEADERS = \
 	Reporting.h \
 	F16.h \
 	Logger.h \
-	sqlite3util.h \
-	csn1.h \
-	gsm_rlcmac.h
+	sqlite3util.h
 
 BitVectorTest_SOURCES = BitVectorTest.cpp
 BitVectorTest_LDADD = libcommon.la
