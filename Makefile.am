@@ -36,6 +36,7 @@ _SUBDIRS = \
 	CLI \
 	SIP \
 	GSM \
+	GPRS \
 	SMS \
 	TransceiverRAD1 \
 	TRXManager \

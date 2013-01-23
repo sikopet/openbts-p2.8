@@ -44,7 +44,7 @@ ReportingTable gReports(gConfig.getStr("Control.Reporting.StatsTable","/var/log/
 
 #include <ControlCommon.h>
 #include <TransactionTable.h>
-
+#include <GPRSL1Interface.h>
 #include <SIPInterface.h>
 #include <Globals.h>
 
@@ -481,7 +481,7 @@ int main(int argc, char *argv[])
 			PDTCH->open();
 			gBTS.addPDTCH(PDTCH);
 			Thread* threadGb = new Thread;
-			threadGb->start((void*(*)(void*))Control::GPRSReader,PDTCH);
+			threadGb->start((void*(*)(void*))GPRS::GPRSReader,PDTCH);
 		}
 	}
 

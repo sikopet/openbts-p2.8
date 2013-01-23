@@ -1,6 +1,6 @@
-/* gprs_rlcmac.h
+/* GPRSL1Interface.h
  *
- * Copyright (C) 2012 Ivan Klyuchnikov
+ * Copyright (C) 2013 Ivan Klyuchnikov
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,12 +17,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#ifndef GSML1PRIM_H
-#define GSML1PRIM_H
+#ifndef GPRSL1INTERFACE_H
+#define GPRSL1INTERFACE_H
 
-#define PCU_IF_VERSION 0x04
+#include <GSMTransfer.h>
 
 extern "C" {
+#define PCU_IF_VERSION 0x04
+
 /* msg_type */
 #define PCU_IF_MSG_DATA_REQ	0x00	/* send data to given channel */
 #define PCU_IF_MSG_DATA_CNF	0x01	/* confirm (e.g. transmission on PCH) */
@@ -171,4 +173,13 @@ struct gsm_pcu_if {
 
 }
 
-#endif
+namespace GPRS {
+
+void GPRSReader(GSM::LogicalChannel *PDCH);
+void txPhRaInd(unsigned ra, int Fn, unsigned ta);
+void txPhReadyToSendInd(unsigned Tn, int Fn);
+void txPhDataInd(const GSM::RLCMACFrame *frame, GSM::Time readTime);
+
+}
+
+#endif // GPRSL1INTERFACE_H

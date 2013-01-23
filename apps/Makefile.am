@@ -34,6 +34,7 @@ OpenBTS_LDADD = \
 	$(CLI_LA) \
 	$(SIP_LA) \
 	$(GSM_LA) \
+	$(GPRS_LA) \
 	$(TRX_LA) \
 	$(GLOBALS_LA) \
 	$(CONTROL_LA) \

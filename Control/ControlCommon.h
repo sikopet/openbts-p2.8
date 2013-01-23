@@ -52,8 +52,6 @@
 
 namespace GSM {
 class L3Message;
-class RLCMACBlock;
-class RLCMACFrame;
 class LogicalChannel;
 class SDCCHLogicalChannel;
 class SACCHLogicalChannel;
@@ -120,19 +118,7 @@ GSM::L3Message* getMessage(GSM::LogicalChannel* LCH, unsigned SAPI=0);
 void FACCHDispatcher(GSM::TCHFACCHLogicalChannel *TCHFACCH);
 void SDCCHDispatcher(GSM::SDCCHLogicalChannel *SDCCH);
 void DCCHDispatcher(GSM::LogicalChannel *DCCH);
-void PDCHDispatcher(GSM::LogicalChannel *PDCH);
 //@}
-
-/**@name Socket for GPRS RLC/MAC. */
-//@{
-void GPRSReader(GSM::LogicalChannel *PDCH);
-void txPhConnectInd();
-void txPhRaInd(unsigned ra, int Fn, unsigned ta);
-void txPhReadyToSendInd(unsigned Tn, int Fn);
-void txMphTimeInd();
-void txPhDataInd(const GSM::RLCMACFrame *frame, GSM::Time readTime);
-//@}
-
 
 /**
 	Resolve a mobile ID to an IMSI.

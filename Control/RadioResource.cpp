@@ -39,6 +39,7 @@
 #include "SMSControl.h"
 #include "CallControl.h"
 
+#include <GPRSL1Interface.h>
 #include <GSMLogicalChannel.h>
 #include <GSMConfig.h>
 
@@ -220,7 +221,7 @@ void AccessGrantResponder(
 	if (initialTA>62) initialTA=62;
 	
 	if (gprsRACH) {
-		Control::txPhRaInd(RA, when.FN(), (unsigned)initialTA);
+		GPRS::txPhRaInd(RA, when.FN(), (unsigned)initialTA);
 		return;
 	}
 

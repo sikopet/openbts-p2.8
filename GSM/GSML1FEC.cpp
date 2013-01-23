@@ -32,6 +32,7 @@
 #include "GSMTDMA.h"
 #include "GSMTAPDump.h"
 #include <ControlCommon.h>
+#include <GPRSL1Interface.h>
 #include <Globals.h>
 #include <TRXManager.h>
 #include <Logger.h>
@@ -761,7 +762,7 @@ void PDTCHL1Decoder::writeLowSide(const RxBurst& burst)
 void PDTCHL1Decoder::handleGoodFrame()
 {
 	RLCMACFrame* frame = new RLCMACFrame(mD);
-	Control::txPhDataInd(frame, mReadTime);
+	GPRS::txPhDataInd(frame, mReadTime);
 }
 
 
@@ -1662,7 +1663,7 @@ void PDTCHL1Encoder::dispatch()
 		rollForward();
 	}
 	// Send phReadyToSendInd primitive to gprs PCU
-	Control::txPhReadyToSendInd(mNextWriteTime.TN(), mNextWriteTime.FN());
+	GPRS::txPhReadyToSendInd(mNextWriteTime.TN(), mNextWriteTime.FN());
 }
 
 SACCHL1Encoder* SACCHL1Decoder::SACCHSibling() 

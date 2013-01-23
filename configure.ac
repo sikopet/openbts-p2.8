@@ -147,6 +147,7 @@ AC_CONFIG_FILES([\
     Control/Makefile \
     GSM/Makefile \
     SIP/Makefile \
+    GPRS/Makefile \
     SMS/Makefile \
     TransceiverRAD1/Makefile \
     TRXManager/Makefile \
