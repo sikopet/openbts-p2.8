@@ -26,8 +26,8 @@
 
 using namespace GSM;
 
-// TODO: We should take ports and IP from config.
-UDPSocket RLCMACSocket(5934, "127.0.0.1", 5944);
+UDPSocket RLCMACSocket(gConfig.getNum("GPRS.Local.Port"),
+	gConfig.getStr("GPRS.PCU.IP").c_str(), gConfig.getNum("GPRS.PCU.Port"));
 
 void txPhConnectInd()
 {
@@ -79,7 +79,7 @@ void txPhConnectInd()
 	struct sockaddr_in dest;
 	dest.sin_family = AF_INET;
 	dest.sin_port = htons(gConfig.getNum("GPRS.NSVC_RPORT"));
-	inet_aton("127.0.0.1", &dest.sin_addr);
+	inet_aton(gConfig.getStr("GPRS.SGSN.IP").c_str(), &dest.sin_addr);
 	prim->u.info_ind.remote_ip[0] = ntohl(dest.sin_addr.s_addr);
 
 	ofs = sizeof(*prim);

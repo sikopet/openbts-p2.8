@@ -119,6 +119,10 @@ INSERT INTO "CONFIG" VALUES('SMS.DefaultDestSMSC','0000',0,0,'Use this to fill i
 INSERT INTO "CONFIG" VALUES('SMS.FakeSrcSMSC','0000',0,0,'Use this to fill in L4 SMSC address in SMS delivery.');
 INSERT INTO "CONFIG" VALUES('SMS.MIMEType','application/vnd.3gpp.sms',0,0,'This is the MIME Type that OpenBTS will use for RFC-3428 SIP MESSAGE payloads.  Valid values are "application/vnd.3gpp.sms" and "text/plain".');
 INSERT INTO "CONFIG" VALUES('GPRS.TS','7',0,0,'Timeslot for GPRS channels. You should check GSM Channel configuration, timeslot for GPRS must be free.');
+INSERT INTO "CONFIG" VALUES('GPRS.Local.Port','5934',0,0,'GPRS local port');
+INSERT INTO "CONFIG" VALUES('GPRS.PCU.IP','127.0.0.1',0,0,'GPRS PCU ip address');
+INSERT INTO "CONFIG" VALUES('GPRS.PCU.Port','5944',0,0,'GPRS PCU port');
+INSERT INTO "CONFIG" VALUES('GPRS.SGSN.IP','127.0.0.1',0,0,'GPRS SGSN ip address');
 INSERT INTO "CONFIG" VALUES('GPRS.MCC','001',0,0,'GPRS MCC');
 INSERT INTO "CONFIG" VALUES('GPRS.MNC','01',0,0,'GPRS MNC');
 INSERT INTO "CONFIG" VALUES('GPRS.RAC','0',0,0,'RAC');
