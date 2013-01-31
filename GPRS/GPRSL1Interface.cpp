@@ -26,12 +26,11 @@
 
 using namespace GSM;
 
-UDPSocket RLCMACSocket(gConfig.getNum("GPRS.Local.Port"),
-	gConfig.getStr("GPRS.PCU.IP").c_str(), gConfig.getNum("GPRS.PCU.Port"));
+UDPSocket RLCMACSocket;
 
 void txPhConnectInd()
 {
-	char buffer[MAX_UDP_LENGTH];
+	char buffer[MAX_UDP_LENGTH] = {'\0'};
 	int ofs = 0;
 	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
@@ -42,9 +41,14 @@ void txPhConnectInd()
 	prim->u.info_ind.flags |= PCU_IF_FLAG_ACTIVE;
 	prim->u.info_ind.flags |= PCU_IF_FLAG_CS1;
 	prim->u.info_ind.trx[0].arfcn  = gConfig.getNum("GSM.Radio.C0");
-	prim->u.info_ind.trx[0].pdch_mask = 0x80;
-	prim->u.info_ind.trx[0].tsc[7] = gConfig.getNum("GSM.Identity.BSIC.BCC");
-	
+	vector<unsigned> ts = gConfig.getVector("GPRS.TS");
+	uint8_t pdch_mask = 0;
+	for (int i=0; i<ts.size(); i++) {
+		pdch_mask = pdch_mask | (1 << ts[i]);
+		prim->u.info_ind.trx[0].tsc[ts[i]] = gConfig.getNum("GSM.Identity.BSIC.BCC");
+	}
+	prim->u.info_ind.trx[0].pdch_mask = pdch_mask;
+
 	prim->u.info_ind.initial_cs = gConfig.getNum("GPRS.INITIAL_CS");
 
 	prim->u.info_ind.t3142 = gConfig.getNum("GPRS.T3142");
@@ -85,7 +89,7 @@ void txPhConnectInd()
 	ofs = sizeof(*prim);
 
 	COUT("TX: [ BTS -> PCU ] PhConnectInd: ARFCN: " << gConfig.getNum("GSM.Radio.C0")
-		<<" TN: " << gConfig.getNum("GPRS.TS") << " TSC: " << gConfig.getNum("GSM.Identity.BSIC.BCC"));
+		<<" TN: " << gConfig.getStr("GPRS.TS") << " TSC: " << gConfig.getNum("GSM.Identity.BSIC.BCC"));
 	RLCMACSocket.write(buffer, ofs);
 }
 
@@ -161,7 +165,7 @@ void GPRS::txPhReadyToSendInd(unsigned Tn, int Fn)
 
 
 
-void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime)
+void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime, unsigned ts_nr)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
@@ -195,13 +199,13 @@ void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime)
 
 	prim->u.data_ind.block_nr = bn;
 	prim->u.data_ind.trx_nr = 0;
-	prim->u.data_ind.ts_nr = gConfig.getNum("GPRS.TS");
+	prim->u.data_ind.ts_nr = ts_nr;
 
 	ofs = sizeof(*prim);
 
 	COUT("TX: [ BTS -> PCU ] PhDataInd:" << *frame);
-	gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), gConfig.getNum("GPRS.TS"), Fn,
-												GSM::PDCH, false, true, *frame);
+	gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), ts_nr, Fn,
+								GSM::PDCH, false, true, *frame);
 	RLCMACSocket.write(buffer, ofs);
 	txMphTimeInd();
 }
@@ -240,7 +244,7 @@ void txPhDataIndCnf(const BitVector &frame, GSM::Time readTime)
 
 	prim->u.data_ind.block_nr = bn;
 	prim->u.data_ind.trx_nr = 0;
-	prim->u.data_ind.ts_nr = gConfig.getNum("GPRS.TS");
+	prim->u.data_ind.ts_nr = 0;
 
 	ofs = sizeof(*prim);
 
@@ -248,7 +252,7 @@ void txPhDataIndCnf(const BitVector &frame, GSM::Time readTime)
 	txMphTimeInd();
 }
 
-BitVector* readL1Prim(unsigned char* buffer, int *sapi)
+BitVector* readL1Prim(unsigned char* buffer, int *sapi, int *ts)
 {
 	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
@@ -256,6 +260,7 @@ BitVector* readL1Prim(unsigned char* buffer, int *sapi)
 	case PCU_IF_MSG_DATA_REQ:
 	{
 		*sapi = prim->u.data_req.sapi;
+		*ts = prim->u.data_req.ts_nr;
 		BitVector * msg = new BitVector(prim->u.data_req.len*8);
 		msg->unpack((const unsigned char*)prim->u.data_req.data);
 		return msg;
@@ -264,8 +269,12 @@ BitVector* readL1Prim(unsigned char* buffer, int *sapi)
 	return NULL;
 }
 
-void GPRS::GPRSReader(LogicalChannel *PDCH)
+void GPRS::GPRSReader(LogicalChannel **PDCH)
 {
+	RLCMACSocket.open(gConfig.getNum("GPRS.Local.Port"));
+	RLCMACSocket.destination(gConfig.getNum("GPRS.PCU.Port"),
+						gConfig.getStr("GPRS.PCU.IP").c_str());
+
 	RLCMACSocket.nonblocking();
 
 	char buf[MAX_UDP_LENGTH];
@@ -282,7 +291,8 @@ void GPRS::GPRSReader(LogicalChannel *PDCH)
 		if (count>0)
 		{
 			int sapi;
-			BitVector *msg = readL1Prim((unsigned char*) buf, &sapi);
+			int ts;
+			BitVector *msg = readL1Prim((unsigned char*) buf, &sapi, &ts);
 			if (!msg)
 			{
 				delete msg;
@@ -291,7 +301,7 @@ void GPRS::GPRSReader(LogicalChannel *PDCH)
 			if (sapi == PCU_IF_SAPI_PDTCH)
 			{
 				RLCMACFrame *frame = new RLCMACFrame(*msg);
-				((PDTCHLogicalChannel*)PDCH)->sendRLCMAC(frame);
+				((PDTCHLogicalChannel*)PDCH[ts])->sendRLCMAC(frame);
 			}
 			else if (sapi == PCU_IF_SAPI_AGCH)
 			{

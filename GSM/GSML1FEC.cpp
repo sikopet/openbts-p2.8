@@ -762,7 +762,7 @@ void PDTCHL1Decoder::writeLowSide(const RxBurst& burst)
 void PDTCHL1Decoder::handleGoodFrame()
 {
 	RLCMACFrame* frame = new RLCMACFrame(mD);
-	GPRS::txPhDataInd(frame, mReadTime);
+	GPRS::txPhDataInd(frame, mReadTime, mTN);
 }
 
 
@@ -1621,8 +1621,8 @@ void PDTCHL1Encoder::dispatch()
 		OBJLOG(NOTICE) <<"PDTCH Encoder " << *frame;
 		if (frame->peekField(0,16) != 0x4794)
 		{
-			gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), gConfig.getNum("GPRS.TS"),
-								mNextWriteTime.FN(), GSM::PDCH, false, false, *frame);
+			gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), mTN,
+				mNextWriteTime.FN(), GSM::PDCH, false, false, *frame);
 		}
 		frame->LSB8MSB();
 		frame->copyTo(mU);

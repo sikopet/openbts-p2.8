@@ -175,10 +175,10 @@ struct gsm_pcu_if {
 
 namespace GPRS {
 
-void GPRSReader(GSM::LogicalChannel *PDCH);
+void GPRSReader(GSM::LogicalChannel **PDCH);
 void txPhRaInd(unsigned ra, int Fn, unsigned ta);
 void txPhReadyToSendInd(unsigned Tn, int Fn);
-void txPhDataInd(const GSM::RLCMACFrame *frame, GSM::Time readTime);
+void txPhDataInd(const GSM::RLCMACFrame *frame, GSM::Time readTime, unsigned ts_nr);
 
 }
 

@@ -474,15 +474,21 @@ int main(int argc, char *argv[])
 
 	//GPRS
 	if (gConfig.getNum("GSM.GPRS")) {
-		C0radio->setSlot(gConfig.getNum("GPRS.TS"),8);
-		for (int i=0; i<1; i++) {
-			PDTCHLogicalChannel* PDTCH = new PDTCHLogicalChannel(0,gConfig.getNum("GPRS.TS"),gPDTCH_FPair);
-			PDTCH->downstream(C0radio);
-			PDTCH->open();
-			gBTS.addPDTCH(PDTCH);
-			Thread* threadGb = new Thread;
-			threadGb->start((void*(*)(void*))GPRS::GPRSReader,PDTCH);
+		PDTCHLogicalChannel* PDTCH[8];
+		vector<unsigned> gprsTS = gConfig.getVector("GPRS.TS");
+
+		for (int i=0; i<gprsTS.size(); i++) {
+			C0radio->setSlot(gprsTS[i],8);
 		}
+
+		for (int i=0; i<gprsTS.size(); i++) {
+			PDTCH[gprsTS[i]] = new PDTCHLogicalChannel(0,gprsTS[i],gPDTCH_FPair);
+			PDTCH[gprsTS[i]]->downstream(C0radio);
+			PDTCH[gprsTS[i]]->open();
+			gBTS.addPDTCH(PDTCH[gprsTS[i]]);
+		}
+		Thread* threadGb = new Thread;
+		threadGb->start((void*(*)(void*))GPRS::GPRSReader,PDTCH);
 	}
 
 	/*
