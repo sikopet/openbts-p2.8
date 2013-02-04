@@ -62,8 +62,8 @@ void txPhConnectInd()
 	
 	/* RAI */
 	prim->u.info_ind.bsic = (gConfig.getNum("GSM.Identity.BSIC.NCC") << 3) | gConfig.getNum("GSM.Identity.BSIC.BCC");
-	prim->u.info_ind.mcc = gConfig.getNum("GPRS.MCC");
-	prim->u.info_ind.mnc = gConfig.getNum("GPRS.MNC");
+	prim->u.info_ind.mcc = strtol(gConfig.getStr("GPRS.MCC").c_str(), NULL, 16);
+	prim->u.info_ind.mnc = strtol(gConfig.getStr("GPRS.MNC").c_str(), NULL, 16);
 	prim->u.info_ind.lac = gConfig.getNum("GSM.Identity.LAC");
 	prim->u.info_ind.rac = gConfig.getNum("GPRS.RAC");
 	/* NSE */
