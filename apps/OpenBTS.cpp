@@ -478,7 +478,7 @@ int main(int argc, char *argv[])
 		vector<unsigned> gprsTS = gConfig.getVector("GPRS.TS");
 
 		for (int i=0; i<gprsTS.size(); i++) {
-			C0radio->setSlot(gprsTS[i],8);
+			C0radio->setSlot(gprsTS[i],13);
 		}
 
 		for (int i=0; i<gprsTS.size(); i++) {

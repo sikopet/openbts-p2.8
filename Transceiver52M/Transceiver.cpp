@@ -214,7 +214,7 @@ void Transceiver::setModulus(int timeslot)
   case VII:
     fillerModulus[timeslot] = 102;
     break;
-  case VIII:
+  case XIII:
     fillerModulus[timeslot] = 52;
     break;
   default:
@@ -274,7 +274,7 @@ Transceiver::CorrType Transceiver::expectedCorrType(GSM::Time currTime)
     else
       return TSC;
     break;
-  case VIII: { 
+  case XIII: { 
     int mod52 = burstFN % 52;
     if ((mod52 == 12) || (mod52 == 38))
       return RACH;
