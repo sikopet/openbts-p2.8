@@ -88,8 +88,8 @@ void txPhConnectInd()
 
 	ofs = sizeof(*prim);
 
-	COUT("TX: [ BTS -> PCU ] PhConnectInd: ARFCN: " << gConfig.getNum("GSM.Radio.C0")
-		<<" TN: " << gConfig.getStr("GPRS.TS") << " TSC: " << gConfig.getNum("GSM.Identity.BSIC.BCC"));
+	LOG(NOTICE) << "TX:[BTS->PCU] PhConnectInd: ARFCN:" << gConfig.getNum("GSM.Radio.C0")
+		<<" TN:" << gConfig.getStr("GPRS.TS") << " TSC:" << gConfig.getNum("GSM.Identity.BSIC.BCC");
 	RLCMACSocket.write(buffer, ofs);
 }
 
@@ -108,7 +108,7 @@ void GPRS::txPhRaInd(unsigned ra, int Fn, unsigned ta)
 	prim->u.rach_ind.arfcn = gConfig.getNum("GSM.Radio.C0");
 	ofs = sizeof(*prim);
 
-	COUT("TX: [ BTS -> PCU ] PhRaInd: RA: " << ra <<" FN: " << Fn << " TA: " << ta);
+	LOG(NOTICE) << "TX:[BTS->PCU] PhRaInd: RA:" << ra <<" FN:" << Fn << " TA:" << ta;
 	RLCMACSocket.write(buffer, ofs);
 }
 
@@ -123,6 +123,7 @@ void txMphTimeInd()
 	prim->u.time_ind.fn = gBTS.time().FN();
 	ofs = sizeof(*prim);
 
+	LOG(DEBUG) <<"TX:[BTS->PCU] MphTimeInd FN:" << prim->u.time_ind.fn;
 	RLCMACSocket.write(buffer, ofs);
 }
 
@@ -159,6 +160,7 @@ void GPRS::txPhReadyToSendInd(unsigned Tn, int Fn)
 
 	ofs = sizeof(*prim);
 
+	LOG(DEBUG) << "TX:[BTS->PCU] PhReadyToSendInd: TS:" << Tn << " FN:" << Fn;
 	RLCMACSocket.write(buffer, ofs);
 	txMphTimeInd();
 }
@@ -203,7 +205,8 @@ void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime, unsigned ts
 
 	ofs = sizeof(*prim);
 
-	COUT("TX: [ BTS -> PCU ] PhDataInd:" << *frame);
+	LOG(NOTICE) << "TX:[BTS->PCU ] PhDataInd TS:" << ts_nr
+						 << " FN:" << Fn << " DATA:" << *frame;
 	gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), ts_nr, Fn,
 								GSM::PDCH, false, true, *frame);
 	RLCMACSocket.write(buffer, ofs);
@@ -248,11 +251,13 @@ void txPhDataIndCnf(const BitVector &frame, GSM::Time readTime)
 
 	ofs = sizeof(*prim);
 
+	LOG(NOTICE) << "TX:[BTS->PCU] PhDataIndCnf TS:"
+				<< prim->u.data_ind.ts_nr << " FN:" << Fn;
 	RLCMACSocket.write(buffer, ofs);
 	txMphTimeInd();
 }
 
-BitVector* readL1Prim(unsigned char* buffer, int *sapi, int *ts)
+BitVector* readL1Prim(unsigned char* buffer, int *sapi, int *ts, int *fn)
 {
 	struct gsm_pcu_if *prim = (struct gsm_pcu_if *)buffer;
 
@@ -261,6 +266,7 @@ BitVector* readL1Prim(unsigned char* buffer, int *sapi, int *ts)
 	{
 		*sapi = prim->u.data_req.sapi;
 		*ts = prim->u.data_req.ts_nr;
+		*fn = prim->u.data_req.fn;
 		BitVector * msg = new BitVector(prim->u.data_req.len*8);
 		msg->unpack((const unsigned char*)prim->u.data_req.data);
 		return msg;
@@ -291,8 +297,8 @@ void GPRS::GPRSReader(LogicalChannel **PDCH)
 		if (count>0)
 		{
 			int sapi;
-			int ts;
-			BitVector *msg = readL1Prim((unsigned char*) buf, &sapi, &ts);
+			int ts, fn;
+			BitVector *msg = readL1Prim((unsigned char*) buf, &sapi, &ts, &fn);
 			if (!msg)
 			{
 				delete msg;
@@ -301,6 +307,17 @@ void GPRS::GPRSReader(LogicalChannel **PDCH)
 			if (sapi == PCU_IF_SAPI_PDTCH)
 			{
 				RLCMACFrame *frame = new RLCMACFrame(*msg);
+				// write dummy downlink control message to LOG only in DEBUG mode
+				if (frame->peekField(0,16) == 0x4794)
+				{
+					LOG(DEBUG) << "RX:[BTS<-PCU] PhDataReq TS:" << ts
+								 << " FN:" << fn << " DATA:" << *frame;
+				}
+				else
+				{
+					LOG(NOTICE) << "RX:[BTS<-PCU] PhDataReq TS:" << ts
+								 << " FN:" << fn << " DATA:" << *frame;
+				}
 				((PDTCHLogicalChannel*)PDCH[ts])->sendRLCMAC(frame);
 			}
 			else if (sapi == PCU_IF_SAPI_AGCH)
@@ -311,11 +328,11 @@ void GPRS::GPRSReader(LogicalChannel **PDCH)
 				// Check AGCH load now.
 				if (AGCH->load()>(unsigned)gConfig.getNum("GSM.CCCH.AGCH.QMax"))
 				{
-					COUT(" GPRS AGCH congestion");
+					LOG(ERR) << " GPRS AGCH congestion";
 					return;
 				}
 				L3Frame *l3 = new L3Frame(msg->tail(8), UNIT_DATA);
-				COUT("RX: [ BTS <- PCU ] AGCH: " << *l3);
+				LOG(NOTICE) << "RX:[BTS<-PCU] AGCH:" << *l3;
 				l2Len = msg->peekField(0, 6);
 				l3->L2Length(l2Len);
 				AGCH->send(l3);
@@ -325,7 +342,7 @@ void GPRS::GPRSReader(LogicalChannel **PDCH)
 			{
 				L3Frame *msg1 = new L3Frame(msg->tail(8*4), UNIT_DATA);
 				L3Frame *msg2 = new L3Frame(msg->tail(8*4), UNIT_DATA);
-				COUT("RX: [ BTS <- PCU ] PCH: " << *msg1);
+				LOG(NOTICE) << "RX:[BTS<-PCU] PCH:" << *msg1;
 				l2Len = msg->peekField(8*3, 6);
 				msg1->L2Length(l2Len);
 				msg2->L2Length(l2Len);

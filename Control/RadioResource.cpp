@@ -159,7 +159,6 @@ void AccessGrantResponder(
 	LOG(INFO) << "RA=0x" << hex << RA << dec
 		<< " when=" << when << " age=" << age
 		<< " delay=" << timingError << " RSSI=" << RSSI;
-	COUT("RA=0x" << hex << RA << dec << " when=" << when << " age=" << age << " delay=" << timingError << " RSSI=" << RSSI);
 	if (age>maxAge) {
 		LOG(WARNING) << "ignoring RACH bust with age " << age;
 		gBTS.growT3122()/1000;
