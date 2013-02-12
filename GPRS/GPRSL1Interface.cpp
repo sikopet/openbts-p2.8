@@ -324,12 +324,12 @@ void GPRS::GPRSReader(LogicalChannel **PDCH)
 			{
 				// Get an AGCH to send on.
 				CCCHLogicalChannel *AGCH = gBTS.getAGCH();
-				assert(AGCH);
 				// Check AGCH load now.
-				if (AGCH->load()>(unsigned)gConfig.getNum("GSM.CCCH.AGCH.QMax"))
+				if ((!AGCH)||(AGCH->load()>(unsigned)gConfig.getNum("GSM.CCCH.AGCH.QMax")))
 				{
-					LOG(ERR) << " GPRS AGCH congestion";
-					return;
+					LOG(ERR) << "GPRS AGCH congestion";
+					delete msg;
+					continue;
 				}
 				L3Frame *l3 = new L3Frame(msg->tail(8), UNIT_DATA);
 				LOG(NOTICE) << "RX:[BTS<-PCU] AGCH:" << *l3;
