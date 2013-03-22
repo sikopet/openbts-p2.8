@@ -23,7 +23,7 @@
 #include <GSMTransfer.h>
 
 extern "C" {
-#define PCU_IF_VERSION 0x04
+#define PCU_IF_VERSION 0x05
 
 /* msg_type */
 #define PCU_IF_MSG_DATA_REQ	0x00	/* send data to given channel */
@@ -71,6 +71,7 @@ struct gsm_pcu_if_data {
 	uint8_t		trx_nr;
 	uint8_t		ts_nr;
 	uint8_t		block_nr;
+	int8_t		rssi;
 } __attribute__ ((packed));
 
 struct gsm_pcu_if_rts_req {
@@ -178,7 +179,7 @@ namespace GPRS {
 void GPRSReader(GSM::LogicalChannel **PDCH);
 void txPhRaInd(unsigned ra, int Fn, unsigned ta);
 void txPhReadyToSendInd(unsigned Tn, int Fn);
-void txPhDataInd(const GSM::RLCMACFrame *frame, GSM::Time readTime, unsigned ts_nr);
+void txPhDataInd(const GSM::RLCMACFrame *frame, GSM::Time readTime, unsigned ts_nr, float rssi);
 
 }
 

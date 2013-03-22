@@ -752,17 +752,32 @@ bool PDTCHL1Decoder::processBurst(const RxBurst& inBurst)
 	return XCCHL1Decoder::processBurst(inBurst);
 }
 
-void PDTCHL1Decoder::writeLowSide(const RxBurst& burst)
+void PDTCHL1Decoder::writeLowSide(const RxBurst& inBurst)
 {
-	OBJLOG(INFO) <<"PDTCHL1Decoder burst=" << burst.time() << " " << burst.RSSI() << " "
-                                           << burst.data1() << burst.data2() << (burst.Hu()?"1":"0") << (burst.Hl()?"1":"0");
-	XCCHL1Decoder::writeLowSide(burst);
+	OBJLOG(INFO) <<"PDTCHL1Decoder burst=" << inBurst.time() << " " << inBurst.RSSI() << " "
+                                           << inBurst.data1() << inBurst.data2() << (inBurst.Hu()?"1":"0") << (inBurst.Hl()?"1":"0");
+	// If the channel is closed, ignore the burst.
+	if (!active()) {
+		OBJLOG(DEBUG) <<"PDTCHL1Decoder not active, ignoring input";
+		return;
+	}
+	// Accept the burst into the deinterleaving buffer.
+	// Return true if we are ready to interleave.
+	if (!processBurst(inBurst)) return;
+	deinterleave();
+	if (decode()) {
+		countGoodFrame();
+		mD.LSB8MSB();
+		handleGoodFrame(inBurst.RSSI());
+	} else {
+		countBadFrame();
+	}
 }
 
-void PDTCHL1Decoder::handleGoodFrame()
+void PDTCHL1Decoder::handleGoodFrame(float rssi)
 {
 	RLCMACFrame* frame = new RLCMACFrame(mD);
-	GPRS::txPhDataInd(frame, mReadTime, mTN);
+	GPRS::txPhDataInd(frame, mReadTime, mTN, rssi);
 }
 
 

@@ -167,7 +167,8 @@ void GPRS::txPhReadyToSendInd(unsigned Tn, int Fn)
 
 
 
-void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime, unsigned ts_nr)
+void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime,
+										 unsigned ts_nr, float rssi)
 {
 	char buffer[MAX_UDP_LENGTH];
 	int ofs = 0;
@@ -202,11 +203,12 @@ void GPRS::txPhDataInd(const RLCMACFrame *frame, GSM::Time readTime, unsigned ts
 	prim->u.data_ind.block_nr = bn;
 	prim->u.data_ind.trx_nr = 0;
 	prim->u.data_ind.ts_nr = ts_nr;
+	prim->u.data_ind.rssi = (int)rssi;
 
 	ofs = sizeof(*prim);
 
 	LOG(NOTICE) << "TX:[BTS->PCU ] PhDataInd TS:" << ts_nr
-						 << " FN:" << Fn << " DATA:" << *frame;
+				<< " FN:" << Fn << " RSSI:" << (int)rssi << " DATA:" << *frame;
 	gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), ts_nr, Fn,
 								GSM::PDCH, false, true, *frame);
 	RLCMACSocket.write(buffer, ofs);

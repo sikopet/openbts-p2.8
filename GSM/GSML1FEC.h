@@ -698,7 +698,7 @@ class PDTCHL1Decoder : public XCCHL1Decoder {
 	/**
 		This is a wrapper on handleGoodFrame that processes the physical header.
 	*/
-	void handleGoodFrame();
+	void handleGoodFrame(float rssi);
 
 	unsigned headerOffset() const { return 16; }
 
