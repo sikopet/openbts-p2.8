@@ -683,6 +683,8 @@ typedef InterthreadQueue<VocoderFrame> VocoderFrameFIFO;
 */
 class RLCMACFrame : public BitVector {
 
+	int mFN;
+
 	public:
 
 	/** Empty frame with a primitive. */
@@ -713,6 +715,10 @@ class RLCMACFrame : public BitVector {
 
 	/** Return frame length in BYTES. */
 	size_t length() const { return size()/8; }
+	
+	int fn() const { return mFN; }
+	
+	void fn(int fn) { mFN = fn; }
 
 };
 

@@ -309,6 +309,7 @@ void GPRS::GPRSReader(LogicalChannel **PDCH)
 			if (sapi == PCU_IF_SAPI_PDTCH)
 			{
 				RLCMACFrame *frame = new RLCMACFrame(*msg);
+				frame->fn(fn);
 				// write dummy downlink control message to LOG only in DEBUG mode
 				if (frame->peekField(0,16) == 0x4794)
 				{

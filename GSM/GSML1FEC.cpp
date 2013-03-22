@@ -1631,20 +1631,41 @@ void PDTCHL1Encoder::dispatch()
 	resync();
 	waitToSend();
 
-	// Send, by priority: (1) PDTCH, (2) filler.
-	if (RLCMACFrame *frame = mRLCMACQ.readNoBlock()) {
-		OBJLOG(NOTICE) <<"PDTCH Encoder " << *frame;
-		if (frame->peekField(0,16) != 0x4794)
+	// Priority: (1) PDTCH, (2) filler.
+	unsigned prio = 2;
+	while (RLCMACFrame *frame = mRLCMACQ.readNoBlock())
+	{
+		if (mNextWriteTime.FN() != frame->fn())
 		{
-			gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), mTN,
-				mNextWriteTime.FN(), GSM::PDCH, false, false, *frame);
+			// Handling synchronization problem between openbts and osmo-pcu.
+			// Sometimes openbts receives data from pcu with outdated frame number,
+			// openbts should skip outdated data and continue transmission.
+			// TODO: Add special counter for this event.
+			OBJLOG(ERR) <<"Synchronization problem [openbts<->osmo-pcu] : osmo-pcu FN = "
+								 << frame->fn() << " openbts FN = "<< mNextWriteTime.FN()
+								 << " TN = " << mNextWriteTime.TN();
+			delete frame;
 		}
-		frame->LSB8MSB();
-		frame->copyTo(mU);
-		// Encode u[] to c[], GSM 05.03 4.1.2 and 4.1.3.
-		encode();
-		delete frame;
-	} else {
+		else
+		{
+			OBJLOG(NOTICE) <<"PDTCH Encoder " << *frame;
+			if (frame->peekField(0,16) != 0x4794)
+			{
+				gWriteGSMTAP(gConfig.getNum("GSM.Radio.C0"), mTN,
+				mNextWriteTime.FN(), GSM::PDCH, false, false, *frame);
+			}
+			frame->LSB8MSB();
+			frame->copyTo(mU);
+			// Encode u[] to c[], GSM 05.03 4.1.2 and 4.1.3.
+			encode();
+			delete frame;
+			prio = 1;
+			break;
+		}
+	}
+
+	// Send, by priority: (1) PDTCH, (2) filler.
+	if (prio == 2) {
 		// We have no ready data but must send SOMETHING.
 		// RLC/MAC filler with USF=1
 		static const BitVector filler("0100000110010100001010110010101100101011001010110010101100101011001010110010101100101011001010110010101100101011001010110010101100101011001010110010101100101011001010110010101100101011");
